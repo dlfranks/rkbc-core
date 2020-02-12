@@ -148,13 +148,13 @@ namespace rkbc
             //app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            
 
-            //app.UseAuthentication();
-            //app.UseAuthorization();
             app.UseSession();
             app.UseElmah();
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

@@ -14,7 +14,7 @@ namespace rkbc.web.viewmodels
 {
     public class RoleViewModel
     {
-        public Guid roleId { get; set; }
+        public string roleId { get; set; }
         public string roleName { get; set; }
     }
 }
@@ -95,7 +95,7 @@ namespace rkbc.web.controllers
             ViewBag.formViewMode = FormViewMode.Edit;
             return View("Role", model);
         }
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             var role =  roleManager.Roles.Include("UserRoles").Where(q => q.Id == id).FirstOrDefault();
             var model = new RoleViewModel() { roleId = id, roleName = role.Name };

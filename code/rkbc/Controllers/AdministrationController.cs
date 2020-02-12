@@ -24,7 +24,7 @@ namespace rkbc.web.viewmodels
             roles = new List<string>();
         }
         
-        public Guid id { get; set; }
+        public string id { get; set; }
 
         [Required]
         [EmailAddress]
@@ -233,7 +233,7 @@ namespace rkbc.web.controllers
             return View("Edit", vm);
         }
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> Details(Guid id, FormViewMode mode)
+        public async Task<IActionResult> Details(string id, FormViewMode mode)
         {
             var query = addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id));
             var user = await query.FirstAsync();
@@ -241,7 +241,7 @@ namespace rkbc.web.controllers
             return View("Details", vm);
         }
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Edit(string id)
         {
             var user = await addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id)).FirstOrDefaultAsync();
             
@@ -290,7 +290,7 @@ namespace rkbc.web.controllers
             return View("Edit", vm);
         }
         
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             var user = await addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id)).FirstOrDefaultAsync();
             if (user == null) throw new InvalidOperationException("Attempted to delete an user who does not exist.");
@@ -308,7 +308,7 @@ namespace rkbc.web.controllers
             return RedirectToAction("Details", new { id = user.Id, mode = FormViewMode.Delete });
             
         }
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id)).FirstOrDefaultAsync();
             if (user == null) throw new InvalidOperationException("Attempted to delete an user who does not exist.");

@@ -50,7 +50,7 @@ namespace rkbc.core.models
         public int id { get; set; }
         public int itemSetId { get; set; }
         public string content { get; set; }
-        public 
+        
     }
     public class ServiceItemSet
     {

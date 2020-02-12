@@ -61,7 +61,7 @@ namespace rkbc.core.models
         Toddler = 6
     }
 
-    public class ApplicationUser : IdentityUser<Guid>
+    public class ApplicationUser : IdentityUser<string>
     {
         public ApplicationUser()
         {
@@ -93,34 +93,34 @@ namespace rkbc.core.models
 
     }
  
-    public class ApplicationRole : IdentityRole<Guid>
+    public class ApplicationRole : IdentityRole<string>
     {
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
         public virtual ICollection<ApplicationRoleClaim> RoleClaims { get; set; }
     }
     
-    public class ApplicationUserRole : IdentityUserRole<Guid>
+    public class ApplicationUserRole : IdentityUserRole<string>
     {
         public virtual ApplicationUser User { get; set; }
         public virtual ApplicationRole Role { get; set; }
     }
 
-    public class ApplicationUserClaim : IdentityUserClaim<Guid>
+    public class ApplicationUserClaim : IdentityUserClaim<string>
     {
         public virtual ApplicationUser User { get; set; }
     }
 
-    public class ApplicationUserLogin : IdentityUserLogin<Guid>
+    public class ApplicationUserLogin : IdentityUserLogin<string>
     {
         public virtual ApplicationUser User { get; set; }
     }
 
-    public class ApplicationRoleClaim : IdentityRoleClaim<Guid>
+    public class ApplicationRoleClaim : IdentityRoleClaim<string>
     {
         public virtual ApplicationRole Role { get; set; }
     }
 
-    public class ApplicationUserToken : IdentityUserToken<Guid>
+    public class ApplicationUserToken : IdentityUserToken<string>
     {
         public virtual ApplicationUser User { get; set; }
     }

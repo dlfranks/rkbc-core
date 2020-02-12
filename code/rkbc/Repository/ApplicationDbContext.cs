@@ -9,7 +9,7 @@ using rkbc.web.viewmodels;
 
 namespace rkbc.core.repository
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid,
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string,
                                                           ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin,
                                                           ApplicationRoleClaim, ApplicationUserToken>
     {
@@ -55,10 +55,13 @@ namespace rkbc.core.repository
                     .WithOne(e => e.User)
                     .HasForeignKey(ur => ur.UserId)
                     .IsRequired();
+                b.Property(e => e.Id)
+                .ValueGeneratedOnAdd();
 
             });
             modelBuilder.Entity<ApplicationRole>(b =>
             {
+                b.Property(e => e.Id).ValueGeneratedOnAdd();
                 // Each Role can have many entries in the UserRole join table
                 b.HasMany(e => e.UserRoles)
                     .WithOne(e => e.Role)
@@ -85,6 +88,7 @@ namespace rkbc.core.repository
             });
             modelBuilder.Entity<ApplicationUserClaim>(b =>
             {
+                b.Property(e => e.Id).ValueGeneratedOnAdd();
                 // Each Role can have many entries in the UserRole join table
                 b.HasOne(x => x.User)
                 .WithMany(x => x.Claims)
@@ -99,6 +103,7 @@ namespace rkbc.core.repository
             });
             modelBuilder.Entity<ApplicationRoleClaim>(b =>
             {
+                b.Property(e => e.Id).ValueGeneratedOnAdd();
                 // Each Role can have many entries in the UserRole join table
                 b.HasOne(x => x.Role)
                 .WithMany(x => x.RoleClaims)
