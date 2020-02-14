@@ -10,7 +10,7 @@ using rkbc.core.repository;
 namespace rkbc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200212015914_init")]
+    [Migration("20200213150303_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,7 @@ namespace rkbc.Migrations
             modelBuilder.Entity("rkbc.core.models.ApplicationRole", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -75,6 +76,7 @@ namespace rkbc.Migrations
             modelBuilder.Entity("rkbc.core.models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")

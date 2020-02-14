@@ -10,6 +10,13 @@ namespace rkbc.core.repository
     {
         int id { get; }
     }
+    public interface IPage : IEntity
+    {
+        int siteId { get; set; }
+        PageEnum pageId { get; set; }
+
+    }
+    
     public interface IRepository<T> where T : class
     {
         IQueryable<T> get();
@@ -31,7 +38,7 @@ namespace rkbc.core.repository
 
     public interface IUnitOfWork : IDisposable
     {
-        
+        IRepository<HomePage> homePages { get; }
         IRepository<UserActivityLog> userActivityLogs { get; }
         ApplicationDbContext getContext();
         void Commit();

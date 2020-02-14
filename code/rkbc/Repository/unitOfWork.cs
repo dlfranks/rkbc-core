@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace rkbc.Repository
+namespace rkbc.core.repository
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -18,7 +18,16 @@ namespace rkbc.Repository
         }
         public ApplicationDbContext _context;
         IRepository<UserActivityLog> _userActivityLog = null;
-        
+        IRepository<HomePage> _homePage = null;
+        public IRepository<HomePage> homePages
+        {
+            get
+            {
+                if (_homePage == null)
+                    _homePage = new BasicRepository<HomePage>(_context);
+                return _homePage;
+            }
+        }
         public IRepository<UserActivityLog> userActivityLogs
         {
             get

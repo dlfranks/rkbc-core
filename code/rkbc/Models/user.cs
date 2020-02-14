@@ -13,6 +13,18 @@ using System.Threading.Tasks;
 
 namespace rkbc.core.models
 {
+    [ComplexType]
+    public class AuditStampInfo
+    {
+        public DateTime? createDt { get; set; }
+        public string createUser { get; set; }
+        public DateTime? lastUpdDt { get; set; }
+        public string lastUpdUser { get; set; }
+    }
+    public interface IAuditStamp
+    {
+        AuditStampInfo audit { get; set; }
+    }
     public class CustomClaimTypes
     {
         public const string Permission = "projectname/permission";

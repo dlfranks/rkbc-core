@@ -71,7 +71,7 @@ namespace rkbc
             })
             .AddCookie();
 
-            //services.AddScoped<UserService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.

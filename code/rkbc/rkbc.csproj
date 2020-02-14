@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200209030311_init.cs" />
-    <Compile Remove="Migrations\20200209030311_init.Designer.cs" />
-    <Compile Remove="Migrations\20200212011944_init.cs" />
-    <Compile Remove="Migrations\20200212011944_init.Designer.cs" />
+    <Compile Remove="Migrations\20200213171624_homePage.cs" />
+    <Compile Remove="Migrations\20200213171624_homePage.Designer.cs" />
+    <Compile Remove="Migrations\20200213200511_creteHomePages.cs" />
+    <Compile Remove="Migrations\20200213200511_creteHomePages.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
