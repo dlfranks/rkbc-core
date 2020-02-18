@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using rkbc.core.models;
 using rkbc.core.repository;
-using rkbc.web.models;
 using rkbc.web.viewmodels;
 using RKBC.Models;
 
-namespace rkbc.web.models
+namespace rkbc.web.viewmodels
 {
     public class HomePageViewModel
     {
@@ -64,9 +63,11 @@ namespace rkbc.web.Controllers
             ViewBag.formViewMode = mode;
             return vm;
         }
-        public IActionResult Edit(int id)
+        public IActionResult Edit(int? id)
         {
+            if (id == null) return RedirectToAction("Error");
             var model = unitOfWork.homePages.get().Where(q => q.siteId == id).FirstOrDefault();
+            if (model == null) return RedirectToAction("Error");
             var vm = setupViewModel(model, FormViewMode.Edit);
             return View(vm);
         }

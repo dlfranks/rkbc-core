@@ -1,4 +1,5 @@
-﻿@{
+﻿@model rkbc.web.viewmodels.HomePageViewModel
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home Page";
 }
@@ -14,9 +15,9 @@
 <div id="content">
     <div class="container">
         <div class="f-center">
-            <h2>Vision 2020</h2>
+            <h2>@Html.TextBoxFor(q => q.title)</h2>
             <div class="head-info">
-                2천명의 성도 - 2백명의 목자 - 20명의 선교사 파송
+                @Html.TextBoxFor(q => q.titleContent)
             </div>
         </div>
         <div class="f-hr"></div>
@@ -25,23 +26,21 @@
             <div class="span12">
                 <div class="row">
                     <!-- Service Container -->
-                    <div class="span4">
+                    <div class="span4" id="Church_Announce">
                         <!-- Service Icon -->
                         <div class="ic-1"><i class="icon-lightbulb"></i></div>
                         <!-- Service Title -->
-                        <div class="title-1"><h4>신년 금식성회</h4></div>
+                        <div class="title-1"><h4>@Html.TextBoxFor(q => q.churchAnnounceTitle)</h4></div>
                         <!-- Service Content -->
-                        <ul class="text-1">
-
-                            <li>여호수아 14:6-12</li>
-                            <li>이 산지를 내게 주소서</li>
-                            <li>2020년 1월2일(목)-4릴(토)</li>
-                            <li>새벽 6시, 오전 11시, 저녁8시</li>
-                            
-                        </ul>
+                        <div class="text-1">
+                            <p>여호수아 14:6-12</p>
+                            이 산지를 내게 주소서<br />
+                            2020년 1월2일(목)-4릴(토)<br />
+                            새벽 6시, 오전 11시, 저녁8시<br />
+                        </div>
                     </div>
                     <!-- Service Container End -->
-                    <div class="span4">
+                    <div class="span4" id="Member_Announce">
                         <div class="ic-1"><i class="icon-comment"></i></div>
                         <div class="title-1"><h4>송구영신 예배</h4></div>
                         <div class="text-1">
@@ -49,7 +48,7 @@
                             밤 9시부터 떡국 준비되어 있습니다.
                         </div>
                     </div>
-                    <div class="span4">
+                    <div class="span4" id="School_Announce">
                         <div class="ic-1"><i class="icon-eye-open"></i></div>
                         <div class="title-1"><h4>한글 학교</h4></div>
                         <div class="text-1">

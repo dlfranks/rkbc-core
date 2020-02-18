@@ -84,9 +84,8 @@ namespace rkbc
             {
                 //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
-            }
-            )
-            .AddXmlSerializerFormatters()
+            }).AddRazorRuntimeCompilation()
+              .AddXmlSerializerFormatters()
               .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddAuthorization(options =>
