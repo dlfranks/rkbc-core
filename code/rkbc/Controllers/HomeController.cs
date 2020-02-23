@@ -45,7 +45,47 @@ namespace rkbc.web.Controllers
         protected async Task acceptPost(HomePage modelObj)
         {
             HomePageViewModel model = new HomePageViewModel();
-            TryUpdateModelAsync(model);
+            await TryUpdateModelAsync(model);
+            modelObj.bannerId = model.bannerId;
+            modelObj.title = model.title;
+            modelObj.titleContent = model.titleContent;
+            modelObj.memberAnnounceTitle = model.memberAnnounceTitle;
+            modelObj.churchAnnounceTitle = model.churchAnnounceTitle;
+            modelObj.schoolAnnounceTitle = model.schoolAnnounceTitle;
+            List<HomeItem> newAnnouncement = new List<HomeItem>();
+            foreach(var item in model.churchAnnouncements)
+            {
+                newAnnouncement.Add(new HomeItem()
+                {
+                    homePageId = modelObj.id,
+                    homePage = modelObj,
+                    sectionId = (int)SectionEnum.Church_Announce,
+                    content = item.content,
+                    isOn = true
+                });
+            }
+            foreach (var item in model.memberAnnouncements)
+            {
+                newAnnouncement.Add(new HomeItem()
+                {
+                    homePageId = modelObj.id,
+                    homePage = modelObj,
+                    sectionId = (int)SectionEnum.Member_Announce,
+                    content = item.content,
+                    isOn = true
+                });
+            }
+            foreach (var item in model.schoolAnnouncements)
+            {
+                newAnnouncement.Add(new HomeItem()
+                {
+                    homePageId = modelObj.id,
+                    homePage = modelObj,
+                    sectionId = (int)SectionEnum.School_Announce,
+                    content = item.content,
+                    isOn = true
+                });
+            }
         }
         protected HomePageViewModel setupViewModel(HomePage model, FormViewMode mode)
         {
@@ -66,6 +106,12 @@ namespace rkbc.web.Controllers
             };
             ViewBag.formViewMode = mode;
             return vm;
+        }
+        public async Task<IActionResult> Edit(int id, IFormCollection formCollection)
+        {
+
+            HomePage modelObj = await unitOfWork.homePages.getAsync(id);
+            await acceptPost(modelObj);
         }
         public IActionResult Edit(int? id)
         {

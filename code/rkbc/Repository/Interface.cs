@@ -17,23 +17,23 @@ namespace rkbc.core.repository
 
     }
     
-    public interface IRepository<T> where T : class
+    //public interface IRepository<T> where T : class
+    //{
+    //    IQueryable<T> get();
+    //    IQueryable<T> get(int id);
+    //    void add(T entity);
+    //    T update(T entity);
+    //    void remove(int id);
+    //    void remove(T entity);
+    //}
+    public interface IRepository<T> where T: class
     {
-        IQueryable<T> get();
-        IQueryable<T> get(int id);
+        Task<IEnumerable<T>> getAsync();
+        Task<T> getAsync(int id);
         void add(T entity);
         T update(T entity);
-        void remove(int id);
-        void remove(T entity);
-    }
-    public interface IRepositoryAsync<T> where T: class
-    {
-        Task<IQueryable<T>> getAsync();
-        Task<IQueryable<T>> getAsync(int id);
-        Task addAsync(T entity);
-        Task<T> updateAsync(T entity);
         Task removeAsync(int id);
-        Task removeAsync(T entity);
+         void remove(T entity);
     }
 
     public interface IUnitOfWork : IDisposable
@@ -41,10 +41,10 @@ namespace rkbc.core.repository
         IRepository<HomePage> homePages { get; }
         IRepository<UserActivityLog> userActivityLogs { get; }
         ApplicationDbContext getContext();
-        void Commit();
-        bool tryCommit();
-        bool tryConcurrencyCommit();
-        bool tryUniqueConstraintCommit();
+        Task commit();
+        Task<bool> tryCommit();
+        Task<bool> tryConcurrencyCommit();
+        Task<bool> tryUniqueConstraintCommit();
         void updateCollection<TCOL>(IEnumerable<TCOL> oldList, IEnumerable<TCOL> newList) where TCOL : class, IEntity;
     }
 }

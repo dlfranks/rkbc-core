@@ -7,14 +7,18 @@
 }
 <style type="text/css">
     ul {
-          list-style-type: none;
-          margin: 0;
-          padding: 0;
-        }
-    table td{
-        background-color:#ffffff;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
     }
-    input {width:100%;}
+
+    table td {
+        background-color: #ffffff;
+    }
+
+    input {
+        width: 100%;
+    }
 </style>
 <script type="text/javascript">
     $(function () {
@@ -25,19 +29,69 @@
                 var sectionId = @Html.Raw((int)SectionEnum.Church_Announce);
                 return "sectionId=" + sectionId;
             }
-               
-            });
+
         });
+        $("#imageButtonClick").click(function () {
+            $("#imageInput").click();
+        });
+        $("#imageInput").change(function (e) {
+            e.isDefaultPrevented();
+            var img = $("#bannerImage");
+            var file = this.FileList[0];
+            var form_data = new FormData();                  
+                form_data.append('file', file);
+            if (file) {
+                $.ajax({
+                    url: '/Home/SaveImage', // point to server-side PHP script 
+                    dataType: 'json',  // what to expect back from the PHP script, if anything
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form_data,                         
+                    type: 'post',
+                    success: function (data) {
+                        if (data.success) {
+                            img.src = data.url;
+                            img.load = function () { };
+                        }
+                    },
+                    error: function (xhr,) {
+
+                    }
+                    
+                 });
+            }
+            
+            img.load = function () {
+
+            };
+            img.src = this.src;
+        });
+    });
+
 </script>
 <!-- Content -->
+<!-- Banner ---------------------------------------------------------------------- -->
+<div class="grid_16">
+    <div class="grid_16">
+        @Html.TextBoxFor(q => q.bannerId)
+        <img id="bannerImage" src="~/img/rkbc/banner.png" alt="">
+    </div>
+    <div class="space20">
+        <p id="bannerError"></p>
+        <span>Banner Image: </span><input id="imageInput" type="file" accept="image/jpeg, image/png"/>
+        <btton itemid="imageButtonClick">Click For Image</btton>
+    </div>
+</div>
 <div class="">
     @Html.HiddenFor(q => q.id)
-   <!--Title-->
+    <!--Title-->
     <div class="grid_16">
         <h4>Title</h4>
         <p>Title: @Html.TextBoxFor(q => q.title)</p>
         <p>Content: @Html.TextBoxFor(q => q.titleContent)</p>
     </div>
+
     <!-- Church Announcement ---------------------------------------------------------------------- -->
     <div class="grid_16" title="Church Announcemnets">
         <table width="100%" id="churchAnnoucement" data-panel-container="false" data-panel-prefix="churchAnnouncemens">
