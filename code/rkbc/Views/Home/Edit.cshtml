@@ -1,0 +1,65 @@
+﻿@model rkbc.web.viewmodels.HomePageViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering.Html
+@using rkbc.core.models
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Home Page";
+}
+<style type="text/css">
+    ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+        }
+    table td{
+        background-color:#ffffff;
+    }
+    input {width:100%;}
+</style>
+<script type="text/javascript">
+    $(function () {
+        $('#churchAnnoucement').dataPanel({
+            mvcController: 'Home',
+            mvcCreateAction: 'ItemRow',
+            queryString: function () {
+                var sectionId = @Html.Raw((int)SectionEnum.Church_Announce);
+                return "sectionId=" + sectionId;
+            }
+               
+            });
+        });
+</script>
+<!-- Content -->
+<div class="">
+    @Html.HiddenFor(q => q.id)
+   <!--Title-->
+    <div class="grid_16">
+        <h4>Title</h4>
+        <p>Title: @Html.TextBoxFor(q => q.title)</p>
+        <p>Content: @Html.TextBoxFor(q => q.titleContent)</p>
+    </div>
+    <!-- Church Announcement ---------------------------------------------------------------------- -->
+    <div class="grid_16" title="Church Announcemnets">
+        <table width="100%" id="churchAnnoucement" data-panel-container="false" data-panel-prefix="churchAnnouncemens">
+
+            <tr>
+                <th>Church Annoucement</th>
+                <th></th>
+
+            </tr>
+
+            @for (int i = 0; i < Model.churchAnnouncements.Count; i++)
+            {
+                Html.RenderPartialWithPrefix("_item", Model.churchAnnouncements[i], "churchAnnouncements[" + i + "]", this.ViewData);
+            }
+            <tr data-panel-insertpoint="true">
+                <td colspan="2">
+                    <button class="imts-form-action" id="strengthButton" data-imts-form-action="true" data-panel-click="insert">Add New</button>
+                </td>
+            </tr>
+
+
+        </table>
+    </div>
+</div>
+<!-- Content End -->
