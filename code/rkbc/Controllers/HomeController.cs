@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using rkbc.core.models;
 using rkbc.core.repository;
@@ -15,6 +16,7 @@ namespace rkbc.web.viewmodels
     {
         public int bannerId { get; set; }
         public HomeBannerAttachment banner { get; set; }
+        public IFormFile bannerImage { get; set; }
         public string title { get; set; }
         public string titleContent { get; set; }
         public string churchAnnounceTitle { get; set; }

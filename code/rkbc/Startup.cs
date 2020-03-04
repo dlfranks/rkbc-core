@@ -23,6 +23,7 @@ using ElmahCore.Sql;
 using ElmahCore.Mvc.Notifiers;
 using ElmahCore;
 
+
 namespace rkbc
 {
     public class Startup
@@ -80,6 +81,7 @@ namespace rkbc
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
+            
             services.AddMvc(options =>
             {
                 //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
@@ -145,6 +147,7 @@ namespace rkbc
             
             app.UseHttpsRedirection();
             //app.UseDefaultFiles();
+
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
