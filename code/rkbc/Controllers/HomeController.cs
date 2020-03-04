@@ -15,18 +15,18 @@ namespace rkbc.web.viewmodels
     public class HomePageViewModel
     {
         public int bannerId { get; set; }
-        public HomeBannerAttachment banner { get; set; }
+        public Attachment banner { get; set; }
         public IFormFile bannerImage { get; set; }
         public string title { get; set; }
         public string titleContent { get; set; }
         public string churchAnnounceTitle { get; set; }
         public string memberAnnounceTitle { get; set; }
         public string schoolAnnounceTitle { get; set; }
-        public virtual List<HomeItem> churchAnnouncements { get; set; }
-        public virtual List<HomeItem> memberAnnouncements { get; set; }
-        public virtual List<HomeItem> schoolAnnouncements { get; set; }
-        public virtual List<HomeVideoAttachment> sundayServiceVideos { get; set; }
-        public virtual List<HomeAttachment> homephotoGallery { get; set; }
+        public virtual List<ContentItem> churchAnnouncements { get; set; }
+        public virtual List<ContentItem> memberAnnouncements { get; set; }
+        public virtual List<ContentItem> schoolAnnouncements { get; set; }
+        public virtual List<VideoAttachment> sundayServiceVideos { get; set; }
+        public virtual List<Attachment> homephotoGallery { get; set; }
     }
 }
 namespace rkbc.web.Controllers
@@ -68,7 +68,7 @@ namespace rkbc.web.Controllers
         public IActionResult Edit(int? id)
         {
             if (id == null) return RedirectToAction("Error");
-            var model = unitOfWork.homePages.get().Where(q => q.siteId == id).FirstOrDefault();
+            var model = unitOfWork.homePages.get().FirstOrDefault();
             if (model == null) return RedirectToAction("Error");
             var vm = setupViewModel(model, FormViewMode.Edit);
             return View(vm);

@@ -33,22 +33,22 @@
             for (var i = 0; i < data.schoolAnnouncements; i++) {
                 self.schoolAnnouncements.push(data.schoolAnnouncements[i]);
             }
-            self.addChurchAnnouncements = function () {
+            self.addChurchAnnouncement = function () {
                 self.churchAnnouncements.push(new homeItemVM());
             };
-            self.addMemberAnnouncements = function () {
+            self.addMemberAnnouncement = function () {
                 self.memberAnnouncements.push(new homeItemVM());
             };
-            self.addSchoolAnnouncements = function () {
+            self.addSchoolAnnouncement = function () {
                 self.schoolAnnouncements.push(new homeItemVM());
             };
-            self.deleteChurchAnnouncements = function () {
+            self.deleteChurchAnnouncement = function () {
                 self.churchAnnouncements.remove(this);
             };
-            self.deleteMemberAnnouncements = function () {
+            self.deleteMemberAnnouncement = function () {
                 self.memberAnnouncements.remove(this);
             };
-            self.deleteSchoolAnnouncements = function () {
+            self.deleteSchoolAnnouncement = function () {
                 self.schoolAnnouncements.remove(this);
             };
         }
@@ -86,28 +86,51 @@
                             <!-- Service Title -->
                             <div class="title-1"><h4>@Html.TextBoxFor(q => q.churchAnnounceTitle)</h4></div>
                             <!-- Service Content -->
-                            <div class="text-1">
-                                <p>여호수아 14:6-12</p>
-                                이 산지를 내게 주소서<br />
-                                2020년 1월2일(목)-4릴(토)<br />
-                                새벽 6시, 오전 11시, 저녁8시<br />
-                            </div>
+                            <table class="text-1" data-bind="foreach:churchAnnouncements">
+                                <tr>
+                                    <td>
+                                        <input type="hidden" data-bind="value:id, attr:{name:'churchAnnouncements[' + $index() + '].id'}" />
+                                        <input type="hidden" data-bind="value:pageId, attr:{name:'churchAnnouncements[' + $index() + '].pageId'}" />
+                                        <input type="hidden" data-bind="value:sectionId, attr:{name:'churchAnnouncements[' + $index() + '].sectionId'}" />
+                                        <input type="text" data-bind="value:content, attr{name:'churchAnnouncements[' + $index() + '].content'}" />
+                                    </td>
+                                    <td><button data-bind="click:deleteChurchAnnouncement">Delete</button></td>
+                                </tr>
+                               
+                            </table>
                         </div>
                         <!-- Service Container End -->
                         <div class="span4" id="Member_Announce">
                             <div class="ic-1"><i class="icon-comment"></i></div>
-                            <div class="title-1"><h4>송구영신 예배</h4></div>
-                            <div class="text-1">
-                                송구영신 예배가 12월 31일 밤에 있습니다.
-                                밤 9시부터 떡국 준비되어 있습니다.
-                            </div>
-                        </div>
+                            <div class="title-1"><h4>@Html.TextBoxFor(q => q.memberAnnounceTitle)</h4></div>
+                            <table class="text-1" data-bind="foreach:memberAnnouncements">
+                                <tr>
+                                    <td>
+                                        <input type="hidden" data-bind="value:id, attr:{name:'memberAnnouncements[' + $index() + '].id'}" />
+                                        <input type="hidden" data-bind="value:pageId, attr:{name:'memberAnnouncements[' + $index() + '].pageId'}" />
+                                        <input type="hidden" data-bind="value:sectionId, attr:{name:'memberAnnouncements[' + $index() + '].sectionId'}" />
+                                        <input type="text" data-bind="value:content, attr{name:'memberAnnouncements[' + $index() + '].content'}" />
+                                    </td>
+                                    <td><button data-bind="click:deleteMemberAnnouncement">Delete</button></td>
+                                </tr>
+                                
+                            </table>
+                            <div><button></button></div>
+</div>
                         <div class="span4" id="School_Announce">
                             <div class="ic-1"><i class="icon-eye-open"></i></div>
-                            <div class="title-1"><h4>한글 학교</h4></div>
-                            <div class="text-1">
-                                한글 학교가 2020년 1월 25일 10시에 개강 합니다
-                            </div>
+                            <div class="title-1"><h4>@Html.TextBoxFor(q => q.schoolAnnounceTitle)</h4></div>
+                            <table class="text-1" data-bind="foreach:schoolAnnouncements">
+                                <tr>
+                                    <td>
+                                        <input type="hidden" data-bind="value:id, attr:{name:'schoolAnnouncements[' + $index() + '].id'}" />
+                                        <input type="hidden" data-bind="value:pageId, attr:{name:'schoolAnnouncements[' + $index() + '].pageId'}" />
+                                        <input type="hidden" data-bind="value:sectionId, attr:{name:'schoolAnnouncements[' + $index() + '].sectionId'}" />
+                                        <input type="text" data-bind="value:content, attr{name:'schoolAnnouncements[' + $index() + '].content'}" />
+                                    </td>
+                                    <td><button data-bind="click:deleteSchoolAnnouncement">Delete</button></td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>

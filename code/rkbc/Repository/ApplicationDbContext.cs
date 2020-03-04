@@ -27,9 +27,8 @@ namespace rkbc.core.repository
         public DbSet<ApplicationRoleClaim> applicationRoleClaims { get; set; }
         public DbSet<ApplicationUserToken> applicationUserTokens { get; set; }
         public DbSet<HomePage> homePages { get; set; }
-        public DbSet<HomeBannerAttachment> homeBannerAttachments { get; set; }
-        public DbSet<HomeAttachment> homeAttachments { get; set; }
-        public DbSet<HomeVideoAttachment> homeVideoAttachments { get; set; }
+        public DbSet<Attachment> attachments { get; set; }
+        public DbSet<VideoAttachment> videoAttachments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

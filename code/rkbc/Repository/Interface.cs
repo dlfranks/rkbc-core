@@ -10,13 +10,21 @@ namespace rkbc.core.repository
     {
         int id { get; }
     }
-    public interface IPage : IEntity
+    public interface IPage
     {
-        int siteId { get; set; }
-        PageEnum pageId { get; set; }
-
+        int pageId { get; set; }
     }
-    
+    public interface ISection
+    {
+        int sectionId { get; set; }
+    }
+    public interface IAuditStamp
+    {
+        DateTime? createDt { get; set; }
+        string createUser { get; set; }
+        DateTime? lastUpdDt { get; set; }
+        string lastUpdUser { get; set; }
+    }
     public interface IRepository<T> where T : class
     {
         IQueryable<T> get();
@@ -39,6 +47,7 @@ namespace rkbc.core.repository
     public interface IUnitOfWork : IDisposable
     {
         IRepository<HomePage> homePages { get; }
+        IRepository<Attachment> attachments { get; }
         IRepository<UserActivityLog> userActivityLogs { get; }
         ApplicationDbContext getContext();
         void Commit();

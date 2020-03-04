@@ -19,6 +19,16 @@ namespace rkbc.core.repository
         public ApplicationDbContext _context;
         IRepository<UserActivityLog> _userActivityLog = null;
         IRepository<HomePage> _homePage = null;
+        IRepository<Attachment> _attachments = null;
+        public IRepository<Attachment> attachments
+        {
+            get
+            {
+                if (_attachments == null)
+                    _attachments = new BasicRepository<Attachment>(_context);
+                return _attachments;
+            }
+        }
         public IRepository<HomePage> homePages
         {
             get

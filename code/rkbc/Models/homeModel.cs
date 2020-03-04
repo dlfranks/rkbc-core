@@ -26,80 +26,49 @@ namespace rkbc.core.models
         Home_Gallery,
 
     }
-    
-    public class HomeAttachment:IEntity
+    public class Page : IEntity, IPage, ISection, IAuditStamp
     {
         [Key]
         public int id { get; set; }
-        public int homePageId { get; set; }
-        public HomePage homePage { get; set; }
-        public string sectionId { get; set; }
-        public string fileName { get; set; }
-        public string caption { get; set; }
-        public bool isPdf { get; set; }
-        public bool isOn { get; set; }
+        public int sectionId { get; set; }
+        public int pageId { get; set; }
+        public DateTime? createDt { get; set; }
+        public string createUser { get; set; }
+        public DateTime? lastUpdDt { get; set; }
+        public string lastUpdUser { get; set; }
     }
-    public class HomeBannerAttachment : IEntity
+    public class Attachment : Page
     {
-        [Key]
-        public int id { get; set; }
-        public int homePageId { get; set; }
-        public HomePage homePage { get; set; }
-        public string sectionId { get; set; }
         public string fileName { get; set; }
+        public string originalFileName { get; set; }
         public string caption { get; set; }
         public bool isOn { get; set; }
     }
-    public class HomeVideoAttachment:IEntity
+    public class VideoAttachment:Page
     {
-        [Key]
-        public int id { get; set; }
-        public int homePageId { get; set; }
-        public HomePage homePage { get; set; }
-        public string sectionId { get; set; }
         public string url { get; set; }
         public string caption { get; set; }
         public bool isOn { get; set; }
     }
     
-    public class HomeItem :IEntity
+    public class ContentItem :Page
     {
-        [Key]
-        public int id { get; set; }
-        public int homePageId { get; set; }
-        public HomePage homePage { get; set; }
-        public int sectionId { get; set; }
         public string content { get; set; }
         public bool isOn { get; set; }
     }
-    public class Page : IPage, IEntity
-    {
-        [Key]
-        public int id { get; set; }
-        public int siteId { get; set; }
-        public PageEnum pageId { get; set; }
-         
-        
-    }
-    public class Site :IEntity
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-        public string domain { get; set; }
-        public string email { get; set; }
-        public string phoneNumber { get; set; }
-    }
+    
+    
     public class HomePage :Page
     {
         public int bannerId { get; set; }
-        public HomeBannerAttachment banner { get; set; }
+        public Attachment banner { get; set; }
         public string title { get; set; }
         public string titleContent { get; set; }
         public string churchAnnounceTitle { get; set; }
         public string memberAnnounceTitle { get; set; }
         public string schoolAnnounceTitle { get; set; }
-        public virtual List<HomeItem> announcements { get; set; }
-        public virtual List<HomeVideoAttachment> sundayServiceVideos { get; set; }
-        public virtual List<HomeAttachment> homephotoGallery { get; set; }
+        public virtual List<ContentItem> announcements { get; set; }
+        public virtual List<VideoAttachment> sundayServiceVideos { get; set; }
+        public virtual List<Attachment> homephotoGallery { get; set; }
     }
 }
