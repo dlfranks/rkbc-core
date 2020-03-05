@@ -27,6 +27,7 @@ namespace rkbc.core.repository
         public DbSet<ApplicationRoleClaim> applicationRoleClaims { get; set; }
         public DbSet<ApplicationUserToken> applicationUserTokens { get; set; }
         public DbSet<HomePage> homePages { get; set; }
+        public DbSet<ContentItem> contentItems { get; set; }
         public DbSet<Attachment> attachments { get; set; }
         public DbSet<VideoAttachment> videoAttachments { get; set; }
 

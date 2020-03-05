@@ -162,6 +162,114 @@ namespace rkbc.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "homePages",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    sectionId = table.Column<int>(nullable: false),
+                    pageId = table.Column<int>(nullable: false),
+                    createDt = table.Column<DateTime>(nullable: true),
+                    createUser = table.Column<string>(nullable: true),
+                    lastUpdDt = table.Column<DateTime>(nullable: true),
+                    lastUpdUser = table.Column<string>(nullable: true),
+                    bannerId = table.Column<int>(nullable: false),
+                    title = table.Column<string>(nullable: true),
+                    titleContent = table.Column<string>(nullable: true),
+                    churchAnnounceTitle = table.Column<string>(nullable: true),
+                    memberAnnounceTitle = table.Column<string>(nullable: true),
+                    schoolAnnounceTitle = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_homePages", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "attachments",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    sectionId = table.Column<int>(nullable: false),
+                    pageId = table.Column<int>(nullable: false),
+                    createDt = table.Column<DateTime>(nullable: true),
+                    createUser = table.Column<string>(nullable: true),
+                    lastUpdDt = table.Column<DateTime>(nullable: true),
+                    lastUpdUser = table.Column<string>(nullable: true),
+                    fileName = table.Column<string>(nullable: true),
+                    originalFileName = table.Column<string>(nullable: true),
+                    caption = table.Column<string>(nullable: true),
+                    isOn = table.Column<bool>(nullable: false),
+                    HomePageid = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_attachments", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_attachments_homePages_HomePageid",
+                        column: x => x.HomePageid,
+                        principalTable: "homePages",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "contentItems",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    sectionId = table.Column<int>(nullable: false),
+                    pageId = table.Column<int>(nullable: false),
+                    createDt = table.Column<DateTime>(nullable: true),
+                    createUser = table.Column<string>(nullable: true),
+                    lastUpdDt = table.Column<DateTime>(nullable: true),
+                    lastUpdUser = table.Column<string>(nullable: true),
+                    content = table.Column<string>(nullable: true),
+                    isOn = table.Column<bool>(nullable: false),
+                    HomePageid = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_contentItems", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_contentItems_homePages_HomePageid",
+                        column: x => x.HomePageid,
+                        principalTable: "homePages",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "videoAttachments",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    sectionId = table.Column<int>(nullable: false),
+                    pageId = table.Column<int>(nullable: false),
+                    createDt = table.Column<DateTime>(nullable: true),
+                    createUser = table.Column<string>(nullable: true),
+                    lastUpdDt = table.Column<DateTime>(nullable: true),
+                    lastUpdUser = table.Column<string>(nullable: true),
+                    url = table.Column<string>(nullable: true),
+                    caption = table.Column<string>(nullable: true),
+                    isOn = table.Column<bool>(nullable: false),
+                    HomePageid = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_videoAttachments", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_videoAttachments_homePages_HomePageid",
+                        column: x => x.HomePageid,
+                        principalTable: "homePages",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -200,10 +308,42 @@ namespace rkbc.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_attachments_HomePageid",
+                table: "attachments",
+                column: "HomePageid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_contentItems_HomePageid",
+                table: "contentItems",
+                column: "HomePageid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_homePages_bannerId",
+                table: "homePages",
+                column: "bannerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_videoAttachments_HomePageid",
+                table: "videoAttachments",
+                column: "HomePageid");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_homePages_attachments_bannerId",
+                table: "homePages",
+                column: "bannerId",
+                principalTable: "attachments",
+                principalColumn: "id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_attachments_homePages_HomePageid",
+                table: "attachments");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -220,10 +360,22 @@ namespace rkbc.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "contentItems");
+
+            migrationBuilder.DropTable(
+                name: "videoAttachments");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "homePages");
+
+            migrationBuilder.DropTable(
+                name: "attachments");
         }
     }
 }

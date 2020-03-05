@@ -35,7 +35,7 @@ namespace rkbc.web.controllers
         // GET: Attachment
         public ActionResult Index()
         {
-            var imageDir = ;
+            
             var lst = unitOfwork.attachments.get().Where(q => q.pageId == (int)PageEnum.Home && q.sectionId == (int)SectionEnum.Home_Gallery)
                 .Select(q => new HomeAttachmentViewModel()
                 {

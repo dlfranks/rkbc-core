@@ -5,13 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200213171624_homePage.cs" />
-    <Compile Remove="Migrations\20200213171624_homePage.Designer.cs" />
-    <Compile Remove="Migrations\20200213200511_creteHomePages.cs" />
-    <Compile Remove="Migrations\20200213200511_creteHomePages.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="ElmahCore" Version="1.2.5" />
     <PackageReference Include="ElmahCore.Sql" Version="1.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
