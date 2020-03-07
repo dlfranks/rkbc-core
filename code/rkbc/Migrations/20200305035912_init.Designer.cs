@@ -10,7 +10,7 @@ using rkbc.core.repository;
 namespace rkbc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200213150303_init")]
+    [Migration("20200305035912_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -249,6 +249,188 @@ namespace rkbc.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("rkbc.core.models.Attachment", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("HomePageid")
+                        .HasColumnType("int");
+
+                    b.Property<string>("caption")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("createDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("createUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("fileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isOn")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("lastUpdDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("lastUpdUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("originalFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("pageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("sectionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("HomePageid");
+
+                    b.ToTable("attachments");
+                });
+
+            modelBuilder.Entity("rkbc.core.models.ContentItem", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("HomePageid")
+                        .HasColumnType("int");
+
+                    b.Property<string>("content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("createDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("createUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isOn")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("lastUpdDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("lastUpdUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("pageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("sectionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("HomePageid");
+
+                    b.ToTable("contentItems");
+                });
+
+            modelBuilder.Entity("rkbc.core.models.HomePage", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("bannerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("churchAnnounceTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("createDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("createUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("lastUpdDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("lastUpdUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("memberAnnounceTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("pageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("schoolAnnounceTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("sectionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("titleContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("bannerId");
+
+                    b.ToTable("homePages");
+                });
+
+            modelBuilder.Entity("rkbc.core.models.VideoAttachment", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("HomePageid")
+                        .HasColumnType("int");
+
+                    b.Property<string>("caption")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("createDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("createUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isOn")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("lastUpdDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("lastUpdUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("pageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("sectionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("HomePageid");
+
+                    b.ToTable("videoAttachments");
+                });
+
             modelBuilder.Entity("rkbc.core.models.ApplicationRoleClaim", b =>
                 {
                     b.HasOne("rkbc.core.models.ApplicationRole", "Role")
@@ -298,6 +480,36 @@ namespace rkbc.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("rkbc.core.models.Attachment", b =>
+                {
+                    b.HasOne("rkbc.core.models.HomePage", null)
+                        .WithMany("homephotoGallery")
+                        .HasForeignKey("HomePageid");
+                });
+
+            modelBuilder.Entity("rkbc.core.models.ContentItem", b =>
+                {
+                    b.HasOne("rkbc.core.models.HomePage", null)
+                        .WithMany("announcements")
+                        .HasForeignKey("HomePageid");
+                });
+
+            modelBuilder.Entity("rkbc.core.models.HomePage", b =>
+                {
+                    b.HasOne("rkbc.core.models.Attachment", "banner")
+                        .WithMany()
+                        .HasForeignKey("bannerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("rkbc.core.models.VideoAttachment", b =>
+                {
+                    b.HasOne("rkbc.core.models.HomePage", null)
+                        .WithMany("sundayServiceVideos")
+                        .HasForeignKey("HomePageid");
                 });
 #pragma warning restore 612, 618
         }
