@@ -35,12 +35,12 @@ namespace rkbc.web.controllers
         // GET: Attachment
         public ActionResult Index()
         {
-            var imageDir = ;
-            var lst = unitOfwork.attachments.get().Where(q => q.pageId == (int)PageEnum.Home && q.sectionId == (int)SectionEnum.Home_Gallery)
+            
+            var lst = unitOfwork.homeAttachments.get().Where(q => q.homePageId == (int)PageEnum.Home && q.sectionId == (int)SectionEnum.Home_Gallery)
                 .Select(q => new HomeAttachmentViewModel()
                 {
                     id = q.id,
-                    url = System.IO.Path.Combine(env.WebRootPath, "test.txt"),
+                    url = System.IO.Path.Combine(env.WebRootPath, q.fileName),
                     originalFileName = q.originalFileName
                 }).ToList();
             return View(lst);

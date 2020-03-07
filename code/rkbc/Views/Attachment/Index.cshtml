@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewData["Title"] = "Photo Gallery Editor";
+}
+<script>
+    $(function () {
+        var AttachmentVM = function (data) {
+            var self = ko.mapping.fromJS(data);;
+        }
+        var MainVM = function (data) {
+            var addAttachment = function () {
+
+            };
+            var deleteAttachment = function () {
+
+            }
+        }
+        var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        ko.applyBindings(new MainVM(data));
+    });
+</script>
+<!-- Our Clients -->
+<div class="row">
+    <div class="span12">
+        <h3>Our Church</h3>
+    </div>
+</div>
+
+<div id="our-clients" class="slider2 flexslider">
+    <ul class="slides">
+        <li>
+            <div class="row">
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="~/img/rkbc/img1.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img2.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img3.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img4.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img5.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img6.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="row">
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img7.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img8.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img9.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img10.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img11.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="span4">
+                    <div class="square-1">
+                        <a href="#" rel="external">
+                            <img src="img/rkbc/img12.jpg" alt="">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<!-- Our Clients End -->

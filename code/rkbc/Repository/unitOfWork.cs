@@ -19,14 +19,35 @@ namespace rkbc.core.repository
         public ApplicationDbContext _context;
         IRepository<UserActivityLog> _userActivityLog = null;
         IRepository<HomePage> _homePage = null;
-        IRepository<Attachment> _attachments = null;
-        public IRepository<Attachment> attachments
+        IRepository<HomeAttachment> _homeAttachments = null;
+        IRepository<HomeVideoAttachment> _homeVideoAttachments = null;
+        IRepository<HomeContentItem> _homeContentItems = null;
+
+        public IRepository<HomeContentItem> homeContentItems
         {
             get
             {
-                if (_attachments == null)
-                    _attachments = new BasicRepository<Attachment>(_context);
-                return _attachments;
+                if (_homeContentItems == null)
+                    _homeContentItems = new BasicRepository<HomeContentItem>(_context);
+                return _homeContentItems;
+            }
+        }
+        public IRepository<HomeAttachment> homeAttachments
+        {
+            get
+            {
+                if (_homeAttachments == null)
+                    _homeAttachments = new BasicRepository<HomeAttachment>(_context);
+                return _homeAttachments;
+            }
+        }
+        public IRepository<HomeVideoAttachment> homeVideoAttachments
+        {
+            get
+            {
+                if (_homeVideoAttachments == null)
+                    _homeVideoAttachments = new BasicRepository<HomeVideoAttachment>(_context);
+                return _homeVideoAttachments;
             }
         }
         public IRepository<HomePage> homePages

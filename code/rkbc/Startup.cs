@@ -22,7 +22,8 @@ using ElmahCore.Mvc;
 using ElmahCore.Sql;
 using ElmahCore.Mvc.Notifiers;
 using ElmahCore;
-
+using AutoMapper;
+using rkbc.core.helper;
 
 namespace rkbc
 {
@@ -73,6 +74,7 @@ namespace rkbc
             .AddCookie();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<FileHelper>();
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
@@ -103,6 +105,7 @@ namespace rkbc
                 options.AccessDeniedPath = "/Administration/AccessDenied";
                 options.SlidingExpiration = true;
             });
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllersWithViews();
             services.AddRazorPages();
             EmailOptions emailOptions = new EmailOptions
@@ -116,7 +119,7 @@ namespace rkbc
             };
             services.AddElmah<XmlFileErrorLog>(options =>
             {
-                //options.FiltersConfig = "elmah.xml";
+                options.FiltersConfig = "elmah.xml";
                 options.LogPath = "~/logs";
                 options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
             });

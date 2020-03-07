@@ -47,7 +47,9 @@ namespace rkbc.core.repository
     public interface IUnitOfWork : IDisposable
     {
         IRepository<HomePage> homePages { get; }
-        IRepository<Attachment> attachments { get; }
+        IRepository<HomeContentItem> homeContentItems { get; }
+        IRepository<HomeAttachment> homeAttachments { get; }
+        IRepository<HomeVideoAttachment> homeVideoAttachments { get; }
         IRepository<UserActivityLog> userActivityLogs { get; }
         ApplicationDbContext getContext();
         void Commit();
