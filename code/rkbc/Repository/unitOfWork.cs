@@ -17,13 +17,13 @@ namespace rkbc.core.repository
             _context = ctx;
         }
         public ApplicationDbContext _context;
-        IRepository<UserActivityLog> _userActivityLog = null;
-        IRepository<HomePage> _homePage = null;
-        IRepository<HomeAttachment> _homeAttachments = null;
-        IRepository<HomeVideoAttachment> _homeVideoAttachments = null;
-        IRepository<HomeContentItem> _homeContentItems = null;
+        IRepositoryAsync<UserActivityLog> _userActivityLog = null;
+        IRepositoryAsync<HomePage> _homePage = null;
+        IRepositoryAsync<HomeAttachment> _homeAttachments = null;
+        IRepositoryAsync<HomeVideoAttachment> _homeVideoAttachments = null;
+        IRepositoryAsync<HomeContentItem> _homeContentItems = null;
 
-        public IRepository<HomeContentItem> homeContentItems
+        public IRepositoryAsync<HomeContentItem> homeContentItems
         {
             get
             {
@@ -32,7 +32,7 @@ namespace rkbc.core.repository
                 return _homeContentItems;
             }
         }
-        public IRepository<HomeAttachment> homeAttachments
+        public IRepositoryAsync<HomeAttachment> homeAttachments
         {
             get
             {
@@ -41,7 +41,7 @@ namespace rkbc.core.repository
                 return _homeAttachments;
             }
         }
-        public IRepository<HomeVideoAttachment> homeVideoAttachments
+        public IRepositoryAsync<HomeVideoAttachment> homeVideoAttachments
         {
             get
             {
@@ -50,7 +50,7 @@ namespace rkbc.core.repository
                 return _homeVideoAttachments;
             }
         }
-        public IRepository<HomePage> homePages
+        public IRepositoryAsync<HomePage> homePages
         {
             get
             {
@@ -59,7 +59,7 @@ namespace rkbc.core.repository
                 return _homePage;
             }
         }
-        public IRepository<UserActivityLog> userActivityLogs
+        public IRepositoryAsync<UserActivityLog> userActivityLogs
         {
             get
             {

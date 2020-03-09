@@ -158,15 +158,15 @@ namespace rkbc.web.Controllers
         public IActionResult Edit(int? id)
         {
             //if (id == null) return RedirectToAction("Error");
-            var model = unitOfWork.homePages.get().FirstOrDefault();
-            if (model == null) model = new HomePage();
+            var reuslt = unitOfWork.homePages.findByIdAsync(id.Value);
+            if (reuslt.Result == null) model. = new HomePage();
             var vm = setupViewModel(model, FormViewMode.Edit);
             return View(vm);
         }
         [HttpPost]
         public async Task<IActionResult> Edit()
         {
-            var modelObj = unitOfWork.homePages.get().FirstOrDefault();
+            var modelObj = unitOfWork.homePages.getAsync();
             if (modelObj == null)
             {
                 modelObj = new HomePage();

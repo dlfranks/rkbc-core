@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace rkbc.core.Repository
 {
-    public class BasicRepository<T> : IRepository<T> where T : class, IEntity
+    public class BasicRepository<T> : IRepositoryAsync<T> where T : class, IEntity
     {
         protected readonly ApplicationDbContext _ctx;
         protected readonly DbSet<T> _set;
@@ -21,7 +21,7 @@ namespace rkbc.core.Repository
 
         public async Task<IEnumerable<T>> getAsync() { return await _set.ToListAsync(); }
         
-        public async Task<T> getAsync(int id)
+        public async Task<T> findByIdAsync(int id)
         {
             return await _set.FindAsync(id);
         }
@@ -61,9 +61,9 @@ namespace rkbc.core.Repository
         public async Task removeAsync(int id)
         {
             var result = await getAsync(id);
-            if(result.First() == null)
+            if (result == null)
                 throw new InvalidOperationException("Entity Id" + id + " is not found.");
-            _set.Remove(result.First());
+            _set.Remove(result);
         }
     }
     
