@@ -56,15 +56,15 @@
             ko.applyBindings(new MainVM(data));
     });
 </script>
-@using (Html.BeginForm("Edit", "Home", FormMethod.Post, new Dictionary<string, Object>() { { "enctype", "multi/form-data" } }))
-{
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+
     <!-- Content -->
     <div class="">
         <!-- Slider -->
         <div>
             <img src="@Url.Content(Model.bannerUrl)" alt="">
         </div>
-        <input type="file" asp-for="bannerImage" accept="image/jpeg, image/png" />
+        <input type="file" name="bannerImage" accept="image/jpeg, image/png" />
     </div> <!-- Slider End -->
     <div id="content">
         <div class="container">
@@ -95,7 +95,7 @@
                                     </td>
                                     <td><button data-bind="click:$parent.deleteChurchAnnouncement">Delete</button></td>
                                 </tr>
-                               
+
                             </table>
                             <div><button data-bind="click:addChurchAnnouncement">Add</button></div>
                         </div>
@@ -112,7 +112,7 @@
                                     </td>
                                     <td><button data-bind="click:$parents.deleteMemberAnnouncement">Delete</button></td>
                                 </tr>
-                                
+
                             </table>
                             <div><button data-bind="click:addMemberAnnouncement">Add</button></div>
                         </div>
@@ -156,7 +156,7 @@
                 <div class="span8">
                     <h2 style="font-weight:500">Sunday Service Url</h2>
                     <div class="form-group">
-                        
+
                         @Html.TextBoxFor(q => q.sundayServiceVideoUrl)
                     </div>
                     <iframe style="width:100%;height:250px;" src="https://www.youtube.com/embed/-MincIqjMwg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -179,10 +179,10 @@
                 </div>
 
             </div>
-            
-            
+
+
         </div>
     </div>
     <!-- Content End -->
-    <div class=""><input type="submit" value="Update"/></div>
-}
+    <div class=""><input type="submit" value="Update" /></div>
+</form>

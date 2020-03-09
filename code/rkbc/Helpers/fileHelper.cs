@@ -103,10 +103,10 @@ namespace rkbc.core.helper
             switch (assetType)
             {
                 case "banner":
-                    path = "assets/banner/";
+                    path = "banner";
                     break;
                 case "gallery":
-                    path = "assets/gallery/";
+                    path = "gallery";
                     break;
                 
                 default:
@@ -118,9 +118,9 @@ namespace rkbc.core.helper
         public string mapAssetPath(string assetType, string assetFileName, bool thumbnail)
         {
            var path = assetTypeToPath(assetType);
-            path = env.WebRootPath + path + assetFileName;
+            
             if (thumbnail) assetFileName = Imaging.GetThumbnailFileName(assetFileName);
-            path = path + assetFileName;
+            path = env.WebRootPath + "\\assets\\" + path + "\\" + assetFileName;
             return (path);
         }
         public string generateAssetURL(string assetType, string assetFileName)

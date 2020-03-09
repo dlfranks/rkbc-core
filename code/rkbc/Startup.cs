@@ -24,6 +24,7 @@ using ElmahCore.Mvc.Notifiers;
 using ElmahCore;
 using AutoMapper;
 using rkbc.core.helper;
+using rkbc.map.models;
 
 namespace rkbc
 {
@@ -73,16 +74,7 @@ namespace rkbc
             })
             .AddCookie();
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddSingleton<FileHelper>();
-            services.AddSession(options =>
-            {
-                // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
-                options.Cookie.HttpOnly = true;
-                // Make the session cookie essential
-                options.Cookie.IsEssential = true;
-            });
+            
             
             services.AddMvc(options =>
             {
@@ -105,9 +97,30 @@ namespace rkbc
                 options.AccessDeniedPath = "/Administration/AccessDenied";
                 options.SlidingExpiration = true;
             });
-            services.AddAutoMapper(typeof(Startup));
+            //// Auto Mapper Configurations
+            //var mappingConfig = new MapperConfiguration(mc =>
+            //{
+            //    mc.AddProfile(new HomeProfile());
+            //});
+            //IMapper mapper = mappingConfig.CreateMapper();
+            services.AddAutoMapper(cfg => cfg.AddProfile<HomeProfile>(), AppDomain.CurrentDomain.GetAssemblies());
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            //Ioc
+            //services.AddSingleton(mapper);
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<FileHelper>();
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
+
+            //ElmahCore
             EmailOptions emailOptions = new EmailOptions
             {
                 MailRecipient = "deana.franks@woodplc.com",

@@ -19,7 +19,7 @@ namespace rkbc.web.viewmodels
 {
     public class HomePageViewModel
     {
-
+        
         public string bannerUrl { get; set; }
         public string bannerFileName { get; set; }
         public IFormFile bannerImage { get; set; }
@@ -53,12 +53,13 @@ namespace rkbc.web.Controllers
         {
             return View();
         }
-        protected void acceptPost(HomePage modelObj)
+        protected async Task acceptPost(HomePage modelObj)
         {
             HomePageViewModel model = new HomePageViewModel();
-            TryUpdateModelAsync(model);
-            if (modelObj == null) modelObj = new HomePage();
-            mapper.Map<HomePage, HomePageViewModel>(modelObj, model);
+            await TryUpdateModelAsync(model);
+            
+            modelObj = mapper.Map<HomePage>(model);
+            var m = mapper.Map<HomePage>(model);
             var announcements = new List<HomeContentItem>();
             //Video
             modelObj.sundayServiceVideoUrl = model.sundayServiceVideoUrl;
@@ -78,15 +79,14 @@ namespace rkbc.web.Controllers
                 catch (Exception e)
                 {
                     var msg = "Unable to read image format, please upload either .jpeg or .png images.";
-                    ModelState.AddModelError("bannerImageUrl", msg);
+                    ModelState.AddModelError("banner", msg);
                     //ElmahCore.XmlFileErrorLog.;
                 }
                 try
                 {
                     Imaging.saveJpegImage(bitmap, assetFileAndPathName, 75L);
-                    Imaging.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
-                    modelObj.bannerFileName = assetFileName;
-                    modelObj.originalFileName = model.bannerImage.FileName;
+                    //Thumbnail width 150;
+                    
                 }
                 catch (Exception e)
                 {
@@ -94,6 +94,9 @@ namespace rkbc.web.Controllers
                     ModelState.AddModelError("bannerImageUrl", msg);
                     //ElmahCore
                 }
+                Imaging.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
+                modelObj.bannerFileName = assetFileName;
+                modelObj.originalFileName = model.bannerImage.FileName;
             }
             
 
@@ -102,6 +105,7 @@ namespace rkbc.web.Controllers
                 announcements.Add(new HomeContentItem()
                 {
                     homePageId = (int)PageEnum.Home,
+                    homePage = modelObj,
                     sectionId = (int)SectionEnum.Church_Announce,
                     content = item.content,
                     isOn = true
@@ -112,6 +116,7 @@ namespace rkbc.web.Controllers
                 announcements.Add(new HomeContentItem()
                 {
                     homePageId = (int)PageEnum.Home,
+                    homePage = modelObj,
                     sectionId = (int)SectionEnum.Member_Announce,
                     content = item.content,
                     isOn = true
@@ -122,12 +127,13 @@ namespace rkbc.web.Controllers
                 announcements.Add(new HomeContentItem()
                 {
                     homePageId = (int)PageEnum.Home,
+                    homePage = modelObj,
                     sectionId = (int)SectionEnum.School_Announce,
                     content = item.content,
                     isOn = true
                 });
             }
-
+            unitOfWork.updateCollection<HomeContentItem>(modelObj.announcements, announcements);
         }
         protected HomePageViewModel setupViewModel(HomePage model, FormViewMode mode)
         {
@@ -158,14 +164,30 @@ namespace rkbc.web.Controllers
             return View(vm);
         }
         [HttpPost]
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit()
         {
             var modelObj = unitOfWork.homePages.get().FirstOrDefault();
             if (modelObj == null)
+            {
                 modelObj = new HomePage();
-            acceptPost(modelObj);
+                unitOfWork.homePages.add(modelObj);
+            }
+            else
+            {
+                unitOfWork.homePages.update(modelObj);
+            }
+                
+            await acceptPost(modelObj);
             if (ModelState.ErrorCount == 0)
-                return RedirectToAction("Index");
+            {
+                if(unitOfWork.tryCommit())
+                {
+                   return RedirectToAction("Index");
+                }
+                ModelState.AddModelError("", "Unable to update data.");
+                //Elmah error
+            }
+                
             var vm = setupViewModel(modelObj, FormViewMode.Edit);
             return View(vm);
         }
