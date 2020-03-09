@@ -72,13 +72,13 @@ namespace rkbc.core.repository
         {
             throw new NotImplementedException();
         }
-        public void Commit()
+        public async Task commit()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public bool tryCommit()
+        public async Task<bool> tryCommit()
         {
-            try { Commit(); }
+            try { await commit(); }
             catch(Exception e)
             {
                 //Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
@@ -87,9 +87,9 @@ namespace rkbc.core.repository
             return (true);
         }
 
-        public bool tryConcurrencyCommit()
+        public async Task<bool> tryConcurrencyCommit()
         {
-            try { Commit(); }
+            try { await commit(); }
             catch (DbUpdateConcurrencyException e)
             {
                 return (false);
@@ -97,9 +97,9 @@ namespace rkbc.core.repository
             return (true);
         }
 
-        public bool tryUniqueConstraintCommit()
+        public async Task<bool> tryUniqueConstraintCommit()
         {
-            try { Commit(); }
+            try { await commit(); }
             catch (DbUpdateException e)
             {
                 if (e.InnerException is DbUpdateException)
