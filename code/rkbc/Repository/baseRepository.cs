@@ -19,11 +19,11 @@ namespace rkbc.core.Repository
             _set = ctx.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> getAsync() { return await _set.ToListAsync(); }
+        public IQueryable<T> get() { return _set; }
         
-        public async Task<T> findByIdAsync(int id)
+        public IQueryable<T> get(int id)
         {
-            return await _set.FindAsync(id);
+            return _set.Where(q => q.id == id).AsQueryable();
         }
         
         public void add(T entity)
@@ -60,10 +60,8 @@ namespace rkbc.core.Repository
         public virtual void remove(T entity) { _set.Remove(entity); }
         public async Task removeAsync(int id)
         {
-            var result = await getAsync(id);
-            if (result == null)
-                throw new InvalidOperationException("Entity Id" + id + " is not found.");
-            _set.Remove(result);
+            
+            _set.Remove(await get(id).FirstOrDefaultAsync());
         }
     }
     

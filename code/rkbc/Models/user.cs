@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using rkbc.core.repository;
@@ -89,6 +90,7 @@ namespace rkbc.core.models
         {
             var userIdentity = new ClaimsIdentity(await manager.GetClaimsAsync(this), CookieAuthenticationDefaults.AuthenticationScheme);
             userIdentity.AddClaim(new Claim("Department", this.department.ToString()));
+            
             return userIdentity;
         }
 

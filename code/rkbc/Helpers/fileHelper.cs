@@ -209,5 +209,13 @@ namespace rkbc.core.helper
             return (contents);
         }
         
+        public string youtubeEmbedUrl(string url)
+        {
+            if(!String.IsNullOrWhiteSpace(url))
+            {
+                url = url.Split("v=")[1];
+            }
+            return url; 
+        }
     }
 }

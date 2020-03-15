@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace rkbc.map.models
 {
-    public class HomeProfile: Profile
+    public class AutoMapping: Profile
     {
-        public HomeProfile()
+        public AutoMapping()
         {
-            CreateMap<HomePage, HomePageViewModel>().ReverseMap();
+            CreateMap<HomePageViewModel, HomePage>();
         }
     }
 }

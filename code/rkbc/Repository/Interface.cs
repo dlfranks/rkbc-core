@@ -36,8 +36,8 @@ namespace rkbc.core.repository
     }
     public interface IRepositoryAsync<T> where T: class
     {
-        Task<IEnumerable<T>> getAsync();
-        Task<T> findByIdAsync(int id);
+        IQueryable<T> get();
+        IQueryable<T> get(int id);
         void add(T entity);
         T update(T entity);
         Task removeAsync(int id);

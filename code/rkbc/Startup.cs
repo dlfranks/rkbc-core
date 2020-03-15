@@ -25,6 +25,7 @@ using ElmahCore;
 using AutoMapper;
 using rkbc.core.helper;
 using rkbc.map.models;
+using rkbc.core.service;
 
 namespace rkbc
 {
@@ -63,54 +64,35 @@ namespace rkbc
                 .AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                //.AddClaimsPrincipalFactory<AppUserClaimsPrincipalFactory>()
+                //.AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>()
                 .AddDefaultTokenProviders();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie();
-
-            
-            
-            services.AddMvc(options =>
-            {
-                //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                //options.Filters.Add(new AuthorizeFilter(policy));
-            }).AddRazorRuntimeCompilation()
-              .AddXmlSerializerFormatters()
-              .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminRequired",
-                    policy => policy.RequireRole("Admin"));
+                //options.AddPolicy("AdminRequired",
+                //    policy => policy.RequireRole("Admin"));
             });
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Administration/AccessDenied";
                 options.SlidingExpiration = true;
             });
-            //// Auto Mapper Configurations
-            //var mappingConfig = new MapperConfiguration(mc =>
-            //{
-            //    mc.AddProfile(new HomeProfile());
-            //});
-            //IMapper mapper = mappingConfig.CreateMapper();
-            services.AddAutoMapper(cfg => cfg.AddProfile<HomeProfile>(), AppDomain.CurrentDomain.GetAssemblies());
+            services.AddHttpContextAccessor();
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllersWithViews();
-            services.AddRazorPages();
+            //services.AddRazorPages();
 
             //Ioc
-            //services.AddSingleton(mapper);
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<UserService>();
             services.AddSingleton<FileHelper>();
+            
+
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
@@ -119,7 +101,13 @@ namespace rkbc
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
-
+            services.AddMvc(options =>
+            {
+                //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                //options.Filters.Add(new AuthorizeFilter(policy));
+            }).AddRazorRuntimeCompilation()
+              .AddXmlSerializerFormatters()
+              .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             //ElmahCore
             EmailOptions emailOptions = new EmailOptions
             {
@@ -152,6 +140,7 @@ namespace rkbc
             {
                 app.UseDeveloperExceptionPage();
                 //app.UseDatabaseErrorPage();
+                
 
             }
             else
@@ -170,6 +159,8 @@ namespace rkbc
             app.UseSession();
             app.UseElmah();
             app.UseRouting();
+           // After UseRouting, so that route information is available for authentication decisions.
+            //Before UseEndpoints, so that users are authenticated before accessing the endpoints.
             app.UseAuthentication();
             app.UseAuthorization();
             

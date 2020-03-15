@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using rkbc.core.models;
 using rkbc.core.repository;
 using rkbc.web.viewmodels;
@@ -14,12 +15,23 @@ using RKBC.Models;
 using ElmahCore;
 using rkbc.core.services;
 using rkbc.core.helper;
+using Microsoft.AspNetCore.Identity;
+using rkbc.models.extension;
+using Microsoft.AspNetCore.Authorization;
+using rkbc.web.controllers;
+using rkbc.core.service;
 
 namespace rkbc.web.viewmodels
 {
+    public class HomeContentItemViewModel{
+        public int id { get; set; }
+        public int homePageId { get; set; }
+        public int sectionId { get; set; }
+        public string content { get; set; }
+    }
     public class HomePageViewModel
     {
-        
+        public int id { get; set; }
         public string bannerUrl { get; set; }
         public string bannerFileName { get; set; }
         public IFormFile bannerImage { get; set; }
@@ -29,37 +41,46 @@ namespace rkbc.web.viewmodels
         public string memberAnnounceTitle { get; set; }
         public string schoolAnnounceTitle { get; set; }
         public string sundayServiceVideoUrl { get; set;}
-        public virtual List<HomeContentItem> churchAnnouncements { get; set; }
-        public virtual List<HomeContentItem> memberAnnouncements { get; set; }
-        public virtual List<HomeContentItem> schoolAnnouncements { get; set; }
+        public virtual List<HomeContentItemViewModel> churchAnnouncements { get; set; }
+        public virtual List<HomeContentItemViewModel> memberAnnouncements { get; set; }
+        public virtual List<HomeContentItemViewModel> schoolAnnouncements { get; set; }
         
     }
 }
 namespace rkbc.web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : AppBaseController
     {
-        public IUnitOfWork unitOfWork;
+        public UserManager<ApplicationUser> userManager;
+        public SignInManager<ApplicationUser> signinManager;
         public IMapper mapper;
         public FileHelper fileHelper;
-        public HomeController(IUnitOfWork unitOfWork, IMapper _mapper, FileHelper _fileHelper)
+        public HomeController(IUnitOfWork _unitOfWork, IMapper _mapper, FileHelper _fileHelper,
+                                UserManager<ApplicationUser> _userManager, UserService _userService,
+                                SignInManager<ApplicationUser> _signinManager) : base(_unitOfWork, _userService)
         {
-            this.unitOfWork = unitOfWork;
             this.mapper = _mapper;
             this.fileHelper = _fileHelper;
+            this.userManager = _userManager;
+            this.signinManager = _signinManager;
 
         }
         public IActionResult Index()
         {
             return View();
         }
-        protected async Task acceptPost(HomePage modelObj)
+        protected void acceptPost(HomePage modelObj, HomePageViewModel model)
         {
-            HomePageViewModel model = new HomePageViewModel();
-            await TryUpdateModelAsync(model);
+            modelObj.title = model.title;
+            modelObj.titleContent = model.titleContent;
+            modelObj.churchAnnounceTitle = model.churchAnnounceTitle;
+            modelObj.memberAnnounceTitle = model.memberAnnounceTitle;
+            modelObj.schoolAnnounceTitle = model.schoolAnnounceTitle;
+            if (!String.IsNullOrWhiteSpace(modelObj.bannerFileName))
+                ModelState.AddModelError("bannerFileName", "Please Choose a banner image.");
+            modelObj.bannerUrl = fileHelper.generateAssetURL("banner", modelObj.bannerFileName);
             
-            modelObj = mapper.Map<HomePage>(model);
-            var m = mapper.Map<HomePage>(model);
+
             var announcements = new List<HomeContentItem>();
             //Video
             modelObj.sundayServiceVideoUrl = model.sundayServiceVideoUrl;
@@ -138,7 +159,7 @@ namespace rkbc.web.Controllers
         protected HomePageViewModel setupViewModel(HomePage model, FormViewMode mode)
         {
             HomePageViewModel vm = new HomePageViewModel() {
-
+                id = model.id,
                 bannerFileName = model.bannerFileName,
                 title = model.title,
                 titleContent = model.titleContent,
@@ -147,40 +168,90 @@ namespace rkbc.web.Controllers
                 memberAnnounceTitle = model.memberAnnounceTitle,
                 schoolAnnounceTitle = model.schoolAnnounceTitle,
                 sundayServiceVideoUrl = model.sundayServiceVideoUrl,
-                churchAnnouncements = model.announcements.Where(q => q.sectionId == (int)SectionEnum.Church_Announce).ToList(),
-                memberAnnouncements = model.announcements.Where(q => q.sectionId == (int)SectionEnum.Member_Announce).ToList(),
-                schoolAnnouncements = model.announcements.Where(q => q.sectionId == (int)SectionEnum.School_Announce).ToList(),
+                
                 
             };
+            
+            vm.churchAnnouncements = model.announcements.Where(q => q.sectionId == (int)SectionEnum.Church_Announce)
+                .Select(q => new HomeContentItemViewModel { 
+                    id = q.id,
+                    homePageId = q.homePageId,
+                    sectionId = q.sectionId,
+                    content = q.content
+                }).ToList();
+            vm.memberAnnouncements = model.announcements.Where(q => q.sectionId == (int)SectionEnum.Member_Announce)
+                .Select(q => new HomeContentItemViewModel
+                {
+                    id = q.id,
+                    homePageId = q.homePageId,
+                    sectionId = q.sectionId,
+                    content = q.content
+                }).ToList();
+            vm.schoolAnnouncements = model.announcements.Where(q => q.sectionId == (int)SectionEnum.School_Announce)
+                .Select(q => new HomeContentItemViewModel
+                {
+                    id = q.id,
+                    homePageId = q.homePageId,
+                    sectionId = q.sectionId,
+                    content = q.content
+                }).ToList();
             ViewBag.formViewMode = mode;
             return vm;
         }
-        public IActionResult Edit(int? id)
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> Edit()
         {
+            int id = 3;
             //if (id == null) return RedirectToAction("Error");
-            var reuslt = unitOfWork.homePages.findByIdAsync(id.Value);
-            if (reuslt.Result == null) model. = new HomePage();
-            var vm = setupViewModel(model, FormViewMode.Edit);
+            HomePage modelObj = null;
+            
+                modelObj = await unitOfWork.homePages.get(id).Include("announcements").FirstOrDefaultAsync();
+            
+            if (modelObj == null)
+            {
+                throw new NullReferenceException("HomePage must have data.");
+                
+            }
+                
+            var vm = setupViewModel(modelObj, FormViewMode.Edit);
+            
             return View(vm);
         }
         [HttpPost]
-        public async Task<IActionResult> Edit()
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> Edit(int id)
         {
-            var modelObj = unitOfWork.homePages.getAsync();
+            HomePageViewModel model = new HomePageViewModel();
+            await TryUpdateModelAsync(model);
+            var userId = userManager.GetUserId(HttpContext.User);//userService
+            var currentUser = userService.CurrentUserSettings;
+
+            HomePage modelObj = await unitOfWork.homePages.get(model.id).Include("announcements").FirstOrDefaultAsync();
+            var d = HttpContext.User.Identity.getDepartment();
             if (modelObj == null)
             {
                 modelObj = new HomePage();
+                modelObj.createDt = DateTime.UtcNow;
+                modelObj.createUser = userId;
+                modelObj.lastUpdDt = DateTime.UtcNow;
+                modelObj.lastUpdUser = userId;
                 unitOfWork.homePages.add(modelObj);
             }
             else
             {
+                if(modelObj.createDt == null ) modelObj.createDt = DateTime.UtcNow;
+                if (modelObj.createUser == null) modelObj.createUser = userId;
+                modelObj.createUser = userId;
+                modelObj.lastUpdDt = DateTime.UtcNow;
+                modelObj.lastUpdUser = userId;
                 unitOfWork.homePages.update(modelObj);
             }
-                
-            await acceptPost(modelObj);
+
+            acceptPost(modelObj, model);
             if (ModelState.ErrorCount == 0)
             {
-                if(unitOfWork.tryCommit())
+                var success = await unitOfWork.tryCommit();
+                if (success)
                 {
                    return RedirectToAction("Index");
                 }

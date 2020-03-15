@@ -22,15 +22,15 @@
             
             //sundayServiceVideos,homephotoGallery
             self.churchAnnouncements = ko.observableArray([]);
-            for (var i = 0; i < data.churchAnnouncements; i++) {
+            for (var i = 0; i < data.churchAnnouncements.length; i++) {
                 self.churchAnnouncements.push(new homeItemVM(data.churchAnnouncements[i]));
             }
             self.memberAnnouncements = ko.observableArray([]);
-            for (var i = 0; i < data.memberAnnouncements; i++) {
+            for (var i = 0; i < data.memberAnnouncements.length; i++) {
                 self.memberAnnouncements.push(new homeItemVM(data.memberAnnouncements[i]));
             }
             self.schoolAnnouncements = ko.observableArray([]);
-            for (var i = 0; i < data.schoolAnnouncements; i++) {
+            for (var i = 0; i < data.schoolAnnouncements.length; i++) {
                 self.schoolAnnouncements.push(new homeItemVM(data.schoolAnnouncements[i]));
             }
             self.addChurchAnnouncement = function () {
@@ -56,15 +56,20 @@
             ko.applyBindings(new MainVM(data));
     });
 </script>
-<form asp-action="Edit" method="post" enctype="multipart/form-data">
-
+<form asp-action="Edit" asp-route-id="id" method="post" enctype="multipart/form-data">
+    <input asp-for="id" type="hidden" />
     <!-- Content -->
     <div class="">
         <!-- Slider -->
         <div>
             <img src="@Url.Content(Model.bannerUrl)" alt="">
         </div>
-        <input type="file" name="bannerImage" accept="image/jpeg, image/png" />
+        <div class="form-group">
+            <label asp-for="bannerImage"></label>
+            <input type="file" asp-for="bannerImage" accept="image/jpeg, image/png" class="form-control" />
+            <span asp-validation-for="bannerImage" class="text-danger"></span>
+        </div>
+        
     </div> <!-- Slider End -->
     <div id="content">
         <div class="container">
@@ -110,7 +115,7 @@
                                         <input type="hidden" data-bind="value:sectionId, attr:{name:'memberAnnouncements[' + $index() + '].sectionId'}" />
                                         <input type="text" data-bind="value:content, attr:{name:'memberAnnouncements[' + $index() + '].content'}" />
                                     </td>
-                                    <td><button data-bind="click:$parents.deleteMemberAnnouncement">Delete</button></td>
+                                    <td><button data-bind="click:$parent.deleteMemberAnnouncement">Delete</button></td>
                                 </tr>
 
                             </table>
@@ -159,7 +164,7 @@
 
                         @Html.TextBoxFor(q => q.sundayServiceVideoUrl)
                     </div>
-                    <iframe style="width:100%;height:250px;" src="https://www.youtube.com/embed/-MincIqjMwg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe style="width:100%;height:250px;" src="@Model.sundayServiceVideoUrl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 <div class="span4">
                     <div class="ic-1"></div>
