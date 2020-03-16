@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using rkbc.core.models;
+using rkbc.core.repository;
+using rkbc.core.service;
 using rkbc.web.viewmodels;
 
 namespace rkbc.web.viewmodels
@@ -77,7 +79,7 @@ namespace rkbc.web.viewmodels
 namespace rkbc.web.controllers
 {
     
-    public class Administration : Controller
+    public class Administration : AppBaseController
     {
         private RoleManager<ApplicationRole> roleManager;
         private UserManager<ApplicationUser> userManager;
@@ -87,15 +89,17 @@ namespace rkbc.web.controllers
         public Administration(RoleManager<ApplicationRole> roleMag,
                                         UserManager<ApplicationUser> userMag,
                                         SignInManager<ApplicationUser> signinMag,
-                                        ILogger<Administration> logger
-                                        )
+                                        ILogger<Administration> logger,
+                                        IUnitOfWork _unitOfWork,
+                                        UserService _userService
+                                        ) :base(_unitOfWork, _userService)
         {
             roleManager = roleMag;
             userManager = userMag;
             signinManager = signinMag;
             _logger = logger;
         }
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<IActionResult> Logout()
         {
             await signinManager.SignOutAsync();
@@ -233,7 +237,7 @@ namespace rkbc.web.controllers
             return View("Edit", vm);
         }
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> Details(string id, FormViewMode mode)
+        public async Task<IActionResult> Details(string id, FormViewMode mode = FormViewMode.View)
         {
             var query = addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id));
             var user = await query.FirstAsync();

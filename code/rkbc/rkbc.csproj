@@ -9,6 +9,8 @@
     <Compile Remove="Migrations\20200213171624_homePage.Designer.cs" />
     <Compile Remove="Migrations\20200213200511_creteHomePages.cs" />
     <Compile Remove="Migrations\20200213200511_creteHomePages.Designer.cs" />
+    <Compile Remove="Migrations\20200315171655_updateHomepage3.cs" />
+    <Compile Remove="Migrations\20200315171655_updateHomepage3.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

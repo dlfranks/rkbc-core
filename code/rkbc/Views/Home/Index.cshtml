@@ -1,4 +1,5 @@
-﻿@{
+﻿@model rkbc.web.viewmodels.HomePageViewModel
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home Page";
 }
@@ -14,9 +15,9 @@
 <div id="content">
     <div class="container">
         <div class="f-center">
-            <h2>Vision 2020</h2>
+            <h2>@Model.title</h2>
             <div class="head-info">
-                2천명의 성도 - 2백명의 목자 - 20명의 선교사 파송
+                @Model.titleContent
             </div>
         </div>
         <div class="f-hr"></div>
@@ -29,32 +30,35 @@
                         <!-- Service Icon -->
                         <div class="ic-1"><i class="icon-lightbulb"></i></div>
                         <!-- Service Title -->
-                        <div class="title-1"><h4>신년 금식성회</h4></div>
+                        <div class="title-1"><h4>@Model.churchAnnounceTitle</h4></div>
                         <!-- Service Content -->
-                        <ul class="text-1">
-
-                            <li>여호수아 14:6-12</li>
-                            <li>이 산지를 내게 주소서</li>
-                            <li>2020년 1월2일(목)-4릴(토)</li>
-                            <li>새벽 6시, 오전 11시, 저녁8시</li>
-                            
+                        <ul class="text-1" style="padding-left:30px">
+                            @foreach (var item in Model.churchAnnouncements)
+                            {
+                                <li>@item.content</li>
+                            }
                         </ul>
                     </div>
                     <!-- Service Container End -->
                     <div class="span4">
                         <div class="ic-1"><i class="icon-comment"></i></div>
                         <div class="title-1"><h4>송구영신 예배</h4></div>
-                        <div class="text-1">
-                            송구영신 예배가 12월 31일 밤에 있습니다.
-                            밤 9시부터 떡국 준비되어 있습니다.
-                        </div>
+                        <ul class="text-1" style="padding-left:30px">
+                            @foreach (var item in Model.memberAnnouncements)
+                            {
+                                <li>@item.content</li>
+                            }
+                        </ul>
                     </div>
                     <div class="span4">
                         <div class="ic-1"><i class="icon-eye-open"></i></div>
                         <div class="title-1"><h4>한글 학교</h4></div>
-                        <div class="text-1">
-                            한글 학교가 2020년 1월 25일 10시에 개강 합니다
-                        </div>
+                        <ul class="text-1" style="padding-left:30px">
+                            @foreach (var item in Model.schoolAnnouncements)
+                            {
+                                <li>@item.content</li>
+                            }
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -79,7 +83,7 @@
             </div>
             <!-- Typography Row End-->
             <div class="span8">
-                <iframe style="width:100%;height:250px;" src="https://www.youtube.com/embed/-MincIqjMwg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe style="width:100%;height:250px;" src="@Url.Content(Model.sundayServiceVideoUrl)" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="span4">
                 <div class="ic-1"></div>

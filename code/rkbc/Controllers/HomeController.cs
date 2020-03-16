@@ -20,6 +20,7 @@ using rkbc.models.extension;
 using Microsoft.AspNetCore.Authorization;
 using rkbc.web.controllers;
 using rkbc.core.service;
+using System.ComponentModel.DataAnnotations;
 
 namespace rkbc.web.viewmodels
 {
@@ -31,15 +32,28 @@ namespace rkbc.web.viewmodels
     }
     public class HomePageViewModel
     {
+        public HomePageViewModel()
+        {
+            churchAnnouncements = new List<HomeContentItemViewModel>();
+            memberAnnouncements = new List<HomeContentItemViewModel>();
+            schoolAnnouncements = new List<HomeContentItemViewModel>();
+        }
         public int id { get; set; }
         public string bannerUrl { get; set; }
         public string bannerFileName { get; set; }
+        [Display(Name = "Banner Image")]
         public IFormFile bannerImage { get; set; }
+        [Display(Name = "Title")]
         public string title { get; set; }
+        [Display(Name = "Title Content")]
         public string titleContent { get; set; }
+        [Display(Name = "Church Title")]
         public string churchAnnounceTitle { get; set; }
+        [Display(Name = "Member Title")]
         public string memberAnnounceTitle { get; set; }
+        [Display(Name = "School Title")]
         public string schoolAnnounceTitle { get; set; }
+        [Display(Name = "Youtube Link for the Sermon of the Week")]
         public string sundayServiceVideoUrl { get; set;}
         public virtual List<HomeContentItemViewModel> churchAnnouncements { get; set; }
         public virtual List<HomeContentItemViewModel> memberAnnouncements { get; set; }
@@ -65,9 +79,15 @@ namespace rkbc.web.Controllers
             this.signinManager = _signinManager;
 
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            int id = 9;
+            HomePage modelObj = new HomePage();
+            modelObj = await unitOfWork.homePages.get(id).Include("announcements").FirstOrDefaultAsync();
+            
+            var vm = setupViewModel(modelObj, FormViewMode.View);
+
+            return View(vm);
         }
         protected void acceptPost(HomePage modelObj, HomePageViewModel model)
         {
@@ -198,28 +218,29 @@ namespace rkbc.web.Controllers
             ViewBag.formViewMode = mode;
             return vm;
         }
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> Edit()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int? id)
         {
-            int id = 3;
-            //if (id == null) return RedirectToAction("Error");
+            
             HomePage modelObj = null;
+            //if (id == null) return RedirectToAction("Error");
+            if (id == null) modelObj = new HomePage();
+
+            //modelObj = await unitOfWork.homePages.get(id).Include("announcements").FirstOrDefaultAsync();
             
-                modelObj = await unitOfWork.homePages.get(id).Include("announcements").FirstOrDefaultAsync();
-            
-            if (modelObj == null)
-            {
-                throw new NullReferenceException("HomePage must have data.");
+            //if (modelObj == null)
+            //{
+            //    throw new NullReferenceException("HomePage must have data.");
                 
-            }
+            //}
                 
             var vm = setupViewModel(modelObj, FormViewMode.Edit);
             
             return View(vm);
         }
         [HttpPost]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> Edit(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit()
         {
             HomePageViewModel model = new HomePageViewModel();
             await TryUpdateModelAsync(model);
@@ -250,7 +271,7 @@ namespace rkbc.web.Controllers
             acceptPost(modelObj, model);
             if (ModelState.ErrorCount == 0)
             {
-                var success = await unitOfWork.tryCommit();
+                var success = await unitOfWork.tryUniqueConstraintCommit();
                 if (success)
                 {
                    return RedirectToAction("Index");

@@ -3,6 +3,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home Page";
 }
+<style>
+    table td{
+        background-color:white;
+        border:1px solid gray !important;
+        
+    }
+</style>
 <script>
     $(function () {
         var homeItemVM = function (dataJs) {
@@ -74,9 +81,11 @@
     <div id="content">
         <div class="container">
             <div class="f-center">
-                <h2>@Html.TextBoxFor(q => q.title)</h2>
+                <label asp-for="title"></label>
+                <h2><input asp-for="title" placeholder="Vision 2020" type="text" style="width:30em;" /></h2>
                 <div class="head-info">
-                    @Html.TextBoxFor(q => q.titleContent)
+                    <label asp-for="titleContent"></label>
+                    <input asp-for="titleContent" placeholder="2천명의 성도 - 2백명의 목자 - 20명의 선교사 파송" type="text" style="width:30em;" />
                 </div>
             </div>
             <div class="f-hr"></div>
@@ -89,7 +98,10 @@
                             <!-- Service Icon -->
                             <div class="ic-1"><i class="icon-lightbulb"></i></div>
                             <!-- Service Title -->
-                            <div class="title-1"><h4>@Html.TextBoxFor(q => q.churchAnnounceTitle)</h4></div>
+                            <div class="title-1">
+                                <label asp-for="churchAnnounceTitle"></label>
+                                <h4><input asp-for="churchAnnounceTitle" placeholder="신년 금식성회" type="text" style="width:20em;" /></h4>
+                            </div>
                             <!-- Service Content -->
                             <table class="text-1" data-bind="foreach:churchAnnouncements">
                                 <tr>
@@ -102,12 +114,15 @@
                                 </tr>
 
                             </table>
-                            <div><button data-bind="click:addChurchAnnouncement">Add</button></div>
+                            <div style="margin-top:20px;"><button data-bind="click:addChurchAnnouncement">Add</button></div>
                         </div>
                         <!-- Service Container End -->
                         <div class="span4" id="Member_Announce">
                             <div class="ic-1"><i class="icon-comment"></i></div>
-                            <div class="title-1"><h4>@Html.TextBoxFor(q => q.memberAnnounceTitle)</h4></div>
+                            <div class="title-1">
+                                <label asp-for="memberAnnounceTitle"></label>
+                                <h4><input asp-for="memberAnnounceTitle" placeholder="송구영신 예배" type="text" style="width:20em;" /></h4>
+                            </div>
                             <table class="text-1" data-bind="foreach:memberAnnouncements">
                                 <tr>
                                     <td>
@@ -119,11 +134,14 @@
                                 </tr>
 
                             </table>
-                            <div><button data-bind="click:addMemberAnnouncement">Add</button></div>
+                            <div style="margin-top:20px;"><button data-bind="click:addMemberAnnouncement">Add</button></div>
                         </div>
                         <div class="span4" id="School_Announce">
                             <div class="ic-1"><i class="icon-eye-open"></i></div>
-                            <div class="title-1"><h4>@Html.TextBoxFor(q => q.schoolAnnounceTitle)</h4></div>
+                            <div class="title-1">
+                                <label asp-for="schoolAnnounceTitle"></label>
+                                <h4><input asp-for="schoolAnnounceTitle" placeholder="한글 학교" type="text" style="width:20em;" /></h4>
+                            </div>
                             <table class="text-1" data-bind="foreach:schoolAnnouncements">
                                 <tr>
                                     <td>
@@ -134,7 +152,7 @@
                                     <td><button data-bind="click:$parent.deleteSchoolAnnouncement">Delete</button></td>
                                 </tr>
                             </table>
-                            <div><button data-bind="click:addSchoolAnnouncement">Add</button></div>
+                            <div style="margin-top:20px;"><button data-bind="click:addSchoolAnnouncement">Add</button></div>
                         </div>
                     </div>
                 </div>
@@ -161,8 +179,9 @@
                 <div class="span8">
                     <h2 style="font-weight:500">Sunday Service Url</h2>
                     <div class="form-group">
-
-                        @Html.TextBoxFor(q => q.sundayServiceVideoUrl)
+                        <label asp-for="sundayServiceVideoUrl"></label>
+                        <input asp-for="sundayServiceVideoUrl" placeholder="https://www.youtube.com/embed/-MincIqjMwg" type="url" style="width:30em;"/>
+                       
                     </div>
                     <iframe style="width:100%;height:250px;" src="@Model.sundayServiceVideoUrl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
@@ -189,5 +208,5 @@
         </div>
     </div>
     <!-- Content End -->
-    <div class=""><input type="submit" value="Update" /></div>
+    <div class=""><input class="btn btn-gray pad2" type="submit" value="Update" /></div>
 </form>

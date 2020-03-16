@@ -32,6 +32,7 @@
 
     <!-- JavaScripts -->
     <script type="text/javascript" src="~/js/jquery-1.8.3.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="~/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="~/js/functions.js"></script>
     <script type="text/javascript" defer src="~/js/jquery.flexslider.js"></script>
@@ -67,38 +68,52 @@
                                 <li class="active">
                                     <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Edit">Edit</a></li>
-                                        <li><a class="nav-link text-dark" asp-area="" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="comming.html" title="">목회자 칼럼</a></li>
-                                <li><a href="comming.html" title="">예배 안내</a></li>
-                                <li><a href="comming.html" title="">한국학교</a></li>
-                                <li><a href="comming.html" title="">Contact</a></li>
                                 <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Administration" asp-action="Index">Adminstration</a>
+                                    <a href="comming.html" title="">목회자 칼럼</a>
+                                    <ul>
+                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
+                                    </ul>
                                 </li>
                                 <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
+                                    <a href="comming.html" title="">예배 안내</a>
+                                    <ul>
+                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
+                                    </ul>
                                 </li>
-                                <partial name="_LoginPartial" />
+                                <li>
+                                    <a href="comming.html" title="">한국학교</a>
+                                    <ul>
+                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="comming.html" title="">Contact</a>
+                                    <ul>
+                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Administration" asp-action="Index">Gallery</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Roles" asp-action="Index">Roles</a></li>
+                                        <partial name="_LoginPartial" />
+                                    </ul>
+                                </li>
+                                
+                                
                             }
                             else
                             {
-                                <li class="active"><a href="index.htm" title="">Home</a></li>
-                                <li><a href="comming.html" title="">목회자 칼럼</a></li>
-                                <li><a href="comming.html" title="">예배 안내</a></li>
-                                <li><a href="comming.html" title="">한국학교</a></li>
-                                <li><a href="comming.html" title="">Contact</a></li>
-                                <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Administration" asp-action="Index">Adminstration</a>
-                                </li>
-                                <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
-                                </li>
+                                <li class="active"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                <li><a  asp-controller="Pastor" asp-action="Index">목회자 칼럼</a></li>
+                                <li><a  asp-controller="Service" asp-action="Index">예배 안내</a></li>
+                                <li><a  asp-controller="School" asp-action="Index">한국학교</a></li>
+                                <li><a  asp-controller="Contact" asp-action="Index">Contact</a></li>
                                 <partial name="_LoginPartial" />
-                                
-                            }
+                                }
 
                         </ul>
 

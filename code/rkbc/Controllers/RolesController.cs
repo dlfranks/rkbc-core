@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using rkbc.core.models;
 using rkbc.core.repository;
+using rkbc.core.service;
 using rkbc.web.viewmodels;
 
 namespace rkbc.web.viewmodels
@@ -22,16 +23,17 @@ namespace rkbc.web.viewmodels
 namespace rkbc.web.controllers
 {
     
-    public class RolesController : Controller
+    public class RolesController : AppBaseController
     {
         private readonly RoleManager<ApplicationRole> roleManager;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly ApplicationDbContext context;
-        public RolesController(RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userMag)
+        
+        public RolesController(RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userMag,
+                                IUnitOfWork _unitOfWork, UserService _userService) : base(_unitOfWork, _userService)
         {
             this.roleManager = roleManager;
             userManager = userMag;
-            //context = context;
+            
         }
         public IActionResult Index()
         {
