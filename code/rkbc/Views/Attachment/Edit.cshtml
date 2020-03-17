@@ -1,0 +1,54 @@
+﻿@model rkbc.web.viewmodels.HomeAttachmentIndexViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+<script>
+    $function(){
+        var HomeAttachmentViewModel = function (data) {
+            var data = data || {};
+            var self = ko.mapping.fromJS(data);
+        };
+        
+        var vm = ko.GridViewModel({
+            pageEnabled: true,
+            ctor: HomeAttachmentViewModel,
+            indexUrl: '/Attachment/GetRecords',
+            getUrl:'/Attachment/GetRecord'
+        });
+        var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        vm.initializeData(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.InitialData)));
+        ko.applyBindings(vm);
+    }
+</script>
+
+<div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>File Name</th>
+                    <th>Is on Gallery</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ko foreach: {data:items}-->
+                <tr>
+                    <td><input type="hidden" data-bind="value:id" /></td>
+                    <td data-bind="text:originalFileName"></td>
+                    <td><input data-bind="value:isOn" /></td>
+                    <td><button data-bind="$parent.deleteAttachment">Edit</button></td>
+                    <td><button data-bind="$parent.deleteAttachment">Delete</button></td>
+                </tr>
+                <!--/ko-->
+            </tbody>
+        </table>
+        <div><button data-bind="addAttachment">Upload File</button></div>
+    </div>
+</div>
+
+
+

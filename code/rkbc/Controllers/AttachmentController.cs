@@ -11,12 +11,19 @@ using rkbc.web.viewmodels;
 
 namespace rkbc.web.viewmodels
 {
+    public class HomeAttachmentIndexViewModel { 
+        
+    }
     public class HomeAttachmentViewModel
     {
         public int id { get; set; }
         public string url { get; set; }
+        public int sectionId { get; set; }
         public string originalFileName { get; set; }
-       
+        public string fileName { get; set; }
+        public string caption { get; set; }
+        public bool isOn { get; set; }
+
     }
 
 }

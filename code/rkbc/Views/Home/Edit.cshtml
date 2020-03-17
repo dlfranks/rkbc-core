@@ -14,7 +14,7 @@
     $(function () {
         var homeItemVM = function (dataJs) {
             var self = this;
-            data = dataJs || {};
+            var data = dataJs || {};
             self.id = ko.observable(data.id || 0);
             self.sectionId = ko.observable(data.sectionId || 0);
             self.content = ko.observable(data.content || "");
