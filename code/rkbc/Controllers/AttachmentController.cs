@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using rkbc.core.helper;
 using rkbc.core.models;
 using rkbc.core.repository;
+using rkbc.core.service;
 using rkbc.web.viewmodels;
 
 namespace rkbc.web.viewmodels
@@ -30,60 +32,79 @@ namespace rkbc.web.viewmodels
 
 namespace rkbc.web.controllers
 {
-    public class AttachmentController : Controller
+    public class AttachmentController : AppBaseController
     {
-        protected IUnitOfWork unitOfwork;
-        protected IWebHostEnvironment env;
-        public AttachmentController(IUnitOfWork wrk, IWebHostEnvironment _env)
+        protected FileHelper fileHelper;
+        public AttachmentController(IUnitOfWork _unitOfWork, UserService _userService, 
+                                    IWebHostEnvironment _env, FileHelper _fileHelper)
+                                    :base(_unitOfWork, _userService)
         {
-            this.unitOfwork = wrk;
-            this.env = _env;
+            this.fileHelper = _fileHelper;
+            
         }
         // GET: Attachment
         public ActionResult Index()
         {
             
-            var lst = unitOfwork.homeAttachments.get().Where(q => q.homePageId == (int)PageEnum.Home && q.sectionId == (int)SectionEnum.Home_Gallery)
-                .Select(q => new HomeAttachmentViewModel()
-                {
-                    id = q.id,
-                    url = System.IO.Path.Combine(env.WebRootPath, q.fileName),
-                    originalFileName = q.originalFileName
-                }).ToList();
-            return View(lst);
+            
+            return View();
         }
 
         // GET: Attachment/Details/5
-        public ActionResult Details(int id)
+        public JsonResult GetRecords()
         {
-            return View();
+            var lst = unitOfWork.homeAttachments.get().Where(q => q.sectionId == (int)SectionEnum.Home_Gallery)
+                .Select(q => new HomeAttachmentViewModel { 
+                    id = q.id,
+                    sectionId = (int)SectionEnum.Home_Gallery,
+                    fileName = q.fileName,
+                    originalFileName = q.originalFileName,
+                    url = fileHelper.mapAssetPath("gallery", q.fileName, true)
+                }).ToList();
+            return Json(lst);
         }
 
         // GET: Attachment/Create
-        public ActionResult Create()
+        public JsonResult GetRecord(int id)
         {
-            return View();
+            var result = unitOfWork.homeAttachments.get().Where(q => q.sectionId == (int)SectionEnum.Home_Gallery && q.id == id)
+                .Select(q => new HomeAttachmentViewModel
+                {
+                    id = q.id,
+                    sectionId = (int)SectionEnum.Home_Gallery,
+                    fileName = q.fileName,
+                    originalFileName = q.originalFileName,
+                    url = fileHelper.mapAssetPath("gallery", q.fileName, true)
+                }).FirstOrDefault();
+            return Json(result);
         }
 
         // POST: Attachment/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public JsonResult SaveRecord(int? id)
         {
-            try
+            bool creating = (id?? 0) <= 0;
+            List<string> errmsg = new List<string>();
+            List<string> succmsg = new List<string>();
+            HomeAttachmentViewModel vm = new HomeAttachmentViewModel();
+            HomeAttachment modelObj = new HomeAttachment();
+            TryUpdateModelAsync(vm);
+            if (creating)
             {
-                // TODO: Add insert logic here
+                
+            }
+            else
+            {
+                modelObj = unitOfWork.homeAttachments.get().Where(q => q.id == id).FirstOrDefault();
 
-                return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            AcceptPost()
+            
         }
 
         // GET: Attachment/Edit/5
-        public ActionResult Edit(int id)
+        public void AccepPost()
         {
             return View();
         }
