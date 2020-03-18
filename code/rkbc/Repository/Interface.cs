@@ -52,10 +52,10 @@ namespace rkbc.core.repository
         IRepositoryAsync<HomeVideoAttachment> homeVideoAttachments { get; }
         IRepositoryAsync<UserActivityLog> userActivityLogs { get; }
         ApplicationDbContext getContext();
-        Task commit();
-        Task<bool> tryCommit();
-        Task<bool> tryConcurrencyCommit();
-        Task<bool> tryUniqueConstraintCommit();
+        Task commitAsync();
+        Task<bool> tryCommitAsync();
+        Task<bool> tryConcurrencyCommitAsync();
+        Task<bool> tryUniqueConstraintCommitAsync();
         void updateCollection<TCOL>(IEnumerable<TCOL> oldList, IEnumerable<TCOL> newList) where TCOL : class, IEntity;
     }
 }

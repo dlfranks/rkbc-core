@@ -93,6 +93,7 @@ namespace rkbc
             services.AddSingleton<FileHelper>();
             
 
+
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.

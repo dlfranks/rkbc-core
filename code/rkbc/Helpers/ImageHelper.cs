@@ -1,4 +1,5 @@
-﻿using rkbc.core.helper;
+﻿using Microsoft.AspNetCore.Http;
+using rkbc.core.helper;
 using rkbc.core.repository;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace rkbc.core.services
+namespace rkbc.core.helper
 {
-    public static class Imaging
+    public class ImageHelper
     {
+        
         public static string GetThumbnailFileName(string fullImageFilename)
         {
             return (Path.Combine(Path.GetDirectoryName(fullImageFilename), Path.GetFileNameWithoutExtension(fullImageFilename) + "-thumb" + Path.GetExtension(fullImageFilename)));
@@ -192,5 +194,6 @@ namespace rkbc.core.services
             image.Save(ms, imageCodecInfo, parameters);
             return ms.ToArray();
         }
+        
     }
 }

@@ -34,8 +34,12 @@ namespace rkbc.core.models
         public HomePage homePage {get; set;}
         public int sectionId { get; set; }
     }
-    public class HomeAttachment : Section
+    public class HomeAttachment : Section, IAuditStamp
     {
+        public DateTime? createDt { get; set; }
+        public string createUser { get; set; }
+        public DateTime? lastUpdDt { get; set; }
+        public string lastUpdUser { get; set; }
         public string fileName { get; set; }
         public string originalFileName { get; set; }
         public string caption { get; set; }

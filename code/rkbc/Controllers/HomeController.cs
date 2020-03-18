@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -13,7 +12,6 @@ using rkbc.core.repository;
 using rkbc.web.viewmodels;
 using RKBC.Models;
 using ElmahCore;
-using rkbc.core.services;
 using rkbc.core.helper;
 using Microsoft.AspNetCore.Identity;
 using rkbc.models.extension;
@@ -21,6 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 using rkbc.web.controllers;
 using rkbc.core.service;
 using System.ComponentModel.DataAnnotations;
+
 
 namespace rkbc.web.viewmodels
 {
@@ -113,9 +112,9 @@ namespace rkbc.web.Controllers
                 var fileName = fileHelper.getFileName(model.bannerImage.FileName);
                 var assetFileName = fileHelper.newAssetFileName("banner", extension);
                 var assetFileAndPathName = fileHelper.mapAssetPath("banner", assetFileName, false);
-                Bitmap bitmap = null;
+                System.Drawing.Bitmap bitmap = null;
                 try { 
-                    bitmap = new Bitmap(model.bannerImage.OpenReadStream());
+                    bitmap = new System.Drawing.Bitmap(model.bannerImage.OpenReadStream());
                 }
                 catch (Exception e)
                 {
@@ -125,7 +124,7 @@ namespace rkbc.web.Controllers
                 }
                 try
                 {
-                    Imaging.saveJpegImage(bitmap, assetFileAndPathName, 75L);
+                    ImageHelper.saveJpegImage(bitmap, assetFileAndPathName, 75L);
                     //Thumbnail width 150;
                     
                 }
@@ -135,7 +134,7 @@ namespace rkbc.web.Controllers
                     ModelState.AddModelError("bannerImageUrl", msg);
                     //ElmahCore
                 }
-                Imaging.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
+                ImageHelper.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
                 modelObj.bannerFileName = assetFileName;
                 modelObj.originalFileName = model.bannerImage.FileName;
             }
@@ -271,7 +270,7 @@ namespace rkbc.web.Controllers
             acceptPost(modelObj, model);
             if (ModelState.ErrorCount == 0)
             {
-                var success = await unitOfWork.tryUniqueConstraintCommit();
+                var success = await unitOfWork.tryUniqueConstraintCommitAsync();
                 if (success)
                 {
                    return RedirectToAction("Index");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +26,7 @@ namespace rkbc.web.viewmodels
         public string fileName { get; set; }
         public string caption { get; set; }
         public bool isOn { get; set; }
+        public IFormFile image { get; set; }
 
     }
 
@@ -82,24 +84,82 @@ namespace rkbc.web.controllers
         // POST: Attachment/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult SaveRecord(int? id)
+        public async Task<JsonResult> SaveRecord(int? id)
         {
             bool creating = (id?? 0) <= 0;
+            var homePageId = 3;
             List<string> errmsg = new List<string>();
             List<string> succmsg = new List<string>();
             HomeAttachmentViewModel vm = new HomeAttachmentViewModel();
             HomeAttachment modelObj = new HomeAttachment();
+            var homePage = unitOfWork.homePages.get(homePageId).First();
+            var user = userService.CurrentUserSettings;
             TryUpdateModelAsync(vm);
-            if (creating)
+            if (!ModelState.IsValid)
             {
-                
+                errmsg.Add("");
+
             }
             else
             {
-                modelObj = unitOfWork.homeAttachments.get().Where(q => q.id == id).FirstOrDefault();
+                if (!creating)
+                {
+                    modelObj = unitOfWork.homeAttachments.get().Where(q => q.id == id).FirstOrDefault();
+                    modelObj.lastUpdDt = DateTime.UtcNow;
+                    modelObj.lastUpdUser = user.userId;
+                    modelObj.isOn = true;
+                }
+                else
+                {
+                    unitOfWork.homeAttachments.add(modelObj);
 
+                    modelObj.homePageId = homePage.id;
+                    modelObj.sectionId = (int)SectionEnum.Home_Gallery;
+                    modelObj.createDt = DateTime.UtcNow;
+                    modelObj.createUser = user.userId;
+                    modelObj.lastUpdDt = DateTime.UtcNow;
+                    modelObj.lastUpdUser = user.userId;
+                    modelObj.isOn = true;
+                    modelObj.originalFileName = vm.image.FileName;
+                    
+                    var extension = fileHelper.getExtension(vm.image.FileName);
+                    var fileName = fileHelper.getFileName(vm.image.FileName);
+                    var assetFileName = fileHelper.newAssetFileName("banner", extension);
+                    var assetFileAndPathName = fileHelper.mapAssetPath("banner", assetFileName, false);
+                    Bitmap bitmap = null;
+                    try
+                    {
+                        bitmap = new Bitmap(vm.image.OpenReadStream());
+                    }
+                    catch (Exception e)
+                    {
+                        var msg = "Unable to read image format, please upload either .jpeg or .png images.";
+                        ModelState.AddModelError("banner", msg);
+                        //ElmahCore.XmlFileErrorLog.;
+                    }
+                    try
+                    {
+                        ImageHelper.saveJpegImage(bitmap, assetFileAndPathName, 75L);
+                        //Thumbnail width 150;
+
+                    }
+                    catch (Exception e)
+                    {
+                        var msg = "Internal error, unable to save the image.";
+                        ModelState.AddModelError("bannerImageUrl", msg);
+                        //ElmahCore
+                    }
+                    ImageHelper.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
+                    modelObj.fileName = assetFileName;
+                }
+                //Update the database
+                if(errmsg.Count == 0)
+                {
+                    var result = await unitOfWork.tryCommitAsync();
+                }
             }
-            AcceptPost()
+            
+            
             
         }
 
