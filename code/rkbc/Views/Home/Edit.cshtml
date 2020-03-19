@@ -63,7 +63,7 @@
             ko.applyBindings(new MainVM(data));
     });
 </script>
-<form asp-action="Edit" asp-route-id="id" method="post" enctype="multipart/form-data">
+<form asp-action="Edit" asp-route-id="@Model.id" method="post" enctype="multipart/form-data">
     <input asp-for="id" type="hidden" />
     <!-- Content -->
     <div class="">
@@ -76,7 +76,7 @@
             <input type="file" asp-for="bannerImage" accept="image/jpeg, image/png" class="form-control" />
             <span asp-validation-for="bannerImage" class="text-danger"></span>
         </div>
-        
+
     </div> <!-- Slider End -->
     <div id="content">
         <div class="container">
@@ -180,10 +180,10 @@
                     <h2 style="font-weight:500">Sunday Service Url</h2>
                     <div class="form-group">
                         <label asp-for="sundayServiceVideoUrl"></label>
-                        <input asp-for="sundayServiceVideoUrl" placeholder="https://www.youtube.com/embed/-MincIqjMwg" type="url" style="width:30em;"/>
-                       
+                        <input asp-for="sundayServiceVideoUrl" placeholder="https://www.youtube.com/embed/-MincIqjMwg" type="url" style="width:30em;" />
+
                     </div>
-                    <iframe style="width:100%;height:250px;" src="@Model.sundayServiceVideoUrl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe style="width:100%;height:250px;" src="@Model.embedVideoUrl" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 <div class="span4">
                     <div class="ic-1"></div>
@@ -208,5 +208,9 @@
         </div>
     </div>
     <!-- Content End -->
-    <div class=""><input class="btn btn-gray pad2" type="submit" value="Update" /></div>
+    <div class="">
+        <input class="btn btn-gray pad2" type="submit" value="Update" /> 
+        <a class="btn btn-gray pad2" href="/Home/Index">Cancel</a>
+    </div>
+    
 </form>

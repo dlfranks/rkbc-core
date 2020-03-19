@@ -1,4 +1,104 @@
-﻿//A Grid view model for editable rows
+﻿//File Upload
+ko.bindingHandlers['file'] = {
+    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var fileContents, fileName, allowed, prohibited, reader;
+
+        if ((typeof valueAccessor()) === "function") {
+            fileContents = valueAccessor();
+        } else {
+            fileContents = valueAccessor()['data'];
+            fileName = valueAccessor()['name'];
+
+            allowed = valueAccessor()['allowed'];
+            if ((typeof allowed) === 'string') {
+                allowed = [allowed];
+            }
+
+            prohibited = valueAccessor()['prohibited'];
+            if ((typeof prohibited) === 'string') {
+                prohibited = [prohibited];
+            }
+
+            reader = (valueAccessor()['reader']);
+        }
+
+        reader || (reader = new FileReader());
+        reader.onloadend = function () {
+            fileContents(reader.result);
+        }
+        var handler = function () {
+            var file = element.files[0];
+
+
+            // Opening the file picker then canceling will trigger a 'change'
+            // event without actually picking a file.
+            if (file === undefined) {
+                fileContents(null)
+                return;
+            }
+
+            if (allowed) {
+                if (!allowed.some(function (type) { return type === file.type })) {
+                    console.log("File " + file.name + " is not an allowed type, ignoring.")
+                    fileContents(null)
+                    return;
+                }
+            }
+
+            if (prohibited) {
+                if (prohibited.some(function (type) { return type === file.type })) {
+                    console.log("File " + file.name + " is a prohibited type, ignoring.")
+                    fileContents(null)
+                    return;
+                }
+            }
+
+            reader.readAsDataURL(file); // A callback (above) will set fileContents
+            var parent = bindingContext.$root;
+
+            if (typeof fileName === "function") {
+                fileName(file.name)
+            } else {
+                viewModel.originalFilename = file.name;
+            }
+
+        };
+        ko.utils.registerEventHandler(element, 'change', handler);
+        $(element).click();
+
+    }
+}
+
+ko.rkbcPost = function (options) {
+    //$('body').css('cursor', 'progress');
+    $('body').addClass('wait');
+    return ($.ajax({
+        url: options.url,
+        type: 'POST',
+        dataType: 'json',
+        data: ko.toJSON(options.viewModel),
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+            if (data.errmsg || data.succmsg) {
+                $.jGrowl((data.errmsg || "") + (data.succmsg + ""), {
+                    theme: data.errmsg ? 'jgrowl-error-notification' : 'default',
+                    life: 'sticky'//data.errmsg ? 'sticky' : 3000 
+                });
+            }
+            if (data.success && options.success) options.success.call(window, data);
+            if (!data.success && options.error) options.error.call(window, data);
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            $.jGrowl('<p class="error">Exception, unable to process request. ' + errorThrown + '</p>', { life: 'sticky' });
+            if (options.error) options.error.call(window, {});
+        },
+        complete: function () {
+            //$('body').css('cursor', 'default');
+            $('body').removeClass('wait');
+        }
+    }));
+};
+//A Grid view model for editable rows
 ko.GridViewModel = function (config) {
     var self = this;
     self.options = $.extend({

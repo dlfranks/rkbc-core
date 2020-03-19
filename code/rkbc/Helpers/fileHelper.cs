@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using rkbc.core.helper;
 
 namespace rkbc.core.helper
 {
@@ -118,7 +119,7 @@ namespace rkbc.core.helper
         {
            var path = assetTypeToPath(assetType);
             
-            if (thumbnail) assetFileName = Imaging.GetThumbnailFileName(assetFileName);
+            if (thumbnail) assetFileName = ImageHelper.GetThumbnailFileName(assetFileName);
             path = env.WebRootPath + "\\assets\\" + path + "\\" + assetFileName;
             return (path);
         }
@@ -214,7 +215,7 @@ namespace rkbc.core.helper
             {
                 url = url.Split("v=")[1];
             }
-            return url; 
+            return ("https://www.youtube.com/embed/" + url); 
         }
     }
 }

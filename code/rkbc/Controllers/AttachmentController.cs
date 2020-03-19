@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using rkbc.core.helper;
 using rkbc.core.models;
 using rkbc.core.repository;
@@ -47,8 +48,8 @@ namespace rkbc.web.controllers
         // GET: Attachment
         public ActionResult Index()
         {
-            
-            
+
+            ViewBag.InitialData = GetRecords();
             return View();
         }
 
@@ -69,21 +70,14 @@ namespace rkbc.web.controllers
         // GET: Attachment/Create
         public JsonResult GetRecord(int id)
         {
-            var result = unitOfWork.homeAttachments.get().Where(q => q.sectionId == (int)SectionEnum.Home_Gallery && q.id == id)
-                .Select(q => new HomeAttachmentViewModel
-                {
-                    id = q.id,
-                    sectionId = (int)SectionEnum.Home_Gallery,
-                    fileName = q.fileName,
-                    originalFileName = q.originalFileName,
-                    url = fileHelper.mapAssetPath("gallery", q.fileName, true)
-                }).FirstOrDefault();
-            return Json(result);
+            var model = new HomeAttachmentViewModel();
+            model.sectionId = (int)SectionEnum.Home_Gallery;
+            
+            return Json(model);
         }
 
         // POST: Attachment/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<JsonResult> SaveRecord(int? id)
         {
             bool creating = (id?? 0) <= 0;
@@ -94,17 +88,17 @@ namespace rkbc.web.controllers
             HomeAttachment modelObj = new HomeAttachment();
             var homePage = unitOfWork.homePages.get(homePageId).First();
             var user = userService.CurrentUserSettings;
-            TryUpdateModelAsync(vm);
+            await TryUpdateModelAsync(vm);
             if (!ModelState.IsValid)
             {
-                errmsg.Add("");
+                errmsg.Add("ERROR");
 
             }
             else
             {
                 if (!creating)
                 {
-                    modelObj = unitOfWork.homeAttachments.get().Where(q => q.id == id).FirstOrDefault();
+                    modelObj = await unitOfWork.homeAttachments.get().Where(q => q.id == id).FirstAsync();
                     modelObj.lastUpdDt = DateTime.UtcNow;
                     modelObj.lastUpdUser = user.userId;
                     modelObj.isOn = true;
@@ -155,41 +149,59 @@ namespace rkbc.web.controllers
                 //Update the database
                 if(errmsg.Count == 0)
                 {
-                    var result = await unitOfWork.tryCommitAsync();
+                    
+                    if(await unitOfWork.tryCommitAsync())
+                    {
+                        errmsg.Add("Database error, unable to save the image.");
+                    }
+                    else
+                    {
+                        succmsg.Add("Image Saved.");
+                    }
                 }
             }
-            
-            
-            
-        }
-
-        // GET: Attachment/Edit/5
-        public void AccepPost()
-        {
-            return View();
-        }
-
-        // POST: Attachment/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
+            var strerrmsg = ""; if (errmsg.Count() > 0) foreach (var s in errmsg) strerrmsg += "<p class=\"error\">" + s + "</p>";
+            var strsuccmsg = ""; if (succmsg.Count() > 0) foreach (var s in succmsg) strsuccmsg += "<p>" + s + "</p>";
+            var result = new
             {
-                // TODO: Add update logic here
+                success = errmsg.Count == 0,
+                id = modelObj.id,
+                sectionId = modelObj.sectionId,
+                originalFileName = modelObj.originalFileName,
+                fileName = modelObj.fileName,
+                caption = modelObj.caption,
+                errmsg = strerrmsg,
+                succmsg = strsuccmsg
+            };
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return Json(result);
         }
-
         // GET: Attachment/Delete/5
-        public ActionResult Delete(int id)
+        [HttpPost]
+        public async Task<JsonResult> DeleteRecord(int id)
         {
-            return View();
+            string errmsg = "", succmsg = "";
+            if (id == 0)
+            {
+                errmsg = "<p class=\"error\">Unable to delete the image</p>";
+            }
+            else
+            {
+                await unitOfWork.homeAttachments.removeAsync(id);
+                if(!(await unitOfWork.tryCommitAsync()))
+                {
+                    errmsg = "<p class=\"error\">Unable to delete the image</p>";
+                }
+                else
+                {
+                    succmsg = "<p>The image Deleted</p>";
+                }
+            }
+            return Json(new {
+                success = String.IsNullOrEmpty(errmsg),
+                errmsg = errmsg,
+                succmsg = succmsg
+            });
         }
 
         // POST: Attachment/Delete/5

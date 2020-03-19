@@ -1,127 +1,127 @@
 ﻿
 @{
-    ViewData["Title"] = "Photo Gallery Editor";
+    ViewData["Title"] = "Edit";
 }
+
+<h1>Edit</h1>
 <script>
     $(function () {
-        var AttachmentVM = function (data) {
-            var self = ko.mapping.fromJS(data);;
-        }
-        var MainVM = function (data) {
-            var addAttachment = function () {
+        var HomeAttachmentViewModel = function (data, parentGrid) {
+            var data = data || {};
+            var self = ko.mapping.fromJS(data);
+            //Validation
 
+            self.viewPopped = function () { };
+            self.saveServer = function () {
+                ko.rkbcPost({
+                    viewModel: self,
+                    url: 'Attachment/SaveRecord/' + self.id,
+                    success: function (data) {
+                        self.id(data.id);
+                        self.sectionId(data.sectionId);
+                        self.originalFileName(data.originalFileName);
+                        self.fileName(data.fileName);
+                        self.url(data.url);
+                    }
+                });
             };
-            var deleteAttachment = function () {
+            self.deleteServer = function () {
+                ko.rkbcPost({
+                    viewModel: self,
+                    url: 'Attachment/DeleteRecord/' + self.id,
+                    success: function (data) {
+                        parentGrid.deleteItem(self);
+                    }
+                });
+            };
+            return (self);
+        };
 
-            }
-        }
-        var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
-        ko.applyBindings(new MainVM(data));
+        var vm = new ko.GridViewModel({
+            pageEnabled: false,
+            ctor: HomeAttachmentViewModel,
+            indexUrl: '/Attachment/GetRecords',
+            getUrl: '/Attachment/GetRecord'
+        });
+        vm.addFile = function (data, e) {
+            var fileEle = $("#upload");
+            fileEle.click();
+            fileEle.change(function (e) {
+                var file = this.files[0];
+                if (file)
+                {
+                    var form = new FormData();
+                    form.append("image", file);
+                    $.ajax({
+                        type: "post",
+                        url: "/Attachment/SaveRecord",
+                        processData: false,
+                        contentType: false,
+                        xhr: function () {
+                            // get the native XmlHttpRequest object
+                            var xhr = $.ajaxSettings.xhr();
+                            // set the onprogress event handler
+                            xhr.upload.onprogress = function (e) {
+                                var percentComplete = (e.loaded / e.total) * 100;
+                                $(progressBar).val(percentComplete);
+                            };
+                            // return the customized object
+                            return xhr;
+                        }
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (data.success) {
+                            fileEle.val(null);
+                            var newItem = new HomeAttachmentViewModel(data.item);
+                            vm.addItem(newitem);
+                        } else {
+
+                        }
+                        
+                    });
+                        
+
+                }
+            });
+
+        };  
+            
+                
+        vm.initializeData(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.InitialData)));
+        ko.applyBindings(vm);
     });
 </script>
-<!-- Our Clients -->
-<div class="row">
-    <div class="span12">
-        <h3>Our Church</h3>
+
+<div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>File Name</th>
+                    <th>Is on Gallery</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ko foreach: {data:items}-->
+                <tr>
+                    <td><input type="hidden" data-bind="value:id" /></td>
+                    <td data-bind="text:originalFileName"></td>
+                    <td><img style="width:50px;" data-bind="attr:{src:url}"/></td>
+                    <td>
+                        <button data-bind="saveServer">Edit</button>
+                        <button data-bind="deleteServer">Delete</button>
+                    </td>
+                </tr>
+                <!--/ko-->
+            </tbody>
+        </table>
+        <div>
+            <input id="upload" type="file" style="display:none;"/>
+            <button data-bind="click:addFile">Upload File</button>
+        </div>
     </div>
 </div>
 
-<div id="our-clients" class="slider2 flexslider">
-    <ul class="slides">
-        <li>
-            <div class="row">
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="~/img/rkbc/img1.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img2.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img3.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img4.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img5.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img6.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </li>
-        <li>
-            <div class="row">
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img7.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img8.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img9.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img10.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img11.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="square-1">
-                        <a href="#" rel="external">
-                            <img src="img/rkbc/img12.jpg" alt="">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </li>
-    </ul>
-</div>
-<!-- Our Clients End -->
+
+

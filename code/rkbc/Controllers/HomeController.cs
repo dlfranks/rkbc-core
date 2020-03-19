@@ -54,6 +54,7 @@ namespace rkbc.web.viewmodels
         public string schoolAnnounceTitle { get; set; }
         [Display(Name = "Youtube Link for the Sermon of the Week")]
         public string sundayServiceVideoUrl { get; set;}
+        public string embedVideoUrl { get; set; }
         public virtual List<HomeContentItemViewModel> churchAnnouncements { get; set; }
         public virtual List<HomeContentItemViewModel> memberAnnouncements { get; set; }
         public virtual List<HomeContentItemViewModel> schoolAnnouncements { get; set; }
@@ -80,7 +81,7 @@ namespace rkbc.web.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            int id = 9;
+            int id = 3;
             HomePage modelObj = new HomePage();
             modelObj = await unitOfWork.homePages.get(id).Include("announcements").FirstOrDefaultAsync();
             
@@ -95,11 +96,6 @@ namespace rkbc.web.Controllers
             modelObj.churchAnnounceTitle = model.churchAnnounceTitle;
             modelObj.memberAnnounceTitle = model.memberAnnounceTitle;
             modelObj.schoolAnnounceTitle = model.schoolAnnounceTitle;
-            if (!String.IsNullOrWhiteSpace(modelObj.bannerFileName))
-                ModelState.AddModelError("bannerFileName", "Please Choose a banner image.");
-            modelObj.bannerUrl = fileHelper.generateAssetURL("banner", modelObj.bannerFileName);
-            
-
             var announcements = new List<HomeContentItem>();
             //Video
             modelObj.sundayServiceVideoUrl = model.sundayServiceVideoUrl;
@@ -137,6 +133,7 @@ namespace rkbc.web.Controllers
                 ImageHelper.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
                 modelObj.bannerFileName = assetFileName;
                 modelObj.originalFileName = model.bannerImage.FileName;
+                modelObj.bannerUrl = fileHelper.generateAssetURL("banner", modelObj.bannerFileName);
             }
             
 
@@ -187,6 +184,7 @@ namespace rkbc.web.Controllers
                 memberAnnounceTitle = model.memberAnnounceTitle,
                 schoolAnnounceTitle = model.schoolAnnounceTitle,
                 sundayServiceVideoUrl = model.sundayServiceVideoUrl,
+                embedVideoUrl = fileHelper.youtubeEmbedUrl(model.sundayServiceVideoUrl),
                 
                 
             };
@@ -222,10 +220,10 @@ namespace rkbc.web.Controllers
         {
             
             HomePage modelObj = null;
-            //if (id == null) return RedirectToAction("Error");
-            if (id == null) modelObj = new HomePage();
+            if (id == null) return RedirectToAction("Error");
+            //if (id == null) modelObj = new HomePage();
 
-            //modelObj = await unitOfWork.homePages.get(id).Include("announcements").FirstOrDefaultAsync();
+            modelObj = await unitOfWork.homePages.get(id.Value).Include("announcements").FirstOrDefaultAsync();
             
             //if (modelObj == null)
             //{
@@ -261,7 +259,6 @@ namespace rkbc.web.Controllers
             {
                 if(modelObj.createDt == null ) modelObj.createDt = DateTime.UtcNow;
                 if (modelObj.createUser == null) modelObj.createUser = userId;
-                modelObj.createUser = userId;
                 modelObj.lastUpdDt = DateTime.UtcNow;
                 modelObj.lastUpdUser = userId;
                 unitOfWork.homePages.update(modelObj);

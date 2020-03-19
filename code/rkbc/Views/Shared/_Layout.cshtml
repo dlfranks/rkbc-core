@@ -29,6 +29,7 @@
     <link href="~/css/font-awesome/font-awesome.css" rel="stylesheet">
 
     <link rel="stylesheet" href="~/css/flexslider.css" type="text/css" media="screen">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.css" />
 
     <!-- JavaScripts -->
     <script type="text/javascript" src="~/js/jquery-3.4.1.js"></script>
@@ -40,6 +41,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.js" asp-append-version="false"></script>
     <script src="~/js/knockout.validation.js" asp-append-version="false"></script>
     <script src="~/js/knockout.mapping.js" asp-append-version="false"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.js"></script>
     <script src="~/js/knockout.rkbc.js" asp-append-version="false"></script>
 
     @RenderSection("Scripts", required: false)
@@ -71,8 +73,8 @@
                                 <li class="active">
                                     <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit</a></li>
-                                        <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit" asp-route-id="3">Edit</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Attachment" asp-action="Index">Gallery</a></li>
                                     </ul>
                                 </li>
                                 <li>
