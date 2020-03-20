@@ -6,10 +6,10 @@
 <h1>Edit</h1>
 <script>
     $(function () {
-        var HomeAttachmentViewModel = function (dataJS) {
+        var HomeAttachmentViewModel = function (parentGrid, dataJS) {
             var data = dataJS || {};
             var self = this;
-            self = ko.mapping.fromJS(dataJS);
+            self = ko.mapping.fromJS(data);
             //var self = this;
             //self.id = ko.observable(dataJS.id);
             //self.url = ko.observable(dataJS.url);
@@ -19,48 +19,62 @@
             
         };
 
-        var MainVM = function (data) {
-            var self = this;
-            self.items = ko.observableArray([]);
-            //self.sectionlist = data.sectionList;
-            self.sectionlist = [{id:105, name:"Home Gallery"}]
+        var vm = new ko.GridViewModel({
+            ctor: HomeAttachmentViewModel,
+            indexUrl: '/Attachment/GetRecords',
+            getUrl: '/Attachment/GetRecord',
+            pageSize: @Model.getRecordCount,
+            currentPage: @(Model.getStartRecord/Model.getRecordCount),
+            sortable: {}
+        });  
 
-            var data = $.map(data, function (el) {
-                return new HomeAttachmentViewModel(el);
-            });
-            self.items(data);
-            //for (var i = 0; i < data.length; i++){
-                
-            //    self.items.push(new HomeAttachmentViewModel(data[i]));
-            //}
-            
+        vm.addFile = function () {
+                var fileEle = $("#upload");
+                fileEle.click();
+                fileEle.change(function (e) {
+                    e.preventDefault();
+                    var file = this.files[0];
+                    if (file) {
+                        var form = new FormData();
+                        form.append("image", file);
+                        $.ajax({
+                            type: "post",
+                            url: "/Attachment/SaveAttachment",
+                            data: form,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                if (data.success) {
+                                    fileEle.val(null);
+                                    var item = new HomeAttachmentViewModel(vm, data.item);
+                                    vm.addItem(item);
+                                } else {
 
-            self.addItem = function (item) {
-                self.push(new HomeAttachmentViewModel(item));
-            }
-            self.sortByName = function() {
-                self.items.sort(function(a, b) {
-                    return a.name < b.name ? -1 : 1;
+                                }
+                            },
+                            error: function (request, error) {
+                                alert("Request: "+JSON.stringify(request));
+                            }
+                        });  
+
+                    }
                 });
-            };
-
-           
 
             };  
-            
             
    
         
         
             
-        
-        var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.InitialData));
-        ko.applyBindings(new MainVM(data));
+
+        vm.initializeData(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.InitialData)));
+        ko.applyBindings(vm);
     });
 </script>
 <div>
     <div>
-        
+        <input type="file" id="upload" style="display:none;"/>
+        <button data-bind="click:addFile">Add New</button>
     </div>
     <ul class="portfolio">
         <!-- ko foreach: items -->
@@ -91,6 +105,10 @@
         </li>
         <!--/ko-->
     </ul>
+</div>
+<div>
+    <input type="button" value="Prev" data-bind="click: prevPage, jqButton: { disabled: !prevPageEnabled() }" class="makeButton" />
+    <input type="button" value="Next" data-bind="click: nextPage, jqButton: { disabled: !nextPageEnabled() }" class="makeButton" />
 </div>
 
     

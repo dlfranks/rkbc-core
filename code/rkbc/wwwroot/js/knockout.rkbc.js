@@ -1,4 +1,27 @@
-﻿//File Upload
+﻿//JQuery UI button enable/disable functionality
+//http://stackoverflow.com/questions/15708249/knockout-disable-binding-is-not-working-with-jquery-ui-button
+ko.bindingHandlers.jqButton = {
+    init: function (element, valueAccessor, allBindingsAccessor) {
+        var options = valueAccessor();
+        for (var p in options) {
+            options[p] = ko.utils.unwrapObservable(options[p]);
+        }
+        $(element).button(options);
+        ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+            $(element).button("destroy");
+        });
+    },
+    update: function (element, valueAccessor) {
+        var options = valueAccessor();
+        for (var p in options) {
+            options[p] = ko.utils.unwrapObservable(options[p]);
+        }
+        $(element).button("option", options);
+        $(element).button("refresh");
+    }
+};
+
+//File Upload
 ko.bindingHandlers['file'] = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
         var fileContents, fileName, allowed, prohibited, reader;

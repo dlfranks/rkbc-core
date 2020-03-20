@@ -21,6 +21,9 @@ namespace rkbc.web.viewmodels
     {
         public object[] sectionList { get; set; }
         public List<HomeAttachmentViewModel> items { get; set; }
+        public int getRecordCount { get; set; }
+        public int getStartRecord { get; set; }
+        
     }
     public class HomeAttachmentViewModel
     {
@@ -68,6 +71,8 @@ namespace rkbc.web.controllers
                 };
 
             vm.items = lst;
+            vm.getStartRecord = 0;
+            vm.getRecordCount = 5;
             ViewBag.InitialData = lst;
             return View(vm);
         }
