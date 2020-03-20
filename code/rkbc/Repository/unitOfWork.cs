@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using rkbc.core.models;
 using rkbc.core.repository;
@@ -82,6 +83,7 @@ namespace rkbc.core.repository
             catch(Exception e)
             {
                 //Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                new InvalidOperationException("exception", e);
                 return (false);
             }
             return (true);

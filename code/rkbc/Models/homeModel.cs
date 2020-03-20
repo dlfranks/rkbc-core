@@ -18,12 +18,19 @@ namespace rkbc.core.models
     }
     public enum SectionEnum
     {
+        [Display(Description = "Banner")]
         Banner = 100,
+        [Display(Description = "Church Announce")]
         Church_Announce,
+        [Display(Description = "Member Announce")]
         Member_Announce,
+        [Display(Description = "Member Announce")]
         School_Announce,
+        [Display(Description = "Sermon Video")]
         Sermon_Video,
+        [Display(Description = "Home Gallery")]
         Home_Gallery,
+        
 
     }
     public class Section : IEntity, ISection

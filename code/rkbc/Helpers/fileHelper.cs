@@ -78,7 +78,7 @@ namespace rkbc.core.helper
             }
             if (i > 0)
             {
-                name = assetFileName.Substring(0, i - 1);
+                name = assetFileName.Substring(0, i);
                 extension = assetFileName.Substring(i);
             }
             return new string[] { name, extension };
@@ -131,7 +131,8 @@ namespace rkbc.core.helper
         public string generateAssetURL(string assetType, string assetFileName, bool thumbnail)
         {
             if (String.IsNullOrWhiteSpace(assetFileName)) return "";
-            return ("/assets/" + assetType + "&fileName=" + assetFileName + "&thumbnail=" + thumbnail);
+            var file = fileNameAndExtension(assetFileName);
+            return ("/assets/" + assetType + "/" + file[0] + "-thumb" + file[1]);
         }
 
         public void deleteAsset(string assetType, string assetFileName, bool throwException)

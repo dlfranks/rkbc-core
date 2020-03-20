@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
    --------------------------------------------------------	*/	
 
 	(function() {
-	    $(window).load(function() {
+	    $(window).on("load", function() {
 			$('a[rel=external]').attr('target','_blank');	
 		});                                            
 	})();  
@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
    --------------------------------------------------------	*/	
 
    (function() {
-		$(window).load(function(){
+		$(window).on("load", function(){
 			// container
 			var $container = $('#portfolio-items');
 			function filter_projects(tag)
@@ -191,7 +191,7 @@ jQuery(document).ready(function($) {
 	 Flex Initialize
    --------------------------------------------------------	*/	
 
-$(window).load(function() {
+$(window).on("load", function() {
   $('.slider1').flexslider({ 
     animation: "slide",
     start: function(slider){

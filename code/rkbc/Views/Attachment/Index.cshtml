@@ -1,4 +1,4 @@
-﻿
+﻿@model rkbc.web.viewmodels.HomeAttachmentIndexViewModel
 @{
     ViewData["Title"] = "Edit";
 }
@@ -6,122 +6,94 @@
 <h1>Edit</h1>
 <script>
     $(function () {
-        var HomeAttachmentViewModel = function (data, parentGrid) {
-            var data = data || {};
-            var self = ko.mapping.fromJS(data);
+        var HomeAttachmentViewModel = function (dataJS) {
+            var data = dataJS || {};
+            var self = this;
+            self = ko.mapping.fromJS(dataJS);
+            //var self = this;
+            //self.id = ko.observable(dataJS.id);
+            //self.url = ko.observable(dataJS.url);
+            //self.sectionId = ko.observable(dataJS.sectionId);
             //Validation
-
-            self.viewPopped = function () { };
-            self.saveServer = function () {
-                ko.rkbcPost({
-                    viewModel: self,
-                    url: 'Attachment/SaveRecord/' + self.id,
-                    success: function (data) {
-                        self.id(data.id);
-                        self.sectionId(data.sectionId);
-                        self.originalFileName(data.originalFileName);
-                        self.fileName(data.fileName);
-                        self.url(data.url);
-                    }
-                });
-            };
-            self.deleteServer = function () {
-                ko.rkbcPost({
-                    viewModel: self,
-                    url: 'Attachment/DeleteRecord/' + self.id,
-                    success: function (data) {
-                        parentGrid.deleteItem(self);
-                    }
-                });
-            };
             return (self);
+            
         };
 
-        var vm = new ko.GridViewModel({
-            pageEnabled: false,
-            ctor: HomeAttachmentViewModel,
-            indexUrl: '/Attachment/GetRecords',
-            getUrl: '/Attachment/GetRecord'
-        });
-        vm.addFile = function (data, e) {
-            var fileEle = $("#upload");
-            fileEle.click();
-            fileEle.change(function (e) {
-                var file = this.files[0];
-                if (file)
-                {
-                    var form = new FormData();
-                    form.append("image", file);
-                    $.ajax({
-                        type: "post",
-                        url: "/Attachment/SaveRecord",
-                        processData: false,
-                        contentType: false,
-                        xhr: function () {
-                            // get the native XmlHttpRequest object
-                            var xhr = $.ajaxSettings.xhr();
-                            // set the onprogress event handler
-                            xhr.upload.onprogress = function (e) {
-                                var percentComplete = (e.loaded / e.total) * 100;
-                                $(progressBar).val(percentComplete);
-                            };
-                            // return the customized object
-                            return xhr;
-                        }
-                    }).done(function (data, textStatus, jqXHR) {
-                        if (data.success) {
-                            fileEle.val(null);
-                            var newItem = new HomeAttachmentViewModel(data.item);
-                            vm.addItem(newitem);
-                        } else {
+        var MainVM = function (data) {
+            var self = this;
+            self.items = ko.observableArray([]);
+            //self.sectionlist = data.sectionList;
+            self.sectionlist = [{id:105, name:"Home Gallery"}]
 
-                        }
-                        
-                    });
-                        
-
-                }
+            var data = $.map(data, function (el) {
+                return new HomeAttachmentViewModel(el);
             });
-
-        };  
-            
+            self.items(data);
+            //for (var i = 0; i < data.length; i++){
                 
-        vm.initializeData(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.InitialData)));
-        ko.applyBindings(vm);
+            //    self.items.push(new HomeAttachmentViewModel(data[i]));
+            //}
+            
+
+            self.addItem = function (item) {
+                self.push(new HomeAttachmentViewModel(item));
+            }
+            self.sortByName = function() {
+                self.items.sort(function(a, b) {
+                    return a.name < b.name ? -1 : 1;
+                });
+            };
+
+           
+
+            };  
+            
+            
+   
+        
+        
+            
+        
+        var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.InitialData));
+        ko.applyBindings(new MainVM(data));
     });
 </script>
-
 <div>
     <div>
-        <table>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>File Name</th>
-                    <th>Is on Gallery</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- ko foreach: {data:items}-->
-                <tr>
-                    <td><input type="hidden" data-bind="value:id" /></td>
-                    <td data-bind="text:originalFileName"></td>
-                    <td><img style="width:50px;" data-bind="attr:{src:url}"/></td>
-                    <td>
+        
+    </div>
+    <ul class="portfolio">
+        <!-- ko foreach: items -->
+        <li>
+            <article class="span3 project" data-tags="photography">
+                <div class="square-1">
+                    <div class="img-container">
+                        <input type="text" data-bind="value:id">
+                        <img data-bind="attr:{src:url}" alt="">
+                        <div class="img-bg-icon"></div>
+                    </div>
+                    <p>
+                        <select data-bind="options: $parent.sectionList,
+                            optionsText: 'name',
+                            optionsValue: 'id',
+                            value: sectionId,
+                            optionsCaption: 'Select...'"></select>
+                    </p>
+                    <div>
                         <button data-bind="saveServer">Edit</button>
                         <button data-bind="deleteServer">Delete</button>
-                    </td>
-                </tr>
-                <!--/ko-->
-            </tbody>
-        </table>
-        <div>
-            <input id="upload" type="file" style="display:none;"/>
-            <button data-bind="click:addFile">Upload File</button>
-        </div>
-    </div>
+                    </div>
+                </div>
+
+
+            </article>
+
+        </li>
+        <!--/ko-->
+    </ul>
 </div>
+
+    
 
 
 

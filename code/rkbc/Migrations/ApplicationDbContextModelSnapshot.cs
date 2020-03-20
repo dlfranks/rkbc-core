@@ -257,6 +257,12 @@ namespace rkbc.Migrations
                     b.Property<string>("caption")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("createDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("createUser")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("fileName")
                         .HasColumnType("nvarchar(max)");
 
@@ -265,6 +271,12 @@ namespace rkbc.Migrations
 
                     b.Property<bool>("isOn")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("lastUpdDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("lastUpdUser")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("originalFileName")
                         .HasColumnType("nvarchar(max)");
