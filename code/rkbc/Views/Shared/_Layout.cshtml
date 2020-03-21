@@ -22,7 +22,7 @@
 
     <!-- Styles -->
     <link href="~/css/styles.css" rel="stylesheet" />
-    <link href="~/css/site.css" rel="stylesheet" />
+
     <link href="~/css/bootstrap-override.css" rel="stylesheet" />
 
     <!-- Font Avesome Styles -->
@@ -30,19 +30,19 @@
 
     <link rel="stylesheet" href="~/css/flexslider.css" type="text/css" media="screen" />
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.css" />
-
+    <link href="~/css/site.css" rel="stylesheet" />
     <!-- JavaScripts -->
     <script type="text/javascript" src="~/js/jquery-3.4.1.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="~/js/bootstrap.min.js"></script>
 
     <script type="text/javascript" defer src="~/js/jquery.flexslider.js"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js" asp-append-version="false"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.js" asp-append-version="false"></script>
-    
+
     <script src="~/js/knockout.validation.js" asp-append-version="false"></script>
-    
+
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.js"></script>
     <script src="~/js/knockout.rkbc.js" asp-append-version="false"></script>
@@ -129,13 +129,13 @@
                 </div>
 
             </div>
-            <div class="row space40"></div>
+            
 
         </div>
     </header>
     <!-- Header End -->
     <div class="container">
-        <partial name="_CookieConsentPartial" />
+        @*<partial name="_CookieConsentPartial" />*@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

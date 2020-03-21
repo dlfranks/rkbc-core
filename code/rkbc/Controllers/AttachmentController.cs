@@ -19,11 +19,17 @@ namespace rkbc.web.viewmodels
 
     public class HomeAttachmentIndexViewModel
     {
-        public object[] sectionList { get; set; }
-        public List<HomeAttachmentViewModel> items { get; set; }
-        public int getRecordCount { get; set; }
-        public int getStartRecord { get; set; }
-        
+        public string status { get; set; }
+        public string search { get; set; }
+        public DateTime? fromDate { get; set; }
+        public DateTime? toDate { get; set; }
+
+        public int? getStartRecord { get; set; }
+        public int? getRecordCount { get; set; }
+
+        public string sortkey { get; set; }
+        public int? sortdir { get; set; }
+
     }
     public class HomeAttachmentViewModel
     {
@@ -34,7 +40,7 @@ namespace rkbc.web.viewmodels
         public string fileName { get; set; }
         public string caption { get; set; }
         public bool isOn { get; set; }
-        public IFormFile image { get; set; }
+        
 
     }
 
@@ -53,48 +59,47 @@ namespace rkbc.web.controllers
             
         }
         // GET: Attachment
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            var vm = new HomeAttachmentIndexViewModel();
-            var lst = await unitOfWork.homeAttachments.get().Where(q => q.sectionId == (int)SectionEnum.Home_Gallery)
-                .Select(q => new HomeAttachmentViewModel
+            HomeAttachmentIndexViewModel vmodel = loadPagePref<HomeAttachmentIndexViewModel>(defaultPref: () =>
+            {
+                return new HomeAttachmentIndexViewModel
                 {
-                    id = q.id,
-                    sectionId = (int)SectionEnum.Home_Gallery,
-                    fileName = q.fileName,
-                    originalFileName = q.originalFileName,
-                    url = fileHelper.generateAssetURL("gallery", q.fileName, true)
-                }).ToListAsync();
-            vm.sectionList = new object[]
-                {
-                    new { id =(int)SectionEnum.Home_Gallery, name = EnumHelper.GetDiscription<SectionEnum>(SectionEnum.Home_Gallery)}
+                    getStartRecord = 0,
+                    getRecordCount = 5,
+                    status = "incomplete",
+                    sortkey = "project",
+                    sortdir = 1
                 };
-
-            vm.items = lst;
-            vm.getStartRecord = 0;
-            vm.getRecordCount = 5;
-            ViewBag.InitialData = lst;
-            return View(vm);
+            });
+            ViewBag.sectionList = new object[]
+               {
+                    new { id =(int)SectionEnum.Home_Gallery, name = EnumHelper.GetDiscription<SectionEnum>(SectionEnum.Home_Gallery)}
+               };
+            return View(vmodel);
         }
 
         // GET: Attachment/Details/5
-        public async Task<JsonResult> GetRecords()
+        public async Task<JsonResult> GetRecords(HomeAttachmentIndexViewModel vmodel)
         {
-            var lst = await unitOfWork.homeAttachments.get().Where(q => q.sectionId == (int)SectionEnum.Home_Gallery)
+            int serverCount = 0;
+            //Save settings            
+            savePagePref(vmodel);
+            var query = unitOfWork.homeAttachments.get();
+            serverCount = query.Count();
+            var lst = await query
+                .Skip(vmodel.getStartRecord.Value).Take(vmodel.getRecordCount.Value)
                 .Select(q => new HomeAttachmentViewModel { 
                     id = q.id,
                     sectionId = (int)SectionEnum.Home_Gallery,
+                    isOn = q.isOn,
                     fileName = q.fileName,
                     originalFileName = q.originalFileName,
                     url = fileHelper.generateAssetURL("gallery", q.fileName, true)
                 }).ToListAsync();
-            ViewBag.sectionList = new object[]
-                {
-                    new { id =(int)SectionEnum.Home_Gallery, name = EnumHelper.GetDiscription<SectionEnum>(SectionEnum.Home_Gallery)}
-                };
-                
             
-            return Json(lst);
+            
+            return Json(new { items =lst, itemServerCount = serverCount });
         }
 
         // GET: Attachment/Create
@@ -105,12 +110,48 @@ namespace rkbc.web.controllers
             
             return Json(model);
         }
+        // POST: Attachment/Edit
+        [HttpPost]
+        public async Task<JsonResult> UpdateAttachment([FromBody]HomeAttachmentViewModel model)
+        {
+            var homePageId = 3;
+            List<string> errmsg = new List<string>();
+            List<string> succmsg = new List<string>();
+            HomeAttachment modelObj = new HomeAttachment();
+            
+            if ((!ModelState.IsValid) || (model.id == 0))
+            {
+                errmsg.Add("Unabled to update the image.");
+            }
+            else
+            {
 
+                modelObj = await unitOfWork.homeAttachments.get(model.id).FirstOrDefaultAsync();
+                if (modelObj == null) errmsg.Add("Unabled to update the image.");
+                unitOfWork.homeAttachments.update(modelObj);
+                modelObj.isOn = model.isOn;
+                modelObj.sectionId = model.sectionId;
+                var success = await unitOfWork.tryCommitAsync();
+                if (success) succmsg.Add("Updated.");
+                else errmsg.Add("unabled to update the image.");
+
+            }
+            var strerrmsg = ""; if (errmsg.Count() > 0) foreach (var s in errmsg) strerrmsg += "<p class=\"error\">" + s + "</p>";
+            var strsuccmsg = ""; if (succmsg.Count() > 0) foreach (var s in succmsg) strsuccmsg += "<p>" + s + "</p>";
+            var result = new
+            {
+                success = errmsg.Count == 0,
+                isOn = modelObj.isOn,
+                sectionId = modelObj.sectionId,
+                errmsg = strerrmsg,
+                succmsg = strsuccmsg,
+            };
+            return Json(result);
+        }
         // POST: Attachment/Create
         [HttpPost]
-        public async Task<JsonResult> SaveAttachment(IFormFile image)
+        public async Task<JsonResult> CreateAttachment(IFormFile image)
         {
-            
             var homePageId = 3;
             List<string> errmsg = new List<string>();
             List<string> succmsg = new List<string>();
@@ -183,6 +224,7 @@ namespace rkbc.web.controllers
                 item = new {
                     id = modelObj.id,
                     sectionId = modelObj.sectionId,
+                    isOn = modelObj.isOn,
                     originalFileName = modelObj.originalFileName,
                     fileName = modelObj.fileName,
                     caption = modelObj.caption,

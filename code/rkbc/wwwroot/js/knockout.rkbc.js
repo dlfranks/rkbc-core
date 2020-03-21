@@ -1,4 +1,22 @@
-﻿//JQuery UI button enable/disable functionality
+﻿//http://www.knockmeout.net/2011/05/creating-smart-dirty-flag-in-knockoutjs.html
+ko.dirtyFlag = function (root, isInitiallyDirty) {
+    var result = function () { },
+        _initialState = ko.observable(ko.toJSON(root)),
+        _isInitiallyDirty = ko.observable(isInitiallyDirty);
+
+    result.isDirty = ko.computed(function () {
+        return _isInitiallyDirty() || _initialState() !== ko.toJSON(root);
+    });
+
+    result.reset = function () {
+        _isInitiallyDirty(false);
+        _initialState(ko.toJSON(root));
+    };
+
+    return result;
+};
+
+//JQuery UI button enable/disable functionality
 //http://stackoverflow.com/questions/15708249/knockout-disable-binding-is-not-working-with-jquery-ui-button
 ko.bindingHandlers.jqButton = {
     init: function (element, valueAccessor, allBindingsAccessor) {

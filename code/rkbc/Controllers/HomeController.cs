@@ -29,6 +29,10 @@ namespace rkbc.web.viewmodels
         public int sectionId { get; set; }
         public string content { get; set; }
     }
+    public class HomeImageUrl
+    {
+        public string imageUrl { get; set; }
+    }
     public class HomePageViewModel
     {
         public HomePageViewModel()
@@ -58,7 +62,9 @@ namespace rkbc.web.viewmodels
         public virtual List<HomeContentItemViewModel> churchAnnouncements { get; set; }
         public virtual List<HomeContentItemViewModel> memberAnnouncements { get; set; }
         public virtual List<HomeContentItemViewModel> schoolAnnouncements { get; set; }
-        
+        public virtual List<HomeImageUrl> attachments { get; set; }
+        public int oneThird { get; set; }
+        public int twoThird { get; set; }
     }
 }
 namespace rkbc.web.Controllers
@@ -86,7 +92,15 @@ namespace rkbc.web.Controllers
             modelObj = await unitOfWork.homePages.get(id).Include("announcements").FirstOrDefaultAsync();
             
             var vm = setupViewModel(modelObj, FormViewMode.View);
-
+            vm.attachments = await unitOfWork.homeAttachments.get().Where(q => q.sectionId == (int)SectionEnum.Home_Gallery && q.isOn == true)
+                    .Select(q => new HomeImageUrl
+                    {
+                        imageUrl = fileHelper.generateAssetURL("gallery", q.fileName, true)
+                    }
+                ).ToListAsync();
+            
+            vm.oneThird = (int)vm.attachments.Count / 3;
+            vm.twoThird = (int)((vm.attachments.Count * 2) / 3);
             return View(vm);
         }
         protected void acceptPost(HomePage modelObj, HomePageViewModel model)

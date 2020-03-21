@@ -2,21 +2,61 @@
 @{
     ViewData["Title"] = "Edit";
 }
-
+<style>
+    .dirty-button {
+        background-color: orange;
+        color: white !important;
+    }
+</style>
 <h1>Edit</h1>
 <script>
     $(function () {
         var HomeAttachmentViewModel = function (parentGrid, dataJS) {
             var data = dataJS || {};
             var self = this;
-            self = ko.mapping.fromJS(data);
+            self = ko.mapping.fromJS(dataJS);
             //var self = this;
             //self.id = ko.observable(dataJS.id);
             //self.url = ko.observable(dataJS.url);
             //self.sectionId = ko.observable(dataJS.sectionId);
+            //self.originalFileName = ko.observable(dataJS.originalFileName);
+            //self.fileName = ko.observable(dataJS.fileName);
+            //self.caption = ko.observable(dataJS.caption);
+            //self.isOn = ko.observable(dataJS.isOn);
             //Validation
-            return (self);
             
+            //Dirty
+            self.dirtyFlag = new ko.dirtyFlag(self, !self.id());
+            self.updateServer = function () {
+                ko.rkbcPost({
+                    viewModel: self,
+                    url: '/Attachment/UpdateAttachment/' + self.id(),
+                    success: function (data) {
+                        self.isOn = data.isOn;
+                        self.sectionId = data.sectionId;
+                        self.dirtyFlag.reset();
+                        
+                    }
+                });
+            };
+            self.deleteServer = function () {
+                if (self.id()) {
+                    if (confirm('Are you sure you wish to delete this image?')) {
+                        ko.rkbcPost({
+                    viewModel: self,
+                    url: '/Attachment/DeleteRecord/' + self.id(),
+                            success: function (result) {
+                                if (result.success) {
+                                    parentGrid.deleteItem(self);
+                                }
+                        
+                    }
+                });
+                    }
+                }
+                
+            }
+            return (self);
         };
 
         var vm = new ko.GridViewModel({
@@ -27,7 +67,7 @@
             currentPage: @(Model.getStartRecord/Model.getRecordCount),
             sortable: {}
         });  
-
+        
         vm.addFile = function () {
                 var fileEle = $("#upload");
                 fileEle.click();
@@ -39,7 +79,7 @@
                         form.append("image", file);
                         $.ajax({
                             type: "post",
-                            url: "/Attachment/SaveAttachment",
+                            url: "/Attachment/CreateAttachment",
                             data: form,
                             processData: false,
                             contentType: false,
@@ -55,6 +95,8 @@
                             error: function (request, error) {
                                 alert("Request: "+JSON.stringify(request));
                             }
+                        }).done(function () {
+                            
                         });  
 
                     }
@@ -66,52 +108,75 @@
         
         
             
-
-        vm.initializeData(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.InitialData)));
+        vm.loadPage();
+        vm.sectionList = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.sectionList));
         ko.applyBindings(vm);
     });
 </script>
-<div>
-    <div>
-        <input type="file" id="upload" style="display:none;"/>
-        <button data-bind="click:addFile">Add New</button>
-    </div>
-    <ul class="portfolio">
-        <!-- ko foreach: items -->
-        <li>
-            <article class="span3 project" data-tags="photography">
-                <div class="square-1">
-                    <div class="img-container">
-                        <input type="text" data-bind="value:id">
-                        <img data-bind="attr:{src:url}" alt="">
-                        <div class="img-bg-icon"></div>
-                    </div>
-                    <p>
-                        <select data-bind="options: $parent.sectionList,
-                            optionsText: 'name',
-                            optionsValue: 'id',
-                            value: sectionId,
-                            optionsCaption: 'Select...'"></select>
-                    </p>
-                    <div>
-                        <button data-bind="saveServer">Edit</button>
-                        <button data-bind="deleteServer">Delete</button>
-                    </div>
+
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div style="margin-left:10px;">
+                    <input type="file" id="upload" style="display:none;" />
+                    <button data-bind="click:addFile">Add New</button>
                 </div>
+                <section id="portfolio-items">
+
+                    <div class="row">
+                        <ul class="portfolio">
+                            <!-- ko foreach: items -->
+                            <li class="span3">
+                                <article class="project" data-tags="photography" style="margin:10px;">
+                                    <div class="square-1" style="text-align:center;">
+                                        <div class="">
+                                            <label style="color:#3b3b3b;">
+                                                <input type="checkbox" data-bind="checked:isOn" class="checkbox " /> Display
+                                            </label>
+                                        </div>
+                                        <div class="img-container">
+                                            <input type="text" data-bind="value:id" style="display:none;">
+                                            <img data-bind="attr:{src:url}">
+
+                                        </div>
+                                        <p>
+                                            <select data-bind="options: $parent.sectionList,
+                                                optionsText: 'name',
+                                                optionsValue: 'id',
+                                                value: sectionId,
+                                                optionsCaption: 'Select...'"></select>
+                                        </p>
+                                        <div>
+                                            <button data-bind="css:{'dirty-button':dirtyFlag.isDirty()}, click:updateServer">Edit</button>
+                                            <button data-bind="click:deleteServer">Delete</button>
+                                        </div>
+                                    </div>
 
 
-            </article>
+                                </article>
 
-        </li>
-        <!--/ko-->
-    </ul>
+                            </li>
+                            <!--/ko-->
+                        </ul>
+                    </div>
+                </section>
+                <div style="margin-left:10px;">
+                    <button class="btn btn-blue" data-bind="click: prevPage, jqButton: { disabled: !prevPageEnabled() }">Prev</button>
+                    <button class="btn btn-blue" data-bind="click: nextPage, jqButton: { disabled: !nextPageEnabled() }">Next</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
 </div>
-<div>
-    <input type="button" value="Prev" data-bind="click: prevPage, jqButton: { disabled: !prevPageEnabled() }" class="makeButton" />
-    <input type="button" value="Next" data-bind="click: nextPage, jqButton: { disabled: !nextPageEnabled() }" class="makeButton" />
-</div>
+
+
 
     
+
+
 
 
 
