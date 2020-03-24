@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -57,14 +56,13 @@ namespace rkbc.web.viewmodels
         [Display(Name = "School Title")]
         public string schoolAnnounceTitle { get; set; }
         [Display(Name = "Youtube Link for the Sermon of the Week")]
-        public string sundayServiceVideoUrl { get; set;}
+        public string sundayServiceVideoUrl { get; set; }
         public string embedVideoUrl { get; set; }
         public virtual List<HomeContentItemViewModel> churchAnnouncements { get; set; }
         public virtual List<HomeContentItemViewModel> memberAnnouncements { get; set; }
         public virtual List<HomeContentItemViewModel> schoolAnnouncements { get; set; }
         public virtual List<HomeImageUrl> attachments { get; set; }
-        public int oneThird { get; set; }
-        public int twoThird { get; set; }
+        public int numLi { get; set; }
     }
 }
 namespace rkbc.web.Controllers
@@ -73,13 +71,12 @@ namespace rkbc.web.Controllers
     {
         public UserManager<ApplicationUser> userManager;
         public SignInManager<ApplicationUser> signinManager;
-        public IMapper mapper;
-        public FileHelper fileHelper;
-        public HomeController(IUnitOfWork _unitOfWork, IMapper _mapper, FileHelper _fileHelper,
+       public FileHelper fileHelper;
+        public HomeController(IUnitOfWork _unitOfWork,FileHelper _fileHelper,
                                 UserManager<ApplicationUser> _userManager, UserService _userService,
                                 SignInManager<ApplicationUser> _signinManager) : base(_unitOfWork, _userService)
         {
-            this.mapper = _mapper;
+            
             this.fileHelper = _fileHelper;
             this.userManager = _userManager;
             this.signinManager = _signinManager;
@@ -87,7 +84,7 @@ namespace rkbc.web.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            int id = 3;
+            int id = 9;
             HomePage modelObj = new HomePage();
             modelObj = await unitOfWork.homePages.get(id).Include("announcements").FirstOrDefaultAsync();
             
@@ -95,12 +92,12 @@ namespace rkbc.web.Controllers
             vm.attachments = await unitOfWork.homeAttachments.get().Where(q => q.sectionId == (int)SectionEnum.Home_Gallery && q.isOn == true)
                     .Select(q => new HomeImageUrl
                     {
-                        imageUrl = fileHelper.generateAssetURL("gallery", q.fileName, true)
+                        imageUrl = fileHelper.generateAssetURL("gallery", q.fileName)
                     }
                 ).ToListAsync();
             
-            vm.oneThird = (int)vm.attachments.Count / 3;
-            vm.twoThird = (int)((vm.attachments.Count * 2) / 3);
+            vm.numLi = vm.attachments.Count / 6;
+            
             return View(vm);
         }
         protected void acceptPost(HomePage modelObj, HomePageViewModel model)
@@ -198,7 +195,7 @@ namespace rkbc.web.Controllers
                 memberAnnounceTitle = model.memberAnnounceTitle,
                 schoolAnnounceTitle = model.schoolAnnounceTitle,
                 sundayServiceVideoUrl = model.sundayServiceVideoUrl,
-                embedVideoUrl = fileHelper.youtubeEmbedUrl(model.sundayServiceVideoUrl),
+                embedVideoUrl = fileHelper.youtubeEmbedUrl(model.sundayServiceVideoUrl) == null? "" : fileHelper.youtubeEmbedUrl(model.sundayServiceVideoUrl),
                 
                 
             };

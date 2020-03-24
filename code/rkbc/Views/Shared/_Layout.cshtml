@@ -22,7 +22,7 @@
 
     <!-- Styles -->
     <link href="~/css/styles.css" rel="stylesheet" />
-
+  
     <link href="~/css/bootstrap-override.css" rel="stylesheet" />
 
     <!-- Font Avesome Styles -->
@@ -71,42 +71,42 @@
                         <a href="#" title="Hide navigation">Hide navigation</a>
 
                         <ul class="clearfix">
-                            @if (ViewBag.UserSettings != null && ViewBag.UserSettings.isAdmin)
+                            @if (ViewBag.UserSettings !=null && ViewBag.UserSettings.userId != null && ViewBag.UserSettings.isAdmin)
                             {
                                 <li class="active">
-                                    <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                                    <a class="nav-link text-dark" href="/">Home</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit" asp-route-id="3">Edit</a></li>
-                                        <li><a class="nav-link text-dark" asp-controller="Attachment" asp-action="Index">Gallery</a></li>
+                                        <!--Test Id = 3 or 9-->
+                                        <li><a class="nav-link text-dark" href="@Url.Action("Edit", "Home", new {id=9 })">Edit</a></li>
+                                        <li><a class="nav-link text-dark" href="/Attachment/Index">Gallery</a></li>
                                     </ul>
                                 </li>
                                 <li>
                                     <a href="comming.html" title="">목회자 칼럼</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" href="/Home/Edit/9">Edit</a></li>
                                         <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
                                     </ul>
                                 </li>
                                 <li>
                                     <a href="comming.html" title="">예배 안내</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" href="/Home/Edit/9">Edit</a></li>
                                         <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
                                     </ul>
                                 </li>
                                 <li>
                                     <a href="comming.html" title="">한국학교</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" href="/Home/Edit/9">Edit</a></li>
                                         <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
                                     </ul>
                                 </li>
                                 <li>
                                     <a href="comming.html" title="">Contact</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit</a></li>
-                                        <li><a class="nav-link text-dark" asp-controller="Administration" asp-action="Index">Gallery</a></li>
-                                        <li><a class="nav-link text-dark" asp-controller="Roles" asp-action="Index">Roles</a></li>
+                                        <li><a class="nav-link text-dark" href="/Administration/Index">Administration</a></li>
+                                        <li><a class="nav-link text-dark" href="/Roles/Index">Roles</a></li>
                                         <partial name="_LoginPartial" />
                                     </ul>
                                 </li>
@@ -115,7 +115,7 @@
                             }
                             else
                             {
-                                <li class="active"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                <li class="active"><a href="/">Home</a></li>
                                 <li><a  asp-controller="Pastor" asp-action="Index">목회자 칼럼</a></li>
                                 <li><a  asp-controller="Service" asp-action="Index">예배 안내</a></li>
                                 <li><a  asp-controller="School" asp-action="Index">한국학교</a></li>
@@ -149,7 +149,7 @@
                 <div class="row space30"></div>
                 <ul class="actions">
                     <li><i class="icon-phone"></i>+01 919 389 7482</li>
-                    <li><i class="icon-envelope"></i><a href="mailto:support@example.com">support@example.com</a></li>
+                    <li><i class="icon-envelope"></i><a href="mailto:eunyoung2u@hotmail.com">eunyoung2u@hotmail.com</a></li>
                     <li><i class="icon-home"></i><a href="http://rkbc.us">www.rkbc.us</a></li>
                     <li><i class="icon-facebook"></i><a href="https://www.facebook.com/pg/RaleighKoreanChurch/">Facebook</a></li>
                 </ul>

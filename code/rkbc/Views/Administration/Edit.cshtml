@@ -18,7 +18,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="@(ViewBag.formViewMode == FormViewMode.Create? "Create" : "Edit")">
+        <form method="post" action="@(ViewBag.formViewMode == FormViewMode.Create? "/Administration/Create" : "/Administration/Edit")">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <input type="hidden" asp-for="id" class="form-control" />
@@ -78,7 +78,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a href="/Administration/Index">Back to List</a>
 </div>
 
 

@@ -131,7 +131,7 @@
                 United States<br>
                 <br>
                 <i class="icon-phone"></i>(919) 389-7551<br>
-                <i class="icon-envelope"></i>support@example.com<br>
+                <i class="icon-envelope"></i>eunyoung2u@hotmail.com<br>
 
 
                 <div class="row space40"></div>
@@ -152,62 +152,58 @@
                 $('.slider2').flexslider({
                     animation: "slide",
                     slideshow: false,
-                    animationLoop: false    
-                  });
+                    animationLoop: false
+                });
             });
         </script>
         <div id="our-clients" class="slider2 flexslider">
             <ul class="slides">
-                <li>
-                    <div class="row">
-                        @for (int i = 0; i < Model.oneThird; i++)
-                        {
-                             <div class="span4">
-                                <div class="square-1">
-                                    <a href="#" rel="external">
-                                        <img src="@Url.Content(Model.attachments[i].imageUrl)" alt="">
-                                    </a>
+
+                @for (int j = 0; j <= Model.numLi; j++)
+                {
+                    <li>
+                        <div class="row">
+                            @for (int i = 0; i < 3; i++)
+                            {
+                                <div class="span4">
+                                    <div class="square-1">
+                                        <a href="#" rel="external">
+                                            @if ((j * 6 + i) < Model.attachments.Count)
+                                            {
+                                                <img src="@Url.Content(Model.attachments[j *6 + i].imageUrl)" alt="">
+                                            }
+
+                                        </a>
+                                    </div>
                                 </div>
-                             </div>
-
-                        }
-                    </div>
-                </li>
-                <li>
-                    <div class="row">
-                       
-                        @for (int i = Model.oneThird; i < Model.twoThird; i++)
-                        {
-                            <div class="span4">
-                                <div class="square-1">
-                                    <a href="#" rel="external">
-                                        <img src="@Url.Content(Model.attachments[i].imageUrl)" alt="">
-                                    </a>
+                            }
+                        </div>
+                        <div class="row">
+                            @for (int i = 3; i < 6; i++)
+                            {
+                                <div class="span4">
+                                    <div class="square-1">
+                                        <a href="#" rel="external">
+                                            @if ((j * 6 + i) < Model.attachments.Count)
+                                            {
+                                                <img src="@Url.Content(Model.attachments[j *6 + i].imageUrl)" alt="">
+                                            }
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
+                            }
+                        </div>
 
-                        }
-                    </div>
-                </li>
-                <li>
-                    <div class="row">
 
-                        @for (int i = Model.twoThird; i < Model.attachments.Count; i++)
-                        {
-                            <div class="span4">
-                                <div class="square-1">
-                                    <a href="#" rel="external">
-                                        <img src="@Url.Content(Model.attachments[i].imageUrl)" alt="">
-                                    </a>
-                                </div>
-                            </div>
 
-                        }
-                    </div>
+            </li>
+        }
 
-                </li>
-            </ul>
-        </div>
+
+
+
+                </ul>
+            </div>
         <!-- Our Clients End -->
 
         <div class="space50"></div>

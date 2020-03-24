@@ -212,9 +212,12 @@ namespace rkbc.core.helper
         
         public string youtubeEmbedUrl(string url)
         {
+
             if(!String.IsNullOrWhiteSpace(url))
             {
-                url = url.Split("v=")[1];
+                string[] s= url.Split("v=");
+                if (s.Length != 2) return null;
+                url = s[1];
             }
             return ("https://www.youtube.com/embed/" + url); 
         }

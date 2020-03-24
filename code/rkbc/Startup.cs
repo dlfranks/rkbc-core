@@ -22,10 +22,11 @@ using ElmahCore.Mvc;
 using ElmahCore.Sql;
 using ElmahCore.Mvc.Notifiers;
 using ElmahCore;
-using AutoMapper;
 using rkbc.core.helper;
 using rkbc.map.models;
 using rkbc.core.service;
+using System.IO;
+
 
 namespace rkbc
 {
@@ -34,6 +35,7 @@ namespace rkbc
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -47,7 +49,7 @@ namespace rkbc
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -76,16 +78,15 @@ namespace rkbc
             });
             services.ConfigureApplicationCookie(options =>
             {
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(100);
+                //options.Cookie.HttpOnly = true;
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(100);
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Administration/AccessDenied";
                 options.SlidingExpiration = true;
             });
             services.AddHttpContextAccessor();
-            services.AddAutoMapper(typeof(Startup));
             services.AddControllersWithViews();
-            //services.AddRazorPages();
+            services.AddRazorPages();
 
             //Ioc
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -97,7 +98,9 @@ namespace rkbc
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
-                //options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Strict;
                 options.Cookie.HttpOnly = true;
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
@@ -106,9 +109,9 @@ namespace rkbc
             {
                 //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
-            }).AddRazorRuntimeCompilation()
-              .AddXmlSerializerFormatters()
-              .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            }).AddXmlSerializerFormatters()
+            //.AddRazorRuntimeCompilation()
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             //ElmahCore
             EmailOptions emailOptions = new EmailOptions
             {
@@ -141,16 +144,17 @@ namespace rkbc
             {
                 app.UseDeveloperExceptionPage();
                 //app.UseDatabaseErrorPage();
-                
-
             }
             else
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+               // app.UseHsts();
             }
-            
+            //Testing for hosting process
+            //app.Run(async (context) => {
+            //    await context.Response.WriteAsync(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
+            //});
             app.UseHttpsRedirection();
             //app.UseDefaultFiles();
 
@@ -167,10 +171,11 @@ namespace rkbc
             
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                
             });
             
         }

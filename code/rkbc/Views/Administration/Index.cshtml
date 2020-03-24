@@ -12,7 +12,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">List</a>
+    <a action="/Administration/Create">List</a>
 </p>
 <p class ="error"style="color:red;">@TempData["errors"]</p>
 <table class="table">
@@ -85,11 +85,12 @@
                     @Html.DisplayFor(modelItem => item.address1)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                       @Html.ActionLink("Edit", "Edit", new { id=item.id} )|
+                       @Html.ActionLink("Details", "Details", new { id=item.id} )|
+                       @Html.ActionLink("Delete", "Delete", new { id=item.id} )|
                 </td>
             </tr>
-        }
-    </tbody>
+                 
+}
+</tbody>
 </table>

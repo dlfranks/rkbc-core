@@ -78,7 +78,7 @@ namespace rkbc.web.viewmodels
 
 namespace rkbc.web.controllers
 {
-    
+    [Authorize(Roles = "Admin")]
     public class Administration : AppBaseController
     {
         private RoleManager<ApplicationRole> roleManager;
@@ -99,10 +99,11 @@ namespace rkbc.web.controllers
             signinManager = signinMag;
             _logger = logger;
         }
-        [Authorize(Roles = "User, Admin")]
-        public async Task<IActionResult> Logout()
+        [AllowAnonymous]
+        public IActionResult Logout()
         {
-            await signinManager.SignOutAsync();
+           
+            userService.logOffUser();
             return RedirectToAction("Index", "Home");
         }
         protected IQueryable<ApplicationUser> addModelIncludes(IQueryable<ApplicationUser> query)
@@ -177,7 +178,7 @@ namespace rkbc.web.controllers
 
             return View(users);
         }
-        [Authorize(Policy = "AdminRequired")]
+        
         public async Task<IActionResult> Create()
         {
             //permission
@@ -190,6 +191,8 @@ namespace rkbc.web.controllers
             var vm = await setupViewModel(user, FormViewMode.Create);
             return View("Edit",vm);
         }
+
+        
         [HttpPost]
         public async Task<IActionResult> Create(IFormCollection form)
         {
@@ -236,7 +239,7 @@ namespace rkbc.web.controllers
 
             return View("Edit", vm);
         }
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<IActionResult> Details(string id, FormViewMode mode = FormViewMode.View)
         {
             var query = addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id));
@@ -244,7 +247,7 @@ namespace rkbc.web.controllers
             var vm = await setupViewModel(user, mode);
             return View("Details", vm);
         }
-        [Authorize(Roles = "User")]
+        
         public async Task<IActionResult> Edit(string id)
         {
             var user = await addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id)).FirstOrDefaultAsync();
@@ -252,9 +255,9 @@ namespace rkbc.web.controllers
             var vm = await setupViewModel(user, FormViewMode.Edit);
             return View("Edit", vm);
         }
-        [Authorize(Roles = "User")]
+        
         [HttpPost]
-        public async Task<IActionResult> Edit(IFormCollection formCollection)
+        public async Task<IActionResult> Edit()
         {
             var vModel = new AppUserViewModel();
             await TryUpdateModelAsync<AppUserViewModel>(vModel);

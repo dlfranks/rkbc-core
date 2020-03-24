@@ -66,7 +66,7 @@ namespace rkbc.web.controllers
                 return new HomeAttachmentIndexViewModel
                 {
                     getStartRecord = 0,
-                    getRecordCount = 5,
+                    getRecordCount = 80,
                     status = "incomplete",
                     sortkey = "project",
                     sortdir = 1
@@ -152,7 +152,7 @@ namespace rkbc.web.controllers
         [HttpPost]
         public async Task<JsonResult> CreateAttachment(IFormFile image)
         {
-            var homePageId = 3;
+            var homePageId = 9;
             List<string> errmsg = new List<string>();
             List<string> succmsg = new List<string>();
             HomeAttachment modelObj = new HomeAttachment();

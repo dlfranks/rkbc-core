@@ -75,6 +75,8 @@
     </dl>
 </div>
 <div>
-    <a asp-action="@(ViewBag.FormViewMode == FormViewMode.Delete? "DeleteConfirmed": "Edit")" asp-route-id="@Model.id">@(ViewBag.FormViewMode == FormViewMode.Delete ? "Delete" : "Edit")</a> |
-    <a asp-action="Index">Back to List</a>
+    <a href="@(ViewBag.FormViewMode == FormViewMode.Delete? ("/Administration/DeleteConfirmed/" + Model.id): ("/Administration/Edit/" + Model.id))">
+        @(ViewBag.FormViewMode == FormViewMode.Delete ? ("Delete") : ("Edit"))
+    </a> |
+    <a href="/Administration/Index">Back to List</a>
 </div>

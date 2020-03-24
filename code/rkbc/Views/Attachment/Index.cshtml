@@ -69,11 +69,8 @@
         });  
         
         vm.addFile = function () {
-                var fileEle = $("#upload");
-                fileEle.click();
-                fileEle.change(function (e) {
-                    e.preventDefault();
-                    var file = this.files[0];
+                var fileEle = $("#upload")
+                var file = fileEle[0].files[0];
                     if (file) {
                         var form = new FormData();
                         form.append("image", file);
@@ -100,11 +97,12 @@
                         });  
 
                     }
-                });
 
             };  
             
-   
+        vm.clickUploadBtn = function () {
+            $("#upload").click();
+        };
         
         
             
@@ -119,8 +117,8 @@
         <div class="row">
             <div class="span12">
                 <div style="margin-left:10px;">
-                    <input type="file" id="upload" style="display:none;" />
-                    <button data-bind="click:addFile">Add New</button>
+                    <input type="file" id="upload" data-bind="event:{change:addFile}" style="display:none;" />
+                    <button data-bind="click:clickUploadBtn, clickBubble: false">Add New</button>
                 </div>
                 <section id="portfolio-items">
 

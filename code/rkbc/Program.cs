@@ -3,33 +3,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 
 namespace rkbc
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            Log.Logger = new LoggerConfiguration()
+           .MinimumLevel.Debug()
+           .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+           .Enrich.FromLogContext()
+           .WriteTo.RollingFile("logs/log-{Date}.txt")
+           .CreateLogger();
+
+            try
+            {
+                Log.Information("Starting web host");
+                BuildWebHost(args).Run();
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+                return 1;
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureLogging((context, logging) => {
-                    logging.ClearProviders();
-                    logging.AddConfiguration(context.Configuration.GetSection("Logging"));
-                    logging.AddDebug();
-                    logging.AddConsole(options => {
-                        options.IncludeScopes = true;
-                    });
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        public static IWebHost BuildWebHost(string[] args) =>
+          WebHost.CreateDefaultBuilder(args)
+          .UseStartup<Startup>()
+              .UseSerilog() // <-- Add this line
+              .Build();
     }
 }

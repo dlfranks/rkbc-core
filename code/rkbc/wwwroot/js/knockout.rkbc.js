@@ -1,4 +1,15 @@
-﻿//http://www.knockmeout.net/2011/05/creating-smart-dirty-flag-in-knockoutjs.html
+﻿ko.bindingHandlers.stopBubble = {
+    init: function (element) {
+        ko.utils.registerEventHandler(element, "click", function (event) {
+            event.cancelBubble = true;
+            if (event.stopPropagation) {
+                event.stopPropagation();
+            }
+        });
+    }
+};
+
+//http://www.knockmeout.net/2011/05/creating-smart-dirty-flag-in-knockoutjs.html
 ko.dirtyFlag = function (root, isInitiallyDirty) {
     var result = function () { },
         _initialState = ko.observable(ko.toJSON(root)),
