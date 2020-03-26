@@ -92,7 +92,7 @@ namespace rkbc.web.controllers
                                         ILogger<Administration> logger,
                                         IUnitOfWork _unitOfWork,
                                         UserService _userService
-                                        ) :base(_unitOfWork, _userService)
+                                        ) : base(_unitOfWork, _userService)
         {
             roleManager = roleMag;
             userManager = userMag;
@@ -100,11 +100,15 @@ namespace rkbc.web.controllers
             _logger = logger;
         }
         [AllowAnonymous]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-           
-            userService.logOffUser();
-            return RedirectToAction("Index", "Home");
+            await userService.logOffUser();
+            return Redirect("~/Home/Index");
+
+        }
+        public IActionResult Test()
+        {
+            return Redirect("~/Home/Index");
         }
         protected IQueryable<ApplicationUser> addModelIncludes(IQueryable<ApplicationUser> query)
         {
@@ -239,7 +243,7 @@ namespace rkbc.web.controllers
 
             return View("Edit", vm);
         }
-        [Authorize(Roles = "User, Admin")]
+        
         public async Task<IActionResult> Details(string id, FormViewMode mode = FormViewMode.View)
         {
             var query = addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id));

@@ -63,7 +63,7 @@
             ko.applyBindings(new MainVM(data));
     });
 </script>
-<form href="/Home/Edit/@Model.id" method="post" enctype="multipart/form-data">
+<form method="post" action="/Home/Edit" enctype="multipart/form-data">
     <input asp-for="id" type="hidden" />
     <!-- Content -->
     <div class="">

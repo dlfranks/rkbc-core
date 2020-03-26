@@ -95,11 +95,11 @@ namespace rkbc.core.service
                 return us;
             }
         }
-        public void logOffUser()
+        public async Task logOffUser()
         {
             if(httpContext.Request != null && httpContext.Response != null)
             {
-                signinManger.SignOutAsync();
+                await signinManger.SignOutAsync();
                 httpContext.Session.Clear();
             }
         }

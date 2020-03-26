@@ -22,7 +22,7 @@ namespace rkbc.web.viewmodels
 
 namespace rkbc.web.controllers
 {
-    
+    [Authorize(Roles="Super User")]
     public class RolesController : AppBaseController
     {
         private readonly RoleManager<ApplicationRole> roleManager;
@@ -73,9 +73,9 @@ namespace rkbc.web.controllers
             return View("Role", model);
         }
 
-        public async Task<IActionResult> Edit(string name)
+        public async Task<IActionResult> Edit(string id)
         {
-            var role = await roleManager.FindByNameAsync(name);
+            var role = await roleManager.FindByIdAsync(id);
             ViewBag.formViewMode = FormViewMode.Edit ;
             return View("Role", new RoleViewModel() { roleId = role.Id, roleName = role.Name});
         }

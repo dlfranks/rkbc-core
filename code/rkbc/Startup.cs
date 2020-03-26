@@ -62,7 +62,7 @@ namespace rkbc
                 options.Password.RequireDigit = false;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 
-                })
+            })
                 .AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -86,7 +86,7 @@ namespace rkbc
             });
             services.AddHttpContextAccessor();
             services.AddControllersWithViews();
-            services.AddRazorPages();
+            //services.AddRazorPages();
 
             //Ioc
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -107,9 +107,10 @@ namespace rkbc
             });
             services.AddMvc(options =>
             {
+                options.EnableEndpointRouting = false;
                 //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
-            }).AddXmlSerializerFormatters()
+            })//.AddXmlSerializerFormatters()
             //.AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             //ElmahCore
@@ -149,11 +150,26 @@ namespace rkbc
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-               // app.UseHsts();
+                app.UseHsts();
             }
+            //app.Use(async (context, next) =>
+            //{
+            //    var url = context.Request.Path.Value;
+
+            //    // Rewrite to index
+            //    //if (url.Contains("/home/privacy"))
+            //    //{
+            //    //    // rewrite and continue processing
+            //    //    context.Request.Path = "/home/index";
+            //    //}
+
+            //    await next();
+            //});
             //Testing for hosting process
-            //app.Run(async (context) => {
-            //    await context.Response.WriteAsync(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
+            //app.Run(async (context) =>
+            //{
+            //    await context.Response.WriteAsync(context.Request.Path.Value);
+            //    //await context.Response.WriteAsync(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
             //});
             app.UseHttpsRedirection();
             //app.UseDefaultFiles();
@@ -168,16 +184,19 @@ namespace rkbc
             //Before UseEndpoints, so that users are authenticated before accessing the endpoints.
             app.UseAuthentication();
             app.UseAuthorization();
-            
+            app.UseMvc();
             app.UseEndpoints(endpoints =>
             {
+
+                //endpoints.MapControllers();
+                //endpoints.MapControllerRoute(
+                //    name: "default",
+                //    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                
+
             });
-            
+
         }
     }
 }

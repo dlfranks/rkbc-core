@@ -1,25 +1,23 @@
 @using rkbc.core.models
 @using Microsoft.AspNetCore.Identity
-@using rkbc.models.extension
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-
-
-@if (SignInManager.IsSignedIn(User))
-{
-    <li>
-        <a  class="nav-link text-dark" href="/Administration/Detauls/@ViewBag.UserSettings.userId"> @User.Identity.Name!</a>
-    </li>
-    <li>
-        <a  href="/Administration/Logout">Logout</a>
-    </li>
-}
-else
-{
-    <li>
-        <a asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li>
-        <a asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
+@if (User.Identity.IsAuthenticated)
+    {
+        <li>
+            <a class="nav-link text-dark" href="/Administration/Details/@ViewBag.UserSettings.userId"> @ViewBag.UserSettings.email!</a>
+        </li>
+        <li>
+            
+            <a href="@Url.Action("Logout", "Administration")">Logout</a>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li>
+            <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }

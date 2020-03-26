@@ -65,7 +65,7 @@ namespace rkbc.web.viewmodels
         public int numLi { get; set; }
     }
 }
-namespace rkbc.web.Controllers
+namespace rkbc.web.controllers
 {
     public class HomeController : AppBaseController
     {
@@ -82,11 +82,11 @@ namespace rkbc.web.Controllers
             this.signinManager = _signinManager;
 
         }
+        public const int homePageId = 9;
         public async Task<IActionResult> Index()
         {
-            int id = 9;
-            HomePage modelObj = new HomePage();
-            modelObj = await unitOfWork.homePages.get(id).Include("announcements").FirstOrDefaultAsync();
+           HomePage modelObj = new HomePage();
+            modelObj = await unitOfWork.homePages.get(homePageId).Include("announcements").FirstOrDefaultAsync();
             
             var vm = setupViewModel(modelObj, FormViewMode.View);
             vm.attachments = await unitOfWork.homeAttachments.get().Where(q => q.sectionId == (int)SectionEnum.Home_Gallery && q.isOn == true)
@@ -226,7 +226,7 @@ namespace rkbc.web.Controllers
             ViewBag.formViewMode = mode;
             return vm;
         }
-        [Authorize(Roles = "Admin")]
+        
         public async Task<IActionResult> Edit(int? id)
         {
             
@@ -247,7 +247,6 @@ namespace rkbc.web.Controllers
             return View(vm);
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit()
         {
             HomePageViewModel model = new HomePageViewModel();
@@ -281,7 +280,7 @@ namespace rkbc.web.Controllers
                 var success = await unitOfWork.tryUniqueConstraintCommitAsync();
                 if (success)
                 {
-                   return RedirectToAction("Index");
+                   return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError("", "Unable to update data.");
                 //Elmah error
