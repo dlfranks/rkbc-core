@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using rkbc.config.models;
 using rkbc.core.helper;
 using rkbc.core.models;
 using rkbc.core.repository;
 using rkbc.core.service;
-using rkbc.web.Helpers;
+using rkbc.web.helpers;
 using rkbc.web.viewmodels;
 
 namespace rkbc.web.viewmodels
@@ -51,12 +53,13 @@ namespace rkbc.web.controllers
     public class AttachmentController : AppBaseController
     {
         protected FileHelper fileHelper;
+        protected IOptions<RkbcConfig> rkbcSetting;
         public AttachmentController(IUnitOfWork _unitOfWork, UserService _userService, 
-                                    IWebHostEnvironment _env, FileHelper _fileHelper)
+                                    IWebHostEnvironment _env, FileHelper _fileHelper, IOptions<RkbcConfig> rkbcConfig)
                                     :base(_unitOfWork, _userService)
         {
             this.fileHelper = _fileHelper;
-            
+            rkbcSetting = rkbcConfig;
         }
         // GET: Attachment
         public ActionResult Index()
@@ -114,7 +117,7 @@ namespace rkbc.web.controllers
         [HttpPost]
         public async Task<JsonResult> UpdateAttachment([FromBody]HomeAttachmentViewModel model)
         {
-            var homePageId = 3;
+            var homePageId = rkbcSetting.Value.HomePageId;
             List<string> errmsg = new List<string>();
             List<string> succmsg = new List<string>();
             HomeAttachment modelObj = new HomeAttachment();
@@ -152,7 +155,7 @@ namespace rkbc.web.controllers
         [HttpPost]
         public async Task<JsonResult> CreateAttachment(IFormFile image)
         {
-            var homePageId = 9;
+            var homePageId = rkbcSetting.Value.HomePageId;
             List<string> errmsg = new List<string>();
             List<string> succmsg = new List<string>();
             HomeAttachment modelObj = new HomeAttachment();

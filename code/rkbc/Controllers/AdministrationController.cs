@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using rkbc.core.models;
 using rkbc.core.repository;
 using rkbc.core.service;
+using rkbc.web.helpers;
 using rkbc.web.viewmodels;
 
 namespace rkbc.web.viewmodels
@@ -78,7 +79,7 @@ namespace rkbc.web.viewmodels
 
 namespace rkbc.web.controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Super User")]
     public class Administration : AppBaseController
     {
         private RoleManager<ApplicationRole> roleManager;
@@ -160,7 +161,7 @@ namespace rkbc.web.controllers
             return vm;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles="User, Admin, Super User")]
         public async Task<IActionResult> Index()
         {
             List<AppUserViewModel> users = new List<AppUserViewModel>();
@@ -196,7 +197,6 @@ namespace rkbc.web.controllers
             return View("Edit",vm);
         }
 
-        
         [HttpPost]
         public async Task<IActionResult> Create(IFormCollection form)
         {
@@ -243,7 +243,7 @@ namespace rkbc.web.controllers
 
             return View("Edit", vm);
         }
-        
+        [Authorize(Roles = "User, Admin, Super User")]
         public async Task<IActionResult> Details(string id, FormViewMode mode = FormViewMode.View)
         {
             var query = addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id));
@@ -279,13 +279,17 @@ namespace rkbc.web.controllers
                     {
                         var roles = modelObj.UserRoles.Select(q => q.Role.Name).ToArray();
                         var result = await userManager.RemoveFromRolesAsync(modelObj, roles);
+                        if (!result.Succeeded)
+                        {
+                            ModelState.AddModelError("", "Cannot removed the exsiting roles.");
+                        }
                     }
                     
                     var roleResult = await userManager.AddToRolesAsync(modelObj, vModel.roles);
                     if (roleResult.Succeeded)
                         return RedirectToAction("Index");
                     else
-                        ModelState.AddModelError("roles", "failed");
+                        ModelState.AddModelError("roles", "failed to add roles.");
                 }
                 else
                 {

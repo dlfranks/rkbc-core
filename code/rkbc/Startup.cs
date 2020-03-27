@@ -26,15 +26,26 @@ using rkbc.core.helper;
 using rkbc.map.models;
 using rkbc.core.service;
 using System.IO;
+using rkbc.config.models;
 
-
+namespace rkbc.config.models
+{
+    public class RkbcConfig
+    {
+        public int HomePageId { get; set; }
+        public string Version { get; set; }
+    }
+}
 namespace rkbc
 {
     public class Startup
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                //.SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            Configuration = builder.Build();
             
         }
 
@@ -111,23 +122,23 @@ namespace rkbc
                 //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
             })//.AddXmlSerializerFormatters()
-            //.AddRazorRuntimeCompilation()
+            .AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             //ElmahCore
-            EmailOptions emailOptions = new EmailOptions
-            {
-                MailRecipient = "deana.franks@woodplc.com",
-                MailSender = "deana.franks@woodplc.com",
-                SmtpServer = "imts@amecfw.com",
-                SmtpPort = 25,
-                AuthUserName = "ImtsADQueryUser",
-                AuthPassword = "qu3rYAD!mtsUsEr"
-            };
+            //EmailOptions emailOptions = new EmailOptions
+            //{
+            //    MailRecipient = "deana.franks@woodplc.com",
+            //    MailSender = "deana.franks@woodplc.com",
+            //    SmtpServer = "imts@amecfw.com",
+            //    SmtpPort = 25,
+            //    AuthUserName = "ImtsADQueryUser",
+            //    AuthPassword = "qu3rYAD!mtsUsEr"
+            //};
             services.AddElmah<XmlFileErrorLog>(options =>
             {
                 options.FiltersConfig = "elmah.xml";
                 options.LogPath = "~/logs";
-                options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
+                //options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
             });
             //services.AddElmah<SqlErrorLog>(options =>
             //{
@@ -135,7 +146,11 @@ namespace rkbc
             //    options.ApplicationName = "RKBC"; //Configuration["RKBC"];
             //    options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
             //});
+            // Add functionality to inject IOptions<T>
+            services.AddOptions();
 
+            // Add our Config object so it can be injected
+            services.Configure<RkbcConfig>(Configuration.GetSection("RkbcConfig"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

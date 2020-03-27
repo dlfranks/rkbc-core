@@ -884,7 +884,7 @@ table {
   border:0px !important;
   border-collapse:collapse !important;
 }
-
+    /*
 th {
   color:#fff;
   background:#fda056;
@@ -901,7 +901,7 @@ td {
   border:1px solid #3b3b3b !important;
   padding:15px 20px !important;
 }
-
+*/
 table a:hover{
   text-decoration:none;
 }

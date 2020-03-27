@@ -1,4 +1,7 @@
 ﻿@using rkbc.core.service
+@using rkbc.config.models
+@using Microsoft.Extensions.Options
+@inject IOptions<RkbcConfig> rkbcSetting
 <!DOCTYPE html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
 <!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
@@ -21,8 +24,9 @@
     <link href="~/img/favicon.png" rel="icon" type="image/png" />
 
     <!-- Styles -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="~/css/styles.css" rel="stylesheet" />
-  
+
     <link href="~/css/bootstrap-override.css" rel="stylesheet" />
 
     <!-- Font Avesome Styles -->
@@ -34,6 +38,8 @@
     <!-- JavaScripts -->
     <script type="text/javascript" src="~/js/jquery-3.4.1.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
     <script type="text/javascript" src="~/js/bootstrap.min.js"></script>
 
     <script type="text/javascript" defer src="~/js/jquery.flexslider.js"></script>
@@ -48,6 +54,11 @@
     <script src="~/js/knockout.rkbc.js" asp-append-version="false"></script>
 
     @RenderSection("Scripts", required: false)
+    <script>
+        $(document).ready(function () { }
+           
+        );
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -77,14 +88,14 @@
                                     <a class="nav-link text-dark" href="/">Home</a>
                                     <ul>
                                         <!--Test Id = 3 or 9-->
-                                        <li><a class="nav-link text-dark" href="@Url.Action("Edit", "Home", new {id=9 })">Edit</a></li>
+                                        <li><a class="nav-link text-dark" href="@Url.Action("Edit", "Home", new {id= rkbcSetting.Value.HomePageId})">Edit</a></li>
                                         <li><a class="nav-link text-dark" href="/Attachment/Index">Gallery</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="comming.html" title="">목회자 칼럼</a>
+                                    <a href="/Pastor/Index" title="">목회자 칼럼</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" href="/Home/Edit/9">Edit</a></li>
+                                        <li><a class="nav-link text-dark" href="/Pastor/Index">Edit</a></li>
                                         <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
                                     </ul>
                                 </li>
@@ -117,7 +128,7 @@
                             {
                                 <li class="active"><a href="/">Home</a></li>
                                 <li><a  asp-controller="Pastor" asp-action="Index">목회자 칼럼</a></li>
-                                <li><a  asp-controller="Service" asp-action="Index">예배 안내</a></li>
+                                <li><a  asp-controller="Mission" asp-action="Index">선교</a></li>
                                 <li><a  asp-controller="School" asp-action="Index">한국학교</a></li>
                                 <li><a  asp-controller="Contact" asp-action="Index">Contact</a></li>
                                 <partial name="_LoginPartial" />
@@ -134,7 +145,7 @@
         </div>
     </header>
     <!-- Header End -->
-    <div class="container">
+    <div class="">
         @*<partial name="_CookieConsentPartial" />*@
         <main role="main" class="pb-3">
             @RenderBody()

@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace rkbc.web.Helpers
+namespace rkbc.web.helpers
 {
     public static class EnumHelper
     {

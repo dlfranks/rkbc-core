@@ -18,7 +18,8 @@ using Microsoft.AspNetCore.Authorization;
 using rkbc.web.controllers;
 using rkbc.core.service;
 using System.ComponentModel.DataAnnotations;
-
+using rkbc.config.models;
+using Microsoft.Extensions.Options;
 
 namespace rkbc.web.viewmodels
 {
@@ -69,22 +70,26 @@ namespace rkbc.web.controllers
 {
     public class HomeController : AppBaseController
     {
-        public UserManager<ApplicationUser> userManager;
-        public SignInManager<ApplicationUser> signinManager;
-       public FileHelper fileHelper;
+        protected UserManager<ApplicationUser> userManager;
+        protected SignInManager<ApplicationUser> signinManager;
+        protected FileHelper fileHelper;
+        protected IOptions<RkbcConfig> rkbcSetting;
+        
         public HomeController(IUnitOfWork _unitOfWork,FileHelper _fileHelper,
                                 UserManager<ApplicationUser> _userManager, UserService _userService,
-                                SignInManager<ApplicationUser> _signinManager) : base(_unitOfWork, _userService)
+                                SignInManager<ApplicationUser> _signinManager, IOptions<RkbcConfig> rkbcConfig) : base(_unitOfWork, _userService)
         {
             
             this.fileHelper = _fileHelper;
             this.userManager = _userManager;
             this.signinManager = _signinManager;
-
+            this.rkbcSetting = rkbcConfig;
+        
         }
-        public const int homePageId = 9;
-        public async Task<IActionResult> Index()
+        
+        public async Task<IActionResult> Index(int id)
         {
+            int homePageId = rkbcSetting.Value.HomePageId;
            HomePage modelObj = new HomePage();
             modelObj = await unitOfWork.homePages.get(homePageId).Include("announcements").FirstOrDefaultAsync();
             
@@ -152,7 +157,7 @@ namespace rkbc.web.controllers
             {
                 announcements.Add(new HomeContentItem()
                 {
-                    homePageId = (int)PageEnum.Home,
+                    homePageId = modelObj.id,
                     homePage = modelObj,
                     sectionId = (int)SectionEnum.Church_Announce,
                     content = item.content,
@@ -163,7 +168,7 @@ namespace rkbc.web.controllers
             {
                 announcements.Add(new HomeContentItem()
                 {
-                    homePageId = (int)PageEnum.Home,
+                    homePageId = modelObj.id,
                     homePage = modelObj,
                     sectionId = (int)SectionEnum.Member_Announce,
                     content = item.content,
@@ -174,7 +179,7 @@ namespace rkbc.web.controllers
             {
                 announcements.Add(new HomeContentItem()
                 {
-                    homePageId = (int)PageEnum.Home,
+                    homePageId = modelObj.id,
                     homePage = modelObj,
                     sectionId = (int)SectionEnum.School_Announce,
                     content = item.content,
@@ -226,27 +231,24 @@ namespace rkbc.web.controllers
             ViewBag.formViewMode = mode;
             return vm;
         }
-        
+        [Authorize(Roles="Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             
             HomePage modelObj = null;
-            if (id == null) return RedirectToAction("Error");
-            //if (id == null) modelObj = new HomePage();
-
+            if (id == null) id = rkbcSetting.Value.HomePageId;
             modelObj = await unitOfWork.homePages.get(id.Value).Include("announcements").FirstOrDefaultAsync();
-            
-            //if (modelObj == null)
-            //{
-            //    throw new NullReferenceException("HomePage must have data.");
-                
-            //}
-                
+            if (modelObj == null)
+            {
+                throw new NullReferenceException("HomePage must have data.");
+            }
+
             var vm = setupViewModel(modelObj, FormViewMode.Edit);
             
             return View(vm);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit()
         {
             HomePageViewModel model = new HomePageViewModel();
@@ -283,6 +285,7 @@ namespace rkbc.web.controllers
                    return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError("", "Unable to update data.");
+                
                 //Elmah error
             }
                 

@@ -64,6 +64,7 @@
     });
 </script>
 <form method="post" action="/Home/Edit" enctype="multipart/form-data">
+    @Html.ValidationSummary(true)
     <input asp-for="id" type="hidden" />
     <!-- Content -->
     <div class="">
@@ -209,8 +210,8 @@
     </div>
     <!-- Content End -->
     <div class="">
-        <input class="btn btn-gray pad2" type="submit" value="Update" /> 
+        <input class="btn btn-gray pad2" type="submit" value="Update" />
         <a class="btn btn-gray pad2" href="/Home/Index">Cancel</a>
     </div>
-    
+
 </form>

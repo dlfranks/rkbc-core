@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<rkbc.web.viewmodels.AppUserViewModel>
-
+@using rkbc.web.helpers
+@using rkbc.core.models
 @{
     ViewData["Title"] = "Index";
 }
@@ -70,10 +71,10 @@
                     @Html.DisplayFor(modelItem => item.lastName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.gender)
+                    @Enum.GetName(typeof(GenderEnum), item.gender).ToString()
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.department)
+                    @Enum.GetName(typeof(GroupEnum), item.department)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DOB)
