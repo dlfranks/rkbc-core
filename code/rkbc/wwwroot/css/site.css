@@ -2,6 +2,8 @@
 for details on configuring this project to bundle and minify static web assets. */
 /* Styles for validation helpers
 -----------------------------------------------------------*/
+@import url('https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap&subset=korean');
+
 .field-validation-error {
     color: #ff0000;
 }
@@ -37,7 +39,9 @@ a.navbar-brand {
 a {
   color: #0366d6;
 }
-
+ul{
+    list-style:none;
+}
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
@@ -88,6 +92,8 @@ html {
 body {
     /* Margin bottom by footer height */
     /*margin-bottom: 60px;*/
+    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Nanum Gothic', sans-serif;
 }
 
 .footer {

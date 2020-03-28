@@ -8,77 +8,81 @@
 }
 <script>
     $(function () {
-        $(".datepicker").datepicker({changeYear:true,yearRange: "1900:2020"});
+        $(".datepicker").datepicker({ changeYear: true, yearRange: "1900:2020" });
     });
-    
+
 </script>
-<h1>Edit</h1>
+<div class="content">
+    <div class="container">
+        <h1>Edit</h1>
 
-<h4>AppUserViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post" action="@(ViewBag.formViewMode == FormViewMode.Create? "/Administration/Create" : "/Administration/Edit")">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <input type="hidden" asp-for="id" class="form-control" />
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+        <h4>AppUserViewModel</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form method="post" action="@(ViewBag.formViewMode == FormViewMode.Create? "/Administration/Create" : "/Administration/Edit")">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="id" class="form-control" />
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="roles" class="control-label"></label>
+                        <select asp-for="roles" asp-items="@(new SelectList(ViewBag.roleList, "roleName", "roleName"))"></select>
+                        <span asp-validation-for="roles" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="firstName" class="control-label"></label>
+                        <input asp-for="firstName" class="form-control" />
+                        <span asp-validation-for="firstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="lastName" class="control-label"></label>
+                        <input asp-for="lastName" class="form-control" />
+                        <span asp-validation-for="lastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="gender" class="control-label"></label>
+                        <select asp-for="gender" asp-items="Html.GetEnumSelectList<GenderEnum>()">
+                            <option selected="selected" value="">Select...</option>
+                        </select>
+                        <span asp-validation-for="gender" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="department" class="control-label"></label>
+                        <select asp-for="department" asp-items="Html.GetEnumSelectList<GroupEnum>()">
+                            <option selected="selected" value="">Select...</option>
+                        </select>
+                        <span asp-validation-for="department" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DOB" class="control-label"></label>
+                        <input asp-for="DOB" type="text" class="form-control datepicker" />
+                        <span asp-validation-for="DOB" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="phoneNumber" class="control-label"></label>
+                        <input asp-for="phoneNumber" class="form-control" />
+                        <span asp-validation-for="phoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="address1" class="control-label"></label>
+                        <input asp-for="address1" class="form-control" />
+                        <span asp-validation-for="address1" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="roles" class="control-label"></label>
-                <select asp-for="roles" asp-items="@(new SelectList(ViewBag.roleList, "roleName", "roleName"))"></select>
-                <span asp-validation-for="roles" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="firstName" class="control-label"></label>
-                <input asp-for="firstName" class="form-control" />
-                <span asp-validation-for="firstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="lastName" class="control-label"></label>
-                <input asp-for="lastName" class="form-control" />
-                <span asp-validation-for="lastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="gender" class="control-label"></label>
-                <select asp-for="gender" asp-items="Html.GetEnumSelectList<GenderEnum>()">
-                    <option selected="selected" value="">Select...</option>
-                </select>
-                <span asp-validation-for="gender" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="department" class="control-label"></label>
-                <select asp-for="department" asp-items="Html.GetEnumSelectList<GroupEnum>()">
-                    <option selected="selected" value="">Select...</option>
-                </select>
-                <span asp-validation-for="department" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DOB" class="control-label"></label>
-                <input asp-for="DOB" type="text" class="form-control datepicker" />
-                <span asp-validation-for="DOB" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="phoneNumber" class="control-label"></label>
-                <input asp-for="phoneNumber" class="form-control" />
-                <span asp-validation-for="phoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="address1" class="control-label"></label>
-                <input asp-for="address1" class="form-control" />
-                <span asp-validation-for="address1" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+
+        <div>
+            <a href="/Administration/Index">Back to List</a>
+        </div>
     </div>
-</div>
-
-<div>
-    <a href="/Administration/Index">Back to List</a>
 </div>
 
 

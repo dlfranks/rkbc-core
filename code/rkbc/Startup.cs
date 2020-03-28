@@ -122,7 +122,7 @@ namespace rkbc
                 //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
             })//.AddXmlSerializerFormatters()
-            .AddRazorRuntimeCompilation()
+            //.AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             //ElmahCore
             //EmailOptions emailOptions = new EmailOptions

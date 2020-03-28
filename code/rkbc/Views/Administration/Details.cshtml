@@ -4,68 +4,71 @@
 @{
     ViewData["Title"] = "Details";
 }
+    <div class="content">
+        <div class="container">
+            <h1>Details</h1>
 
-<h1>Details</h1>
+            <div>
+                <h4>AppUserViewModel</h4>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
 
-<div>
-    <h4>AppUserViewModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.firstName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.firstName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.lastName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.lastName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.gender)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.gender)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.department)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.department)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DOB)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DOB)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.phoneNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.phoneNumber)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.address1)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.address1)
-        </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.firstName)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.firstName)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.lastName)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.lastName)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.gender)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.gender)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.department)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.department)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.DOB)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.DOB)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.phoneNumber)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.phoneNumber)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.address1)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.address1)
+                    </dd>
 
-    </dl>
-</div>
-<div>
-    <a href="@(ViewBag.FormViewMode == FormViewMode.Delete? ("/Administration/DeleteConfirmed/" + Model.id): ("/Administration/Edit/" + Model.id))">
-        @(ViewBag.FormViewMode == FormViewMode.Delete ? ("Delete") : ("Edit"))
-    </a> |
-    <a href="/Administration/Index">Back to List</a>
+                </dl>
+            </div>
+            <div>
+                <a href="@(ViewBag.FormViewMode == FormViewMode.Delete? ("/Administration/DeleteConfirmed/" + Model.id): ("/Administration/Edit/" + Model.id))">
+                    @(ViewBag.FormViewMode == FormViewMode.Delete ? ("Delete") : ("Edit"))
+                </a> |
+                <a href="/Administration/Index">Back to List</a>
+            </div>
+    </div>
 </div>

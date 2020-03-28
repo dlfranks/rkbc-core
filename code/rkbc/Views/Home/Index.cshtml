@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home Page";
 }
-
+    <div class="row space40"></div>
 <!-- Content -->
 <div class="container">
     <!-- Slider -->
@@ -32,7 +32,7 @@
                         <!-- Service Title -->
                         <div class="title-1"><h4>@Model.churchAnnounceTitle</h4></div>
                         <!-- Service Content -->
-                        <ul class="text-1" style="padding-left:30px">
+                        <ul class="text-1" style="padding-left:30px; list-style:none">
                             @foreach (var item in Model.churchAnnouncements)
                             {
                                 <li>@item.content</li>

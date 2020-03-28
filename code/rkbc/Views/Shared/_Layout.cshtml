@@ -31,6 +31,7 @@
 
     <!-- Font Avesome Styles -->
     <link href="~/css/font-awesome/font-awesome.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap&subset=korean" rel="stylesheet">
 
     <link rel="stylesheet" href="~/css/flexslider.css" type="text/css" media="screen" />
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.css" />
@@ -55,9 +56,18 @@
 
     @RenderSection("Scripts", required: false)
     <script>
-        $(document).ready(function () { }
-           
-        );
+        $(document).ready(function () {
+            var actionkey = window.location.pathname.slice(1);
+            var next = actionkey.indexOf('/');
+            if (next < 0) next = actionkey.indexOf('\\');
+            if (next > 0) { actionkey = actionkey.slice(0, next); }
+            if (!window.location.hash && window.sessionStorage[actionkey]) {
+                var menu = "#" + 
+                $("#").tabs("select", window.sessionStorage[actionkey]);
+            }
+        
+                        
+        });
     </script>
 </head>
 <body>
@@ -95,26 +105,23 @@
                                 <li>
                                     <a href="/Pastor/Index" title="">목회자 칼럼</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" href="/Pastor/Index">Edit</a></li>
-                                        <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
+                                        <li><a class="nav-link text-dark" href="/Pastor/Edit">Edit</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="comming.html" title="">예배 안내</a>
+                                    <a href="/Mission/Index" title="">선교</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" href="/Home/Edit/9">Edit</a></li>
-                                        <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
+                                        <li><a class="nav-link text-dark" href="/Mission/Edit">Edit</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="comming.html" title="">한국학교</a>
+                                    <a href="/School/Index" title="">한국학교</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" href="/Home/Edit/9">Edit</a></li>
-                                        <li><a class="nav-link text-dark" asp-controller="HomeGallery" asp-action="Edit">Gallery</a></li>
+                                        <li><a class="nav-link text-dark" href="/School/Edit">Edit</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="comming.html" title="">Contact</a>
+                                    <a href="/Contact/Index" title="">Contact</a>
                                     <ul>
                                         <li><a class="nav-link text-dark" href="/Administration/Index">Administration</a></li>
                                         <li><a class="nav-link text-dark" href="/Roles/Index">Roles</a></li>
