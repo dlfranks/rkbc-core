@@ -43,7 +43,7 @@ namespace rkbc.core.repository
         Task removeAsync(int id);
         void remove(T entity);
     }
-
+    
     public interface IUnitOfWork : IDisposable
     {
         IRepositoryAsync<HomePage> homePages { get; }

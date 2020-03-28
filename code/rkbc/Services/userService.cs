@@ -86,10 +86,10 @@ namespace rkbc.core.service
                         }
                         else
                         {
-                            logOffUser();
+                            Task.Run(async () => await logOffUser());
                         }
                     }
-                    else { logOffUser(); }
+                    else { Task.Run(async () => await logOffUser()); }
 
                 }
                 return us;
@@ -103,5 +103,7 @@ namespace rkbc.core.service
                 httpContext.Session.Clear();
             }
         }
+
+        public 
     }
 }

@@ -255,7 +255,7 @@ namespace rkbc.web.controllers
         public async Task<IActionResult> Edit(string id)
         {
             var user = await addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id)).FirstOrDefaultAsync();
-            
+ 
             var vm = await setupViewModel(user, FormViewMode.Edit);
             return View("Edit", vm);
         }
