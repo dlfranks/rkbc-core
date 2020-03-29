@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using rkbc.web.extensions;
 using Microsoft.AspNetCore.Identity;
 using rkbc.core.models;
+using Microsoft.Extensions.Logging;
+using RKBC.Areas.Identity.Pages.Account;
 
 namespace rkbc.core.service
 {
@@ -48,24 +50,31 @@ namespace rkbc.core.service
         HttpContext httpContext;
         UserManager<ApplicationUser> userManager;
         SignInManager<ApplicationUser> signinManger;
+        private readonly ILogger<UserService> logger;
         const string SessionName = "__UserSettings";
         public UserService(IHttpContextAccessor _httpContextAccessor, 
                             UserManager<ApplicationUser> _userManager,
-                            SignInManager<ApplicationUser> _signinManger)
+                            SignInManager<ApplicationUser> _signinManger,
+                            ILogger<UserService> _logger)
         {
             this.httpContextAccessor = _httpContextAccessor;
             httpContext = _httpContextAccessor.HttpContext;
             userManager = _userManager;
             signinManger = _signinManger;
+            logger = _logger;
         }
         public UserSettings CurrentUserSettings{
             get {
                 UserSettings us = httpContext.Session.GetObject<UserSettings>(SessionName);
-                if(us == null)
+
+                logger.LogInformation("us: start, UserSettings in UserService");
+                if (us == null)
                 {
+                    logger.LogInformation("us: null, UserSettings in UserService");
                     us = new UserSettings();
                     if(httpContext.User.Identity.IsAuthenticated)
                     {
+                        logger.LogInformation("httpContext.User.Identity.IsAuthenticated: true, UserSettings in UserService");
                         var task = Task.Run(async () => {
                             return await userManager.FindByNameAsync(httpContext.User.Identity.Name);
                             
@@ -73,7 +82,7 @@ namespace rkbc.core.service
                         var user = task.Result;
                         if (task.Result != null)
                         {
-
+                            logger.LogInformation("retrieved user: true, UserSettings in UserService");
                             us.email = user.Email;
                             us.fullName = user.firstName + " " + user.lastName;
                             us.userId = user.Id;
@@ -86,12 +95,17 @@ namespace rkbc.core.service
                         }
                         else
                         {
+                            logger.LogInformation("retrieved user: false, UserSettings in UserService");
                             Task.Run(async () => await logOffUser());
                         }
                     }
-                    else { Task.Run(async () => await logOffUser()); }
+                    else {
+                        logger.LogInformation("httpContext.User.Identity.IsAuthenticated: false, UserSettings in UserService");
+                        Task.Run(async () => await logOffUser()); 
+                    }
 
                 }
+                logger.LogInformation("us: has values, UserSettings in UserService");
                 return us;
             }
         }
@@ -104,6 +118,6 @@ namespace rkbc.core.service
             }
         }
 
-        public 
+        
     }
 }

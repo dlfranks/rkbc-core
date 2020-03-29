@@ -66,6 +66,7 @@ namespace rkbc
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
+                //options.SignIn.RequireConfirmedAccount = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
@@ -90,7 +91,7 @@ namespace rkbc
             services.ConfigureApplicationCookie(options =>
             {
                 //options.Cookie.HttpOnly = true;
-                //options.ExpireTimeSpan = TimeSpan.FromMinutes(100);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(100);
                 options.LoginPath = "/Identity/Account/Login";
                 options.AccessDeniedPath = "/Administration/AccessDenied";
                 options.SlidingExpiration = true;
@@ -137,7 +138,7 @@ namespace rkbc
             services.AddElmah<XmlFileErrorLog>(options =>
             {
                 options.FiltersConfig = "elmah.xml";
-                options.LogPath = "~/logs";
+                options.LogPath = "./elmahLogs";
                 //options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
             });
             //services.AddElmah<SqlErrorLog>(options =>
@@ -199,7 +200,7 @@ namespace rkbc
             //Before UseEndpoints, so that users are authenticated before accessing the endpoints.
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseMvc();
+            //app.UseMvc();
             app.UseEndpoints(endpoints =>
             {
 

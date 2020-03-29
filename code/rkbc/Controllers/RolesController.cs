@@ -22,7 +22,7 @@ namespace rkbc.web.viewmodels
 
 namespace rkbc.web.controllers
 {
-    [Authorize(Roles="Super User")]
+    
     public class RolesController : AppBaseController
     {
         private readonly RoleManager<ApplicationRole> roleManager;

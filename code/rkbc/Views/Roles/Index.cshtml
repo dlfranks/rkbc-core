@@ -3,33 +3,37 @@
 @{
     ViewData["Title"] = "Index";
 }
+    <div class="content">
+        <div class="container">
+            <h1>Index</h1>
 
-<h1>Index</h1>
-
-<p>
-    <a class="btn btn-primary" href="/Roles/Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.roleName)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @item.roleName
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.roleId }) |
-                @Html.ActionLink("Details", "Details", new { id = item.roleId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.roleId})
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            <p>
+                <a class="btn btn-primary" href="/Roles/Create">Create New</a>
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.roleName)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @item.roleName
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.roleId }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.roleId }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.roleId })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            </div>
+        </div>

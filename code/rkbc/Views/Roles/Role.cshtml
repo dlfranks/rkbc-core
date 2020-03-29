@@ -3,30 +3,33 @@
 @{
     ViewData["Title"] = "Create Role";
 }
+<div class="content">
+    <div class="container">
+        <h1>CreateRole</h1>
 
-<h1>CreateRole</h1>
+        <h4>RoleViewModel</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form method="post" action="@(ViewBag.formViewMode == FormViewMode.Create ? "/Roles/Create" : "/Roles/Edit/")">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="roleId" class="form-control" />
+                        <label asp-for="roleName" class="control-label"></label>
+                        <input asp-for="roleName" class="form-control" />
+                        <span asp-validation-for="roleName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="@(ViewBag.formViewMode == FormViewMode.Create? "Create":"Edit")" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
 
-<h4>RoleViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post" action="@(ViewBag.formViewMode == FormViewMode.Create ? "/Roles/Create" : "/Roles/Edit/")">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <input type="hidden" asp-for="roleId" class="form-control" />
-                <label asp-for="roleName" class="control-label"></label>
-                <input asp-for="roleName" class="form-control" />
-                <span asp-validation-for="roleName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="@(ViewBag.formViewMode == FormViewMode.Create? "Create":"Edit")" class="btn btn-primary" />
-            </div>
-        </form>
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

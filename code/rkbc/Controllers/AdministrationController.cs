@@ -79,7 +79,7 @@ namespace rkbc.web.viewmodels
 
 namespace rkbc.web.controllers
 {
-    [Authorize(Roles = "Admin, Super User")]
+    
     public class Administration : AppBaseController
     {
         private RoleManager<ApplicationRole> roleManager;
@@ -161,7 +161,7 @@ namespace rkbc.web.controllers
             return vm;
         }
 
-        [Authorize(Roles="User, Admin, Super User")]
+        [Authorize(Roles="User")]
         public async Task<IActionResult> Index()
         {
             List<AppUserViewModel> users = new List<AppUserViewModel>();
@@ -243,7 +243,7 @@ namespace rkbc.web.controllers
 
             return View("Edit", vm);
         }
-        [Authorize(Roles = "User, Admin, Super User")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<IActionResult> Details(string id, FormViewMode mode = FormViewMode.View)
         {
             var query = addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id));

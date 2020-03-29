@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <!--<RuntimeIdentifier>win8-x64</RuntimeIdentifier>
+    <ServerGarbageCollection>false</ServerGarbageCollection>-->
   </PropertyGroup>
 
   <ItemGroup>
