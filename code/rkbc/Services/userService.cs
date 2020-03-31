@@ -66,7 +66,7 @@ namespace rkbc.core.service
         public UserSettings CurrentUserSettings{
             get {
                 UserSettings us = httpContext.Session.GetObject<UserSettings>(SessionName);
-
+                
                 logger.LogInformation("us: start, UserSettings in UserService");
                 if (us == null)
                 {
@@ -76,9 +76,13 @@ namespace rkbc.core.service
                     {
                         logger.LogInformation("httpContext.User.Identity.IsAuthenticated: true, UserSettings in UserService");
                         var task = Task.Run(async () => {
-                            return await userManager.FindByNameAsync(httpContext.User.Identity.Name);
+                            if (httpContext.User.Identity.Name != null)
+                                return await userManager.FindByNameAsync(httpContext.User.Identity.Name);
+                            else
+                               throw new InvalidOperationException("User.Identity goes wrong.");
                             
                         });
+                        
                         var user = task.Result;
                         if (task.Result != null)
                         {
@@ -114,6 +118,8 @@ namespace rkbc.core.service
             if(httpContext.Request != null && httpContext.Response != null)
             {
                 await signinManger.SignOutAsync();
+                
+                
                 httpContext.Session.Clear();
             }
         }

@@ -4,12 +4,16 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using ElmahCore;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using rkbc.core.models;
@@ -20,6 +24,19 @@ using rkbc.web.viewmodels;
 
 namespace rkbc.web.viewmodels
 {
+    public class LoginViewModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+    }
     public class AppUserViewModel
     {
         public AppUserViewModel()
@@ -100,9 +117,101 @@ namespace rkbc.web.controllers
             signinManager = signinMag;
             _logger = logger;
         }
+        public async Task<IActionResult> Login(string returnUrl = null)
+        {
+            
+            this.ViewData["ReturnUrl"] = returnUrl ?? Url.Content("~/Home/Index");
+            LoginViewModel vm = new LoginViewModel();
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            //ExternalLogins = (await signinManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            return View(vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl = returnUrl ?? Url.Content("~/Home/Index");
+
+            if (ModelState.IsValid)
+            {
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+
+                //var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                //List<Claim> claims = new List<Claim>
+                //{
+                //    new Claim(ClaimTypes.Name, "Deoksoon"),
+                //    new Claim(ClaimTypes.Email, model.Email),
+
+                //};
+                //ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "cookie");
+                //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                //var user = new ApplicationUser()
+                //{
+                //    Email = model.Email
+                //};
+                //var user = await userManager.FindByNameAsync(model.Email);
+                
+                //await userManager.AddClaimsAsync(user, userClaimsIdentity.Claims.ToList());
+                var result = await signinManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, true);
+               
+
+                if (result.Succeeded)
+                {
+                    var user = await userManager.FindByNameAsync(model.Email);
+                    var userClaimsIdentity = await user.GenerateUserClaimsIdentityAsync(userManager);
+                    //var userId2 = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                    //var user = await userManager.FindByNameAsync(model.Email);
+                    //var userClaimsIdentity = await user.GenerateUserClaimsIdentityAsync(userManager);
+                    //var claimsPrincipal = await signinManager.CreateUserPrincipalAsync(user);
+                    //claimsPrincipal.AddIdentity(userClaimsIdentity);
+                    //await userManager.AddClaimsAsync(user, userClaimsIdentity.Claims.ToList());
+                    //await signinManager.Context.SignInAsync(IdentityConstants.ApplicationScheme,
+                    //    claimsPrincipal,
+                    //    new AuthenticationProperties { IsPersistent = false });
+                    //await signinManager.SignInAsync(user, isPersistent: false);
+                    //await HttpContext.SignInAsync(
+                    //CookieAuthenticationDefaults.AuthenticationScheme,
+                    //claimsPrincipal,
+                    //new AuthenticationProperties
+                    //{
+                    //    IsPersistent = false,
+
+                    //});
+
+                    //var user = signinManager.UserManager.Users.Where(x => x.Id.Equals(userId)).FirstOrDefault();
+
+                    var userId = userManager.GetUserId(HttpContext.User);
+                    //var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                    //var userIdentity = await user.GenerateUserIdentityAsync(_userManager);
+                    _logger.LogInformation("User logged in.");
+                    return LocalRedirect(returnUrl);
+                }
+                //if (result.RequiresTwoFactor)
+                //{
+                //    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                //}
+                //if (result.IsLockedOut)
+                //{
+                //    _logger.LogWarning("User account locked out.");
+                //    return RedirectToPage("./Lockout");
+                //}
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View();
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View();
+        }
         [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
+            
             await userService.logOffUser();
             return Redirect("~/Home/Index");
 
@@ -161,7 +270,7 @@ namespace rkbc.web.controllers
             return vm;
         }
 
-        [Authorize(Roles="User")]
+        [Authorize(Roles="Admin, User, Super User")]
         public async Task<IActionResult> Index()
         {
             List<AppUserViewModel> users = new List<AppUserViewModel>();

@@ -253,7 +253,7 @@ namespace rkbc.web.controllers
         {
             HomePageViewModel model = new HomePageViewModel();
             await TryUpdateModelAsync(model);
-            var userId = userManager.GetUserId(HttpContext.User);//userService
+            var userId = userManager.GetUserId(HttpContext.User);
             var currentUser = userService.CurrentUserSettings;
 
             HomePage modelObj = await unitOfWork.homePages.get(model.id).Include("announcements").FirstOrDefaultAsync();

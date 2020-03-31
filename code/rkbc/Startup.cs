@@ -27,6 +27,7 @@ using rkbc.map.models;
 using rkbc.core.service;
 using System.IO;
 using rkbc.config.models;
+using Serilog;
 
 namespace rkbc.config.models
 {
@@ -77,11 +78,15 @@ namespace rkbc
             })
                 .AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddRoles<ApplicationRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
                 //.AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>()
-                .AddDefaultTokenProviders();
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                //.AddDefaultTokenProviders();
+            //If using the CookieAuthenticationDefaults.AuthenticationSchem, HttpConctex.User.Indentity doesn't work.
+            services.AddAuthentication(option =>
+            {
+                //option.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                //option.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
             .AddCookie();
             services.AddAuthorization(options =>
             {
@@ -92,15 +97,16 @@ namespace rkbc
             {
                 //options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(100);
-                options.LoginPath = "/Identity/Account/Login";
+                options.LoginPath = "/Administration/Login";
                 options.AccessDeniedPath = "/Administration/AccessDenied";
                 options.SlidingExpiration = true;
             });
-            services.AddHttpContextAccessor();
+            //services.AddHttpContextAccessor();
             services.AddControllersWithViews();
             //services.AddRazorPages();
 
             //Ioc
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<UserService>();
             services.AddSingleton<FileHelper>();
@@ -110,9 +116,9 @@ namespace rkbc
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromMinutes(60);
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.Strict;
+                //options.IdleTimeout = TimeSpan.FromMinutes(2);
+                //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                //options.Cookie.SameSite = SameSiteMode.Strict;
                 options.Cookie.HttpOnly = true;
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
@@ -168,6 +174,7 @@ namespace rkbc
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
             //app.Use(async (context, next) =>
             //{
             //    var url = context.Request.Path.Value;
@@ -191,16 +198,21 @@ namespace rkbc
             //app.UseDefaultFiles();
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            app.UseSerilogRequestLogging();
+            //app.UseCookiePolicy();
 
-            app.UseSession();
-            app.UseElmah();
             app.UseRouting();
+           
+            app.UseElmah();
+            
            // After UseRouting, so that route information is available for authentication decisions.
             //Before UseEndpoints, so that users are authenticated before accessing the endpoints.
             app.UseAuthentication();
+            app.UseRequestLocalization();
             app.UseAuthorization();
+            app.UseSession();
             //app.UseMvc();
+
             app.UseEndpoints(endpoints =>
             {
 

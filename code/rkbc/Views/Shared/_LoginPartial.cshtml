@@ -1,12 +1,15 @@
 @using rkbc.core.models
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-@*@if (User.Identity.IsAuthenticated)*@
-    @if (ViewBag.UserSettings !=null && ViewBag.UserSettings.userId != null && ViewBag.UserSettings.isAdmin)
+@inject IHttpContextAccessor httpContext
+
+@if (User.Identity.IsAuthenticated)
+
     {
         <li>
-            <a class="nav-link text-dark" href="/Administration/Details/@ViewBag.UserSettings.userId"> @ViewBag.UserSettings.email!</a>
+            <a class="nav-link text-dark" href="/Administration/Details/@httpContext.HttpContext.User.Identity.Name"> @User.Identity.Name!</a>
         </li>
         <li>
 
@@ -19,6 +22,6 @@
             <a asp-area="Identity" asp-page="/Account/Register">Register</a>
         </li>
         <li>
-            <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a href="@Url.Action("Login", "Administration")">Login</a>
         </li>
     }

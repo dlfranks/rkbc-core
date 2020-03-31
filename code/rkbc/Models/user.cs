@@ -62,7 +62,6 @@ namespace rkbc.core.models
         [Display(Name = "Toddler")]
         Toddler = 6
     }
-
     public class ApplicationUser : IdentityUser<string>
     {
         public ApplicationUser()
@@ -86,12 +85,14 @@ namespace rkbc.core.models
         public virtual ICollection<ApplicationUserToken> Tokens { get; set; }
         public IList<ApplicationUserRole> UserRoles { get; set; }
 
-        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
+        public async Task<ClaimsIdentity> GenerateUserClaimsIdentityAsync(UserManager<ApplicationUser> manager)
         {
-            var userIdentity = new ClaimsIdentity(await manager.GetClaimsAsync(this), CookieAuthenticationDefaults.AuthenticationScheme);
-            userIdentity.AddClaim(new Claim("Department", this.department.ToString()));
+            var userClaimsIdentity = new ClaimsIdentity(await manager.GetClaimsAsync(this), CookieAuthenticationDefaults.AuthenticationScheme);
+            userClaimsIdentity.AddClaim(new Claim("UserId", this.Id.ToString()));
+            userClaimsIdentity.AddClaim(new Claim("Name", this.UserName.ToString()));
+            userClaimsIdentity.AddClaim(new Claim("Department", this.department.ToString()));
             
-            return userIdentity;
+            return userClaimsIdentity;
         }
 
     }
