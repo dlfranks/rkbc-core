@@ -109,7 +109,7 @@ namespace rkbc.core.service
                     }
 
                 }
-                logger.LogInformation("us: has values, UserSettings in UserService");
+                
                 return us;
             }
         }

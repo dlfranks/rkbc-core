@@ -116,7 +116,7 @@ namespace rkbc
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
-                //options.IdleTimeout = TimeSpan.FromMinutes(2);
+                options.IdleTimeout = TimeSpan.FromMinutes(2);
                 //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 //options.Cookie.SameSite = SameSiteMode.Strict;
                 options.Cookie.HttpOnly = true;
