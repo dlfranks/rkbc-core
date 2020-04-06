@@ -157,7 +157,7 @@ namespace rkbc.web.controllers
                 //await userManager.AddClaimsAsync(user, userClaimsIdentity.Claims.ToList());
                 var result = await signinManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, true);
                
-
+                
                 if (result.Succeeded)
                 {
                     var user = await userManager.FindByNameAsync(model.Email);
@@ -353,9 +353,9 @@ namespace rkbc.web.controllers
             return View("Edit", vm);
         }
         [Authorize(Roles = "User, Admin")]
-        public async Task<IActionResult> Details(string id, FormViewMode mode = FormViewMode.View)
+        public async Task<IActionResult> Details(string email, FormViewMode mode = FormViewMode.View)
         {
-            var query = addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id));
+            var query = addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Email == email));
             var user = await query.FirstAsync();
             var vm = await setupViewModel(user, mode);
             return View("Details", vm);

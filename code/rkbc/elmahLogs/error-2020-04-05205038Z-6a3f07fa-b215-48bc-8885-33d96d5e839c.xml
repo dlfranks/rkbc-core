@@ -1,0 +1,142 @@
+﻿<error errorId="6a3f07fa-b215-48bc-8885-33d96d5e839c" application="rkbc" host="DESKTOP-5L7R1AJ" type="HTTP" message="NotFound" detail="# caller: @C:\Sources\ElmahCore\ElmahCore\Internal$\CallerInfo.cs:10&#xD;&#xA;ElmahCore.HttpException: NotFound" time="2020-04-05T20:50:38.9788175Z" statusCode="404">
+  <serverVariables>
+    <item name="RequestTimedOut">
+      <value string="False" />
+    </item>
+    <item name="ConnectionIdFeature">
+      <value string="0HLUPKBUH8EPP" />
+    </item>
+    <item name="HasStartedConsumingRequestBody">
+      <value string="False" />
+    </item>
+    <item name="MaxRequestBodySize" />
+    <item name="AllowSynchronousIO">
+      <value string="False" />
+    </item>
+    <item name="TraceIdentifier">
+      <value string="0HLUPKBUH8EPP:00000006" />
+    </item>
+    <item name="IsUpgradableRequest">
+      <value string="False" />
+    </item>
+    <item name="IsUpgraded">
+      <value string="False" />
+    </item>
+    <item name="RemoteIpAddress">
+      <value string="::1" />
+    </item>
+    <item name="RemotePort">
+      <value string="52114" />
+    </item>
+    <item name="LocalIpAddress">
+      <value string="127.0.0.1" />
+    </item>
+    <item name="LocalPort">
+      <value string="12677" />
+    </item>
+    <item name="Scheme">
+      <value string="http" />
+    </item>
+    <item name="Method">
+      <value string="Get" />
+    </item>
+    <item name="PathBase" />
+    <item name="Path">
+      <value string="/assets/gallery/147a8780-8231-4c90-9d01-e1d4e111965e.jpg" />
+    </item>
+    <item name="QueryString">
+      <value string="" />
+    </item>
+    <item name="RawTarget">
+      <value string="/assets/gallery/147a8780-8231-4c90-9d01-e1d4e111965e.jpg" />
+    </item>
+    <item name="HttpVersion">
+      <value string="HTTP/1.1" />
+    </item>
+    <item name="Header_Connection">
+      <value string="Keep-Alive" />
+    </item>
+    <item name="Header_Accept">
+      <value string="image/webp,image/apng,image/*,*/*;q=0.8" />
+    </item>
+    <item name="Header_Accept-Encoding">
+      <value string="gzip, deflate, br" />
+    </item>
+    <item name="Header_Accept-Language">
+      <value string="en-US,en;q=0.9" />
+    </item>
+    <item name="Header_Cookie">
+      <value string=".AspNetCore.Antiforgery.tarxUm-EpjY=CfDJ8Pzg-mhuQTFFmFuI2EGVCcb8Et1ygVNM1NAV_YOBvDH5wAtPPEGK_5hvkIyc_RzsO7onb2Jh5uMFHkaPEiAvkRJbEureCaaf1rwsgdF4jDv8Jm23yiLRTv9jfEtPXie526sR-P7lOW3BeNal0pm90Fg" />
+    </item>
+    <item name="Header_Host">
+      <value string="localhost:33224" />
+    </item>
+    <item name="Header_Referer">
+      <value string="http://localhost:33224/" />
+    </item>
+    <item name="Header_User-Agent">
+      <value string="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36" />
+    </item>
+    <item name="Header_Sec-Fetch-Dest">
+      <value string="image" />
+    </item>
+    <item name="Header_Sec-Fetch-Site">
+      <value string="same-origin" />
+    </item>
+    <item name="Header_Sec-Fetch-Mode">
+      <value string="no-cors" />
+    </item>
+    <item name="Header_MS-ASPNETCORE-TOKEN">
+      <value string="a65b1a09-425c-459a-adb2-90dae9754908" />
+    </item>
+    <item name="Header_X-Original-Proto">
+      <value string="http" />
+    </item>
+    <item name="Header_X-Original-For">
+      <value string="127.0.0.1:52110" />
+    </item>
+    <item name="RequestTrailersAvailable">
+      <value string="True" />
+    </item>
+    <item name="ResponseTrailers" />
+    <item name="StatusCode">
+      <value string="404" />
+    </item>
+    <item name="ReasonPhrase" />
+    <item name="HasResponseStarted">
+      <value string="False" />
+    </item>
+    <item name="HasFlushedHeaders">
+      <value string="False" />
+    </item>
+    <item name="HasResponseCompleted">
+      <value string="False" />
+    </item>
+    <item name="User_ClaimsPrincipalSelector" />
+    <item name="User_Current" />
+    <item name="Connection_Id">
+      <value string="0HLUPKBUH8EPP" />
+    </item>
+    <item name="Connection_RemoteIpAddress">
+      <value string="::1" />
+    </item>
+    <item name="Connection_RemotePort">
+      <value string="52114" />
+    </item>
+    <item name="Connection_LocalIpAddress">
+      <value string="127.0.0.1" />
+    </item>
+    <item name="Connection_LocalPort">
+      <value string="12677" />
+    </item>
+    <item name="Connection_ClientCertificate" />
+    <item name="HttpStatusCode">
+      <value string="404" />
+    </item>
+  </serverVariables>
+  <cookies>
+    <item name=".AspNetCore.Antiforgery.tarxUm-EpjY">
+      <value string="CfDJ8Pzg-mhuQTFFmFuI2EGVCcb8Et1ygVNM1NAV_YOBvDH5wAtPPEGK_5hvkIyc_RzsO7onb2Jh5uMFHkaPEiAvkRJbEureCaaf1rwsgdF4jDv8Jm23yiLRTv9jfEtPXie526sR-P7lOW3BeNal0pm90Fg" />
+    </item>
+  </cookies>
+</error>
