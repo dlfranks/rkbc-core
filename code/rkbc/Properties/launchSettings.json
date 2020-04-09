@@ -3,12 +3,12 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "http://localhost/RKBC",
+      "applicationUrl": "https://localhost/RKBC",
       "sslPort": 0
     },
     "iisExpress": {
       "applicationUrl": "http://localhost:33224",
-      "sslPort": 44388
+      "sslPort": 44370
     }
   },
   "profiles": {
