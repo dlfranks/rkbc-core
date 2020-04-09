@@ -2,9 +2,13 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/RKBC",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:33224",
-      "sslPort": 0
+      "sslPort": 44388
     }
   },
   "profiles": {

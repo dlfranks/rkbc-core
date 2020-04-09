@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using rkbc.core.models;
 using Microsoft.Extensions.Logging;
 using RKBC.Areas.Identity.Pages.Account;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace rkbc.core.service
 {
@@ -65,19 +67,19 @@ namespace rkbc.core.service
         }
         public UserSettings CurrentUserSettings{
             get {
-                UserSettings us = httpContext.Session.GetObject<UserSettings>(SessionName);
+                UserSettings us = httpContextAccessor.HttpContext.Session.GetObject<UserSettings>(SessionName);
                 
                 logger.LogInformation("us: start, UserSettings in UserService");
                 if (us == null)
                 {
                     logger.LogInformation("us: null, UserSettings in UserService");
                     us = new UserSettings();
-                    if(httpContext.User.Identity.IsAuthenticated)
+                    if(httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
                     {
                         logger.LogInformation("httpContext.User.Identity.IsAuthenticated: true, UserSettings in UserService");
                         var task = Task.Run(async () => {
-                            if (httpContext.User.Identity.Name != null)
-                                return await userManager.FindByNameAsync(httpContext.User.Identity.Name);
+                            if (httpContext.User.FindFirst("Name").Value != null)
+                                return await userManager.FindByNameAsync(httpContext.User.FindFirst("Name").Value);
                             else
                                throw new InvalidOperationException("User.Identity goes wrong.");
                             
@@ -117,7 +119,8 @@ namespace rkbc.core.service
         {
             if(httpContext.Request != null && httpContext.Response != null)
             {
-                await signinManger.SignOutAsync();
+
+                await httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 
                 
                 httpContext.Session.Clear();

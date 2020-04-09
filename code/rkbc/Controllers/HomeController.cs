@@ -87,7 +87,7 @@ namespace rkbc.web.controllers
         
         }
         
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index()
         {
             int homePageId = rkbcSetting.Value.HomePageId;
            HomePage modelObj = new HomePage();
