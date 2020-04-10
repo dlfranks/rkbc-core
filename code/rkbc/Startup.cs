@@ -42,14 +42,14 @@ namespace rkbc
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            //var builder = new ConfigurationBuilder();
-            //.SetBasePath(env.ContentRootPath)
-            // .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            //Configuration = builder.Build();
-            Configuration = configuration;
-            WebHostEnvironment = webHostEnvironment;
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(env.ContentRootPath)
+             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            Configuration = builder.Build();
+            //Configuration = configuration;
+            WebHostEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -80,20 +80,20 @@ namespace rkbc
                 .AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-                //.AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>()
-                //.AddDefaultTokenProviders();
+            //.AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>()
+            //.AddDefaultTokenProviders();
             //If using the CookieAuthenticationDefaults.AuthenticationSchem, HttpConctex.User.Indentity doesn't work.
-            
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    //options.Cookie.HttpOnly = true;
-            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
-            //    options.LoginPath = "/Administration/Login";
-            //    options.AccessDeniedPath = "/Administration/AccessDenied";
-            //    options.SlidingExpiration = true;
-            //});
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                //options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.LoginPath = "/Administration/Login";
+                options.AccessDeniedPath = "/Administration/AccessDenied";
+                options.SlidingExpiration = true;
+            });
             //services.AddHttpContextAccessor();
-            
+
             //services.AddRazorPages();
 
             //Ioc
@@ -110,11 +110,11 @@ namespace rkbc
                 options.EnableEndpointRouting = false;
                 //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
-            });
+            })
 
             //.AddXmlSerializerFormatters()
             //.AddRazorRuntimeCompilation()
-            //.SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             //ElmahCore
             //EmailOptions emailOptions = new EmailOptions
             //{
@@ -129,12 +129,12 @@ namespace rkbc
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
-                //options.IdleTimeout = TimeSpan.FromMinutes(2);
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.IdleTimeout = TimeSpan.FromMinutes(2);
+                //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 //options.Cookie.SameSite = SameSiteMode.Strict;
-                //options.Cookie.HttpOnly = true;
+                options.Cookie.HttpOnly = true;
                 // Make the session cookie essential
-                //options.Cookie.IsEssential = true;
+                options.Cookie.IsEssential = true;
             });
 
             //services.AddElmah<XmlFileErrorLog>(options =>
@@ -153,7 +153,7 @@ namespace rkbc
             //services.AddOptions();
 
             // Add our Config object so it can be injected
-            //services.Configure<RkbcConfig>(Configuration.GetSection("RkbcConfig"));
+            services.Configure<RkbcConfig>(Configuration.GetSection("RkbcConfig"));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options => {
@@ -181,7 +181,7 @@ namespace rkbc
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                //app.UseHsts();
+                app.UseHsts();
             }
             
             //app.Use(async (context, next) =>
@@ -219,7 +219,7 @@ namespace rkbc
 
             app.UseRouting();
            
-            //app.UseElmah();
+            app.UseElmah();
             
            // After UseRouting, so that route information is available for authentication decisions.
             //Before UseEndpoints, so that users are authenticated before accessing the endpoints.
