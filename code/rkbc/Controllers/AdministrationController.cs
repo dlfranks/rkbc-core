@@ -139,10 +139,12 @@ namespace rkbc.web.controllers
                 var user = await userManager.FindByNameAsync(model.Email);
                 if (user != null)
                 {
-                    
-                    var userClaimsIdentity = await user.GenerateUserClaimsIdentityAsync(userManager);
-                    ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(userClaimsIdentity);
-                    var authProperties = new AuthenticationProperties
+                    var claims = new[] { new Claim(ClaimTypes.NameIdentifier, user.Email.ToString(), ClaimValueTypes.String), new Claim(ClaimTypes.Name, user.UserName.ToString(), ClaimValueTypes.String)
+                        , new Claim(ClaimTypes.Role, "Admin", ClaimValueTypes.String), new Claim(ClaimTypes.Role, "User", ClaimValueTypes.String) };
+                    var userClaimsIdentity = new ClaimsIdentity(claims, "AuthCookies");
+                    //var userClaimsIdentity = await user.GenerateUserClaimsIdentityAsync(userManager);
+                    //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(userClaimsIdentity);
+                    var authProperties = new AuthenticationProperties()
                     {
                         //AllowRefresh = <bool>,
                         // Refreshing the authentication session should be allowed.
@@ -166,11 +168,10 @@ namespace rkbc.web.controllers
                         // redirect response value.
                     };
                     await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        claimsPrincipal, authProperties);
+                        "AuthCookies", new ClaimsPrincipal(userClaimsIdentity), new AuthenticationProperties { IsPersistent = false });
                     
                     _logger.LogInformation("User logged in.");
-                    return RedirectToAction("Index", "Home");
+                    return Redirect("~/Home/Index");
                 }
                 
                 else

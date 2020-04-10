@@ -79,19 +79,19 @@ namespace rkbc
             })
                 .AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddRoles<ApplicationRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
             //.AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>()
-            //.AddDefaultTokenProviders();
+            .AddDefaultTokenProviders();
             //If using the CookieAuthenticationDefaults.AuthenticationSchem, HttpConctex.User.Indentity doesn't work.
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                //options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
-                options.LoginPath = "/Administration/Login";
-                options.AccessDeniedPath = "/Administration/AccessDenied";
-                options.SlidingExpiration = true;
-            });
+            //services.ConfigureApplicationCookie(options =>
+            //{
+            //    //options.Cookie.HttpOnly = true;
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+            //    options.LoginPath = "/Administration/Login";
+            //    options.AccessDeniedPath = "/Administration/AccessDenied";
+            //    options.SlidingExpiration = true;
+            //});
             //services.AddHttpContextAccessor();
 
             //services.AddRazorPages();
@@ -137,12 +137,12 @@ namespace rkbc
                 options.Cookie.IsEssential = true;
             });
 
-            //services.AddElmah<XmlFileErrorLog>(options =>
-            //{
-            //    options.FiltersConfig = "elmah.xml";
-            //    options.LogPath = "./elmahLogs";
-            //    //options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
-            //});
+            services.AddElmah<XmlFileErrorLog>(options =>
+            {
+                options.FiltersConfig = "elmah.xml";
+                options.LogPath = "./elmahLogs";
+                //options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
+            });
             //services.AddElmah<SqlErrorLog>(options =>
             //{
             //    options.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
@@ -155,8 +155,8 @@ namespace rkbc
             // Add our Config object so it can be injected
             services.Configure<RkbcConfig>(Configuration.GetSection("RkbcConfig"));
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(options => {
+            services.AddAuthentication("AuthCookies")
+            .AddCookie("AuthCookies", options => {
                 options.LoginPath = "/Administration/Login";
             });
 
@@ -183,7 +183,7 @@ namespace rkbc
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             //app.Use(async (context, next) =>
             //{
             //    var url = context.Request.Path.Value;
@@ -203,7 +203,7 @@ namespace rkbc
             //    await context.Response.WriteAsync(context.Request.Path.Value);
             //    //await context.Response.WriteAsync(System.Diagnostics.Process.GetCurrentProcess().ProcessName);
             //});
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             //app.UseDefaultFiles();
             var cookiePolicyOptions = new CookiePolicyOptions
             {
