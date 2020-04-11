@@ -43,6 +43,7 @@
 
   
   <ItemGroup>
+    <Folder Include="logs\" />
     <Folder Include="wwwroot\gallary\" />
     <Folder Include="wwwroot\logs\" />
   </ItemGroup>

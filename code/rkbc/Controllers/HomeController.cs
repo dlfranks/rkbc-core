@@ -87,10 +87,11 @@ namespace rkbc.web.controllers
         
         }
         
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index()
         {
-            int homePageId = rkbcSetting.Value.HomePageId;
-           HomePage modelObj = new HomePage();
+            //int homePageId = rkbcSetting.Value.HomePageId;
+            int homePageId = 9;
+            HomePage modelObj = new HomePage();
             modelObj = await unitOfWork.homePages.get(homePageId).Include("announcements").FirstOrDefaultAsync();
             
             var vm = setupViewModel(modelObj, FormViewMode.View);

@@ -88,9 +88,13 @@ namespace rkbc.core.models
         public async Task<ClaimsIdentity> GenerateUserClaimsIdentityAsync(UserManager<ApplicationUser> manager)
         {
             var userClaimsIdentity = new ClaimsIdentity(await manager.GetClaimsAsync(this), CookieAuthenticationDefaults.AuthenticationScheme);
-            userClaimsIdentity.AddClaim(new Claim("UserId", this.Id.ToString()));
-            userClaimsIdentity.AddClaim(new Claim("Name", this.UserName.ToString()));
-            userClaimsIdentity.AddClaim(new Claim("Department", this.department.ToString()));
+            userClaimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, this.Email));
+            userClaimsIdentity.AddClaim(new Claim(ClaimTypes.Name, this.UserName));
+            //foreach(var role in this.UserRoles)
+            //{
+            //    userClaimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
+            //}
+            
             
             return userClaimsIdentity;
         }
