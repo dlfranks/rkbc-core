@@ -19,7 +19,6 @@ using Microsoft.Extensions.Logging;
 using rkbc.core.models;
 using rkbc.core.repository;
 using rkbc.core.service;
-using rkbc.web.helpers;
 using rkbc.web.viewmodels;
 
 namespace rkbc.web.viewmodels
@@ -96,18 +95,18 @@ namespace rkbc.web.viewmodels
 
 namespace rkbc.web.controllers
 {
-    
-    public class Administration : AppBaseController
+    [Authorize(Roles="Admin, Super User")]
+    public class AdministrationController : AppBaseController
     {
         private RoleManager<ApplicationRole> roleManager;
         private UserManager<ApplicationUser> userManager;
         private SignInManager<ApplicationUser> signinManager;
         private readonly ILogger _logger;
 
-        public Administration(RoleManager<ApplicationRole> roleMag,
+        public AdministrationController(RoleManager<ApplicationRole> roleMag,
                                         UserManager<ApplicationUser> userMag,
                                         SignInManager<ApplicationUser> signinMag,
-                                        ILogger<Administration> logger,
+                                        ILogger<AdministrationController> logger,
                                         IUnitOfWork _unitOfWork,
                                         UserService _userService
                                         ) : base(_unitOfWork, _userService)
@@ -117,6 +116,7 @@ namespace rkbc.web.controllers
             signinManager = signinMag;
             _logger = logger;
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             
@@ -129,6 +129,8 @@ namespace rkbc.web.controllers
 
             return View(vm);
         }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
@@ -184,6 +186,7 @@ namespace rkbc.web.controllers
             // If we got this far, something failed, redisplay form
             return View();
         }
+
         [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {

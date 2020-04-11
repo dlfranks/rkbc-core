@@ -97,10 +97,10 @@
                                 @if (User.Identity.IsAuthenticated)
                             {
                                 <li class="active">
-                                    <a class="nav-link text-dark" href="@Url.Action("Index", "Home")">Home</a>
+                                    <a class="nav-link text-dark" href="/Home/Index">Home</a>
                                     <ul>
                                         <!--Test Id = 3 or 9-->
-                                        <li><a class="nav-link text-dark" href="@Url.Action("Edit", "Home", new {id= rkbcSetting.Value.HomePageId})">Edit</a></li>
+                                        <li><a class="nav-link text-dark" href="/Home/Edit/@rkbcSetting.Value.HomePageId">Edit</a></li>
                                         <li><a class="nav-link text-dark" href="/Attachment/Index">Gallery</a></li>
                                     </ul>
                                 </li>
@@ -113,13 +113,13 @@
                                 <li>
                                     <a href="/Mission/Index" title="">선교</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" href="/Mission/Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" href="@Url.Action("Index", "Mission")">Edit</a></li>
                                     </ul>
                                 </li>
                                 <li>
                                     <a href="/School/Index" title="">한국학교</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" href="/School/Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" href="@Url.Action("Index", "School")">Edit</a></li>
                                     </ul>
                                 </li>
                                 <li>

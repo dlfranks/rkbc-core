@@ -66,7 +66,7 @@ namespace rkbc
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 //options.SignIn.RequireConfirmedAccount = true;
                 options.Password.RequiredLength = 6;
@@ -76,9 +76,7 @@ namespace rkbc
                 options.Password.RequireDigit = false;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 
-            })
-                .AddRoleManager<RoleManager<ApplicationRole>>()
-                .AddRoles<ApplicationRole>()
+            }).AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
             //.AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>()
             .AddDefaultTokenProviders();
@@ -181,7 +179,7 @@ namespace rkbc
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //app.UseHsts();
             }
 
             //app.Use(async (context, next) =>
@@ -232,10 +230,10 @@ namespace rkbc
             {
 
                 //endpoints.MapControllers();
-                //endpoints.MapControllerRoute(
-                //    name: "default",
-                //    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                //endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
 
             });

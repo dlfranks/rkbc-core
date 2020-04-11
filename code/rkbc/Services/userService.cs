@@ -120,7 +120,7 @@ namespace rkbc.core.service
             if(httpContext.Request != null && httpContext.Response != null)
             {
 
-                await httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                await httpContextAccessor.HttpContext.SignOutAsync("AuthCookies");
                 
                 
                 httpContext.Session.Clear();
