@@ -9,11 +9,11 @@
 
     {
         <li>
-            <a class="nav-link text-dark" href="/Administration/Details/@httpContext.HttpContext.User.Identity.Name"> @User.Identity.Name!</a>
+            <a class="nav-link text-dark" asp-controller="Administration" asp-action="Edit" asp-route-id="@ViewBag.UserSettings.userId"> @User.Identity.Name!</a>
         </li>
         <li>
 
-            <a href="@Url.Action("Logout", "Administration")">Logout</a>
+            <a  asp-controller="Administration" asp-action="Logout">Logout</a>
         </li>
     }
     else
@@ -22,6 +22,6 @@
             <a asp-area="Identity" asp-page="/Account/Register">Register</a>
         </li>
         <li>
-            <a href="@Url.Action("Login", "Administration")">Login</a>
+            <a asp-controller="Administration" asp-action="Login">Login</a>
         </li>
     }

@@ -1,3 +1,0 @@
-if (self.CavalryLogger) { CavalryLogger.start_js(["osWzb"]); }
-
-__d("MWChatDeleteMessageEventEmitter",["BaseEventEmitter"],(function(a,b,c,d,e,f){"use strict";var g="deleteMessage",h=new(b("BaseEventEmitter"))();e.exports={emit:function(a){h.emit(g,a)},subscribe:function(a){var b=h.addListener(g,a);return function(){return b.remove()}}}}),null);

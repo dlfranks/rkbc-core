@@ -11,7 +11,7 @@
         <hr />
         <div class="row">
             <div class="col-md-4">
-                <form method="post" action="@(ViewBag.formViewMode == FormViewMode.Create ? "/Roles/Create" : "/Roles/Edit/")">
+                <form method="post" asp-action="@(ViewBag.formViewMode == FormViewMode.Create ? "Create" : "Edit")">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <input type="hidden" asp-for="roleId" class="form-control" />
@@ -27,7 +27,7 @@
         </div>
 
         <div>
-            <a asp-action="Index">Back to List</a>
+            <a class="btn" asp-action="Index">Back to List</a>
         </div>
     </div>
 </div>

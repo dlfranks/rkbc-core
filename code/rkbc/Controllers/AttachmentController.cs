@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -42,7 +43,7 @@ namespace rkbc.web.viewmodels
         public string fileName { get; set; }
         public string caption { get; set; }
         public bool isOn { get; set; }
-        
+        public string pictureUrl { get; set; }
 
     }
 
@@ -61,6 +62,22 @@ namespace rkbc.web.controllers
             this.fileHelper = _fileHelper;
             rkbcSetting = rkbcConfig;
         }
+        //public FileResult View(string type, string fileName, bool thumbnail)
+        //{
+        //    string path;
+        //    if (fileHelper.getExtension(fileName) == "pdf")
+        //    {
+        //        if (thumbnail)
+        //            path = fileHelper.mapAssetPath(type, fileHelper.getFileName(fileName) + ".jpg", thumbnail);
+        //        else
+        //            path = fileHelper.mapAssetPath(type, fileHelper.getFileName(fileName) + ".pdf", thumbnail);
+        //    }
+        //    else
+        //    {
+        //        path = fileHelper.mapAssetPath(type, fileName, thumbnail);
+        //    }
+        //    return (new FileResult());
+        //}
         // GET: Attachment
         public ActionResult Index()
         {
@@ -98,7 +115,8 @@ namespace rkbc.web.controllers
                     isOn = q.isOn,
                     fileName = q.fileName,
                     originalFileName = q.originalFileName,
-                    url = fileHelper.generateAssetURL("gallery", q.fileName, true)
+                    url = fileHelper.generateAssetURL("gallery", q.fileName, true),
+                    pictureUrl = fileHelper.generateAssetURL("gallery", q.fileName, false)
                 }).ToListAsync();
             
             
@@ -232,6 +250,7 @@ namespace rkbc.web.controllers
                     fileName = modelObj.fileName,
                     caption = modelObj.caption,
                     url = fileHelper.generateAssetURL("gallery", modelObj.fileName),
+                    pictureUrl = fileHelper.generateAssetURL("gallery", modelObj.fileName)
                     
                 }
             };

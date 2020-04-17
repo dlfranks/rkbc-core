@@ -29,6 +29,7 @@ using System.IO;
 using rkbc.config.models;
 using Serilog;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace rkbc.config.models
 {
@@ -36,6 +37,7 @@ namespace rkbc.config.models
     {
         public int HomePageId { get; set; }
         public string Version { get; set; }
+        public string DefaultPassword { get; set; }
     }
 }
 namespace rkbc
@@ -82,14 +84,12 @@ namespace rkbc
             .AddDefaultTokenProviders();
             //If using the CookieAuthenticationDefaults.AuthenticationSchem, HttpConctex.User.Indentity doesn't work.
 
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    //options.Cookie.HttpOnly = true;
-            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
-            //    options.LoginPath = "/Administration/Login";
-            //    options.AccessDeniedPath = "/Administration/AccessDenied";
-            //    options.SlidingExpiration = true;
-            //});
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Expiration = TimeSpan.FromHours(2);
+                options.Cookie.Path = "/RKBC";
+                options.SlidingExpiration = false;
+            });
             //services.AddHttpContextAccessor();
 
             //services.AddRazorPages();
@@ -100,19 +100,16 @@ namespace rkbc
             services.AddScoped<UserService>();
             services.AddSingleton<FileHelper>();
 
-
-
-
             services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
                 //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
             })
-
             //.AddXmlSerializerFormatters()
             //.AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
             //ElmahCore
             //EmailOptions emailOptions = new EmailOptions
             //{
@@ -128,7 +125,7 @@ namespace rkbc
             {
                 // Set a short timeout for easy testing.
                 options.IdleTimeout = TimeSpan.FromMinutes(2);
-                //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 //options.Cookie.SameSite = SameSiteMode.Strict;
                 options.Cookie.HttpOnly = true;
                 // Make the session cookie essential
@@ -156,6 +153,8 @@ namespace rkbc
             services.AddAuthentication("AuthCookies")
             .AddCookie("AuthCookies", options => {
                 options.LoginPath = "/Administration/Login";
+                options.AccessDeniedPath = "/Administration/AccessDenied";
+                
             });
 
 
@@ -185,7 +184,8 @@ namespace rkbc
             //app.Use(async (context, next) =>
             //{
             //    var url = context.Request.Path.Value;
-
+            //    await context.Response.WriteAsync(context.Request.Path.Value);
+                
             //    // Rewrite to index
             //    //if (url.Contains("/home/privacy"))
             //    //{
@@ -193,7 +193,7 @@ namespace rkbc
             //    //    context.Request.Path = "/home/index";
             //    //}
 
-            //    await next();
+            //    //await next();
             //});
             //Testing for hosting process
             //app.Run(async (context) =>
@@ -211,10 +211,6 @@ namespace rkbc
             app.UseStaticFiles();
             app.UseSession();
             app.UseSerilogRequestLogging();
-            
-
-            
-
             app.UseRouting();
            
             app.UseElmah();
@@ -228,12 +224,12 @@ namespace rkbc
 
             app.UseEndpoints(endpoints =>
             {
-
+                
                 //endpoints.MapControllers();
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                //endpoints.MapDefaultControllerRoute();
+                //endpoints.MapControllerRoute(
+                //    name: "default",
+                //    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
 
             });

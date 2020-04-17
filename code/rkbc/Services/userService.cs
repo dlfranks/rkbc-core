@@ -13,6 +13,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace rkbc.core.service
 {
+    public enum PermissionAction
+    {
+        Create,
+        Read,
+        Update,
+        Delete,
+        Index
+    }
     public class UserSettings
     {
         public IList<string> roles { get; set; }
@@ -78,10 +86,10 @@ namespace rkbc.core.service
                     {
                         logger.LogInformation("httpContext.User.Identity.IsAuthenticated: true, UserSettings in UserService");
                         var task = Task.Run(async () => {
-                            if (httpContext.User.FindFirst("Name").Value != null)
-                                return await userManager.FindByNameAsync(httpContext.User.FindFirst("Name").Value);
+                            if (httpContextAccessor.HttpContext.User.Identity.Name != null)
+                                return await userManager.FindByNameAsync(httpContextAccessor.HttpContext.User.Identity.Name);
                             else
-                               throw new InvalidOperationException("User.Identity goes wrong.");
+                               throw new InvalidOperationException("User.Identity.Name hasn't been set.");
                             
                         });
                         
@@ -114,6 +122,22 @@ namespace rkbc.core.service
                 
                 return us;
             }
+        }
+        public bool permissionForUserEditing(PermissionAction action, string id, bool autoThrow = false)
+        {
+            //Can't delete yourself no matter who you are
+            if (CurrentUserSettings.userId == id && action == PermissionAction.Delete)
+            {
+                if (autoThrow) throw new InvalidOperationException("User " + CurrentUserSettings.userName + " does not have permission to " + action.ToString());
+                return (false);
+            }
+            // Can do anything else to yourself
+            if (CurrentUserSettings.userId == id) return (true);
+            //Otherwise only these guys have permission to do anything else
+            if (CurrentUserSettings.isAdmin) return (true);
+
+            if (autoThrow) throw new InvalidOperationException("User " + CurrentUserSettings.userName + " does not have permission to " + action.ToString() );
+            return (false);
         }
         public async Task logOffUser()
         {

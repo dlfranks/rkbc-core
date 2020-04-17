@@ -66,7 +66,7 @@ namespace rkbc.core.models
     {
         public ApplicationUser()
         {
-            UserRoles = new List<ApplicationUserRole>();
+            
         }
 
         public int? officeId { get; set; }
@@ -83,19 +83,21 @@ namespace rkbc.core.models
         public virtual ICollection<ApplicationUserClaim> Claims { get; set; }
         public virtual ICollection<ApplicationUserLogin> Logins { get; set; }
         public virtual ICollection<ApplicationUserToken> Tokens { get; set; }
-        public IList<ApplicationUserRole> UserRoles { get; set; }
+        public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserClaimsIdentityAsync(UserManager<ApplicationUser> manager)
         {
             var userClaimsIdentity = new ClaimsIdentity(await manager.GetClaimsAsync(this), CookieAuthenticationDefaults.AuthenticationScheme);
+            var roles = await manager.GetRolesAsync(this);
             userClaimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, this.Email));
             userClaimsIdentity.AddClaim(new Claim(ClaimTypes.Name, this.UserName));
-            //foreach(var role in this.UserRoles)
-            //{
-            //    userClaimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Role.Name));
-            //}
-            
-            
+
+            foreach (var role in roles)
+            {
+                userClaimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+            }
+
+
             return userClaimsIdentity;
         }
 

@@ -48,7 +48,7 @@ namespace rkbc.web.controllers
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
-            //ViewBag.UserSettings = userService.CurrentUserSettings;
+            ViewBag.UserSettings = userService.CurrentUserSettings;
             //ViewBag.userService = userService;
         }
     }

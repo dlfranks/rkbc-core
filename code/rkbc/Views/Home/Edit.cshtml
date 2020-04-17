@@ -65,7 +65,7 @@
 </script>
 <div class="content">
     <div class="container">
-        <form method="post" action="@Url.Action("Edit", "Home")" enctype="multipart/form-data">
+        <form method="post" asp-action="Edit" enctype="multipart/form-data">
             @Html.ValidationSummary(true)
             <input asp-for="id" type="hidden" />
             <!-- Content -->

@@ -1,3 +1,0 @@
-if (self.CavalryLogger) { CavalryLogger.start_js(["Y4Iu8"]); }
-
-__d("MonetizationStarsGoalCreateMutation",["Promise","RelayModern","MonetizationStarsGoalCreateMutation.graphql"],(function(a,b,c,d,e,f){"use strict";var g,h=b("RelayModern").commitMutation;b("RelayModern").graphql;var i=g!==void 0?g:g=b("MonetizationStarsGoalCreateMutation.graphql");function a(a,c){return new(b("Promise"))(function(b,d){h(a,{mutation:i,onCompleted:function(a,c){if(c!=null){d(c);return}b(a)},onError:d,variables:{input:{aggregation_level:c.aggregationLevel,description:c.description,is_incremental:c.isIncremental,pageID:c.pageID,title:c.title,target_value:c.targetValue,type:c.type}}})})}e.exports={commit:a}}),null);

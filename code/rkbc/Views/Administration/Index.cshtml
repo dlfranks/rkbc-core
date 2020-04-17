@@ -4,12 +4,6 @@
 @{
     ViewData["Title"] = "Index";
 }
-<script>
-    $(function () {
-        var errors = $(".error");
-        setTimeout()
-    });
-</script>
 <div class="content">
     <div class="container">
 
@@ -75,16 +69,17 @@
                         @Html.DisplayFor(modelItem => item.lastName)
                     </td>
                     <td>
-                        @if(item.gender != null){
-                        Enum.GetName(typeof(GenderEnum), item.gender.Value).ToString();
-                    }
+                        @if(item.gender != null)
+                        {
+                            @Enum.GetName(typeof(GenderEnum), item.gender.Value);
+                        }
 
                     </td>
                     <td>
                         @if (item.department != null)
-                    {
-                        @Enum.GetName(typeof(GroupEnum), item.department.Value);
-                    }
+                        {
+                            @Enum.GetName(typeof(GroupEnum), item.department.Value);
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.DOB)

@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using rkbc.config.models;
 using rkbc.core.models;
 using rkbc.core.repository;
 using rkbc.core.service;
@@ -95,18 +97,20 @@ namespace rkbc.web.viewmodels
 
 namespace rkbc.web.controllers
 {
-    [Authorize(Roles="Admin, Super User")]
+    [Authorize(Roles="Admin, User")]
     public class AdministrationController : AppBaseController
     {
         private RoleManager<ApplicationRole> roleManager;
         private UserManager<ApplicationUser> userManager;
         private SignInManager<ApplicationUser> signinManager;
         private readonly ILogger _logger;
+        protected readonly IOptions<RkbcConfig> rkbcConfig;
 
         public AdministrationController(RoleManager<ApplicationRole> roleMag,
                                         UserManager<ApplicationUser> userMag,
                                         SignInManager<ApplicationUser> signinMag,
                                         ILogger<AdministrationController> logger,
+                                        IOptions<RkbcConfig> _rkbcConfig,
                                         IUnitOfWork _unitOfWork,
                                         UserService _userService
                                         ) : base(_unitOfWork, _userService)
@@ -115,6 +119,7 @@ namespace rkbc.web.controllers
             userManager = userMag;
             signinManager = signinMag;
             _logger = logger;
+            rkbcConfig = _rkbcConfig;
         }
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
@@ -138,14 +143,14 @@ namespace rkbc.web.controllers
 
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByNameAsync(model.Email);
+                var user = await userManager.Users.Include("UserRoles").Include("UserRoles.Role").Where(q => q.Email == model.Email).FirstOrDefaultAsync();
                 if (user != null)
                 {
-                    var claims = new[] { new Claim(ClaimTypes.NameIdentifier, user.Email.ToString(), ClaimValueTypes.String), new Claim(ClaimTypes.Name, user.UserName.ToString(), ClaimValueTypes.String)
-                        , new Claim(ClaimTypes.Role, "Admin", ClaimValueTypes.String), new Claim(ClaimTypes.Role, "User", ClaimValueTypes.String) };
-                    var userClaimsIdentity = new ClaimsIdentity(claims, "AuthCookies");
-                    //var userClaimsIdentity = await user.GenerateUserClaimsIdentityAsync(userManager);
-                    //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(userClaimsIdentity);
+                    //var claims = new[] { new Claim(ClaimTypes.NameIdentifier, user.Email.ToString(), ClaimValueTypes.String), new Claim(ClaimTypes.Name, user.UserName.ToString(), ClaimValueTypes.String)
+                    //    , new Claim(ClaimTypes.Role, "Admin", ClaimValueTypes.String), new Claim(ClaimTypes.Role, "User", ClaimValueTypes.String) };
+                   // var userClaimsIdentity = new ClaimsIdentity(claims, "AuthCookies");
+                    var userClaimsIdentity = await user.GenerateUserClaimsIdentityAsync(userManager);
+                    ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(userClaimsIdentity);
                     var authProperties = new AuthenticationProperties()
                     {
                         //AllowRefresh = <bool>,
@@ -156,7 +161,7 @@ namespace rkbc.web.controllers
                         // value set here overrides the ExpireTimeSpan option of 
                         // CookieAuthenticationOptions set with AddCookie.
 
-                        IsPersistent = false,
+                        IsPersistent = true,
                         // Whether the authentication session is persisted across 
                         // multiple requests. When used with cookies, controls
                         // whether the cookie's lifetime is absolute (matching the
@@ -170,7 +175,7 @@ namespace rkbc.web.controllers
                         // redirect response value.
                     };
                     await HttpContext.SignInAsync(
-                        "AuthCookies", new ClaimsPrincipal(userClaimsIdentity), new AuthenticationProperties { IsPersistent = false });
+                        "AuthCookies", claimsPrincipal, new AuthenticationProperties { IsPersistent = false });
                     
                     _logger.LogInformation("User logged in.");
                     return Redirect("~/Home/Index");
@@ -196,10 +201,6 @@ namespace rkbc.web.controllers
             return Redirect("~/Home/Index");
 
         }
-        public IActionResult Test()
-        {
-            return Redirect("~/Home/Index");
-        }
         protected IQueryable<ApplicationUser> addModelIncludes(IQueryable<ApplicationUser> query)
         {
             return (query.Include("UserRoles").Include("UserRoles.Role").Include("Claims"));
@@ -217,7 +218,7 @@ namespace rkbc.web.controllers
             modelObj.address1 = vModel.address1;
             modelObj.updatedDate = DateTime.UtcNow;
             modelObj.DOB = vModel.DOB;
-
+            
         }
         protected async Task<AppUserViewModel> setupViewModel(ApplicationUser appUser, FormViewMode mode)
         {
@@ -247,10 +248,11 @@ namespace rkbc.web.controllers
             }).ToListAsync();
             ViewBag.roleList = allRoles;
             ViewBag.formViewMode = mode;
+            ViewBag.UserSettings = userService.CurrentUserSettings;
+            
             return vm;
         }
 
-        [Authorize(Roles="Admin, User, Super User")]
         public async Task<IActionResult> Index()
         {
             List<AppUserViewModel> users = new List<AppUserViewModel>();
@@ -276,12 +278,10 @@ namespace rkbc.web.controllers
         public async Task<IActionResult> Create()
         {
             //permission
+            
             ApplicationUser user = new ApplicationUser();
             user.officeId = 1;
             user.countryCode = 1;
-            
-            //var identityUser = await user.GenerateUserIdentityAsync(userManager);
-            
             var vm = await setupViewModel(user, FormViewMode.Create);
             return View("Edit",vm);
         }
@@ -292,7 +292,8 @@ namespace rkbc.web.controllers
             ApplicationUser modelObj = new ApplicationUser();
             var vModel = new AppUserViewModel();
             await TryUpdateModelAsync<AppUserViewModel>(vModel);
-            string defaultPassWord = "1234567";
+            var defaultPassWord = rkbcConfig.Value.DefaultPassword;
+
             modelObj.officeId = 1;
             modelObj.countryCode = 1;
             modelObj.UserName = vModel.Email;
@@ -321,10 +322,9 @@ namespace rkbc.web.controllers
                 }
                 else
                 {
-                    string userErrors = "";
-                    foreach (var err in userResult.Errors)
-                        userErrors = String.Join(",", userResult.Errors);
-                    ModelState.AddModelError("user", userErrors);
+                    string userErrors = "Failed to save.";
+                    
+                    ModelState.AddModelError("", userErrors);
                 }
 
             }
@@ -333,18 +333,18 @@ namespace rkbc.web.controllers
             return View("Edit", vm);
         }
         [Authorize(Roles = "User, Admin")]
-        public async Task<IActionResult> Details(string email, FormViewMode mode = FormViewMode.View)
+        public async Task<IActionResult> Details(string id, FormViewMode mode = FormViewMode.View)
         {
-            var query = addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Email == email));
-            var user = await query.FirstAsync();
+            if(!userService.permissionForUserEditing(PermissionAction.Read, id, false)) return RedirectToAction("AccessDenied");
+            var user = await userManager.Users.Include("UserRoles").Include("UserRoles.Role").Where(q => q.Id == id).FirstOrDefaultAsync();
             var vm = await setupViewModel(user, mode);
             return View("Details", vm);
         }
         
         public async Task<IActionResult> Edit(string id)
         {
-            var user = await addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id)).FirstOrDefaultAsync();
- 
+            if (!userService.permissionForUserEditing(PermissionAction.Update, id, false)) return RedirectToAction("AccessDenied");
+           var user = await userManager.Users.Include("UserRoles").Include("UserRoles.Role").Where(q => q.Id == id).FirstOrDefaultAsync();
             var vm = await setupViewModel(user, FormViewMode.Edit);
             return View("Edit", vm);
         }
@@ -354,38 +354,54 @@ namespace rkbc.web.controllers
         {
             var vModel = new AppUserViewModel();
             await TryUpdateModelAsync<AppUserViewModel>(vModel);
-            ApplicationUser modelObj = await addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == vModel.id)).FirstOrDefaultAsync();
+            ApplicationUser modelObj = await userManager.Users.Include("UserRoles").Include("UserRoles.Role").Where(q => q.Id == vModel.id).FirstOrDefaultAsync();
+            if (!userService.permissionForUserEditing(PermissionAction.Update, vModel.id, false)) return RedirectToAction("AccessDenied");
             if (modelObj.createdDate == null)
                 modelObj.createdDate = DateTime.UtcNow;
 
             acceptPost(modelObj, vModel, FormViewMode.Edit);
-            if (ModelState.IsValid)
+            //Handle user's roles
+            if (modelObj != null && modelObj.UserRoles.Count > 0 && vModel.roles.Count > 0)
             {
-                var userResult = await userManager.UpdateAsync(modelObj);
-                if (userResult.Succeeded)
+
+                var result = await userManager.RemoveFromRolesAsync(modelObj, modelObj.UserRoles.Select(q => q.Role.Name).ToArray());
+                if (!result.Succeeded)
                 {
-                    if(modelObj.UserRoles.Count > 0)
-                    {
-                        var roles = modelObj.UserRoles.Select(q => q.Role.Name).ToArray();
-                        var result = await userManager.RemoveFromRolesAsync(modelObj, roles);
-                        if (!result.Succeeded)
-                        {
-                            ModelState.AddModelError("", "Cannot removed the exsiting roles.");
-                        }
-                    }
-                    
-                    var roleResult = await userManager.AddToRolesAsync(modelObj, vModel.roles);
-                    if (roleResult.Succeeded)
-                        return RedirectToAction("Index");
-                    else
-                        ModelState.AddModelError("roles", "failed to add roles.");
+                    ModelState.AddModelError("", "Cannot removed the exsiting roles.");
                 }
                 else
                 {
-                    string userErrors = "";
-                    foreach (var err in userResult.Errors)
-                        userErrors = String.Join(",", userResult.Errors);
-                    ModelState.AddModelError("user", userErrors);
+                    var roleResult = await userManager.AddToRolesAsync(modelObj, vModel.roles);
+                   
+                        
+                }
+            }
+            //If user don't have any roles, default user's role
+            if (modelObj.UserRoles.Count == 0)
+            {
+                var userRole = await roleManager.FindByNameAsync("User");
+                if (userRole != null)
+                {
+                    modelObj.UserRoles.Add(new ApplicationUserRole() { User = modelObj, Role = userRole });
+                }
+
+            }
+            if (ModelState.IsValid)
+            {
+                
+                //update a user
+                var userResult = await userManager.UpdateAsync(modelObj);
+                if (userResult.Succeeded)
+                {//check user's roles
+
+                    return RedirectToAction("Index");
+
+
+                }
+                else
+                {
+                    string userErrors = "Failed to save.";
+                    ModelState.AddModelError("", userErrors);
                 }
 
             }
@@ -396,9 +412,13 @@ namespace rkbc.web.controllers
         
         public async Task<IActionResult> Delete(string id)
         {
-            var user = await addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id)).FirstOrDefaultAsync();
-            if (user == null) throw new InvalidOperationException("Attempted to delete an user who does not exist.");
-            if (user == null) HttpContext.RiseError(new InvalidOperationException("Test"));
+            if (!userService.permissionForUserEditing(PermissionAction.Delete, id, false)) return RedirectToAction("AccessDenied");
+            var user = await userManager.Users.Include("UserRoles").Include("UserRoles.Role").Where(q => q.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                throw new InvalidOperationException("Attempted to delete an user who does not exist.");
+                
+            }
 
             var currentUserEmail = User.Identity.Name;
             
@@ -414,9 +434,10 @@ namespace rkbc.web.controllers
         }
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var user = await addModelIncludes(userManager.Users.OrderBy(q => q.lastName).Where(q => q.Id == id)).FirstOrDefaultAsync();
+            if (!userService.permissionForUserEditing(PermissionAction.Update, userService.CurrentUserSettings.userId, false)) return RedirectToAction("AccessDenied");
+            var user = await userManager.Users.Include("UserRoles").Include("UserRoles.Role").Where(q => q.Id == id).FirstOrDefaultAsync();
             if (user == null) throw new InvalidOperationException("Attempted to delete an user who does not exist.");
-            if (user == null) userManager.Logger.LogError("Null value");
+            
             var result = await userManager.DeleteAsync(user);
             if (!result.Succeeded)
             {

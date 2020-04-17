@@ -132,7 +132,8 @@ namespace rkbc.core.helper
         {
             if (String.IsNullOrWhiteSpace(assetFileName)) return "";
             var file = fileNameAndExtension(assetFileName);
-            return ("/assets/" + assetType + "/" + file[0] + "-thumb" + file[1]);
+            if(thumbnail) return ("/assets/" + assetType + "/" + file[0] + "-thumb" + file[1]);
+            return ("/assets/" + assetType + "/" + assetFileName);
         }
 
         public void deleteAsset(string assetType, string assetFileName, bool throwException)

@@ -9,7 +9,7 @@
             <h1>Details</h1>
 
             <div>
-                <h4>AppUserViewModel</h4>
+                <h4>If you want to </h4>
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-2">
@@ -65,10 +65,14 @@
                 </dl>
             </div>
             <div>
-                <a href="@(ViewBag.FormViewMode == FormViewMode.Delete? ("/Administration/DeleteConfirmed/" + Model.id): ("/Administration/Edit/" + Model.id))">
-                    @(ViewBag.FormViewMode == FormViewMode.Delete ? ("Delete") : ("Edit"))
-                </a> |
-                <a href="/Administration/Index">Back to List</a>
-            </div>
+                @if (ViewBag.FormViewMode == FormViewMode.Delete)
+                {
+                    <a class="btn" asp-controller="Administration" asp-action="DeleteConfirmed" asp-route-id="@Model.id">Delete</a>
+                }else{
+                    <a class="btn" asp-controller="Administration" asp-action="Edit" asp-route-id="@Model.id">Edit</a>
+                }
+                        
+                    <a class="btn" asp-controller="Administration" asp-action="Index">Back to List</a>
+</div>
     </div>
 </div>

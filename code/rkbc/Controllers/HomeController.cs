@@ -68,6 +68,7 @@ namespace rkbc.web.viewmodels
 }
 namespace rkbc.web.controllers
 {
+    
     public class HomeController : AppBaseController
     {
         protected UserManager<ApplicationUser> userManager;
@@ -86,7 +87,10 @@ namespace rkbc.web.controllers
             this.rkbcSetting = rkbcConfig;
         
         }
-        
+        [Route("")]
+        [Route("Home")]
+        [Route("Home/Index")]
+        [Route("/RKBC")]
         public async Task<IActionResult> Index()
         {
             //int homePageId = rkbcSetting.Value.HomePageId;

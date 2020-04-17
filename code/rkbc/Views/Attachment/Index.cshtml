@@ -8,7 +8,7 @@
         color: white !important;
     }
 </style>
-<h1>Edit</h1>
+
 <script>
     $(function () {
         var HomeAttachmentViewModel = function (parentGrid, dataJS) {
@@ -50,12 +50,17 @@
                                     parentGrid.deleteItem(self);
                                 }
                         
-                    }
-                });
+                            }
+                        });
                     }
                 }
                 
             }
+            self.viewPopped=function () {
+                //http://www.quirksmode.org/js/popup.html
+                poppedWindow = window.open(self.pictureUrl(), 'attachmentimage', 'resizable,height=800,width=800,left=0,top=0');
+                try { if (poppedWindow && poppedWindow.focus) { poppedWindow.focus(); } } catch (e) { }
+            };
             return (self);
         };
 
@@ -104,8 +109,6 @@
             $("#upload").click();
         };
         
-        
-            
         vm.loadPage();
         vm.sectionList = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.sectionList));
         ko.applyBindings(vm);
@@ -114,14 +117,14 @@
 
 <div class="content">
     <div class="container">
+        <div class="space40"></div>
         <div class="row">
             <div class="span12">
                 <div style="margin-left:10px;">
                     <input type="file" id="upload" data-bind="event:{change:addFile}" style="display:none;" />
-                    <button data-bind="click:clickUploadBtn, clickBubble: false">Add New</button>
+                    <button data-bind="click:clickUploadBtn, clickBubble: false" class="btn btn-primary">Add New</button>
                 </div>
                 <section id="portfolio-items">
-
                     <div class="row">
                         <ul class="portfolio">
                             <!-- ko foreach: items -->
@@ -135,11 +138,11 @@
                                         </div>
                                         <div class="img-container">
                                             <input type="text" data-bind="value:id" style="display:none;">
-                                            <img data-bind="attr:{src:url}">
+                                            <img data-bind="click:viewPopped, attr:{src:url}">
 
                                         </div>
                                         <p>
-                                            <select data-bind="options: $parent.sectionList,
+                                            <select style="width:auto;" data-bind="options: $parent.sectionList,
                                                 optionsText: 'name',
                                                 optionsValue: 'id',
                                                 value: sectionId,

@@ -20,9 +20,9 @@
         
     </dl>
     
-    <form action="Roles/Delete/@Model.Id">
+    <form asp-action="Delete" asp-route-id="@Model.Id">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a href="Roles/Index">Back to List</a>
+        <a class="btn" asp-action="Index">Back to List</a>
     </form>
 </div>

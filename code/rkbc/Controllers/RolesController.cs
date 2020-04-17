@@ -82,7 +82,7 @@ namespace rkbc.web.controllers
         [HttpPost]
         public async Task<IActionResult> Edit(RoleViewModel model)
         {
-            var modelObj = await roleManager.FindByNameAsync(model.roleName);
+            var modelObj = await roleManager.FindByIdAsync(model.roleId);
             modelObj.Name = model.roleName;
             if (ModelState.IsValid)
             {

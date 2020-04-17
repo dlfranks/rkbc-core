@@ -2,131 +2,133 @@
 @using rkbc.config.models
 @using Microsoft.Extensions.Options
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
 @inject SignInManager<ApplicationUser> signInManager
 @inject IOptions<RkbcConfig> rkbcSetting
-    <!DOCTYPE html>
-    <!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
-    <!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
-    <!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
-    <!--[if (gte IE 9)|!(IE)]><!-->
-    <html class="not-ie" lang="en">
-    <!--<![endif]-->
-    <head>
-        <!-- Basic Meta Tags -->
-        <meta charset="utf-8">
-        <title>RKBC</title>
-        <meta name="description" content="ucorpora demo - Free Business Corporate HTML Template">
-        <meta name="keywords" content="ucorpora, ucorpora demo, free, template, corporate, clean, modern, bootstrap, creative, design">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!--[if (gte IE 9)|!(IE)]>
-          <meta http-equiv="X-UA-Compatible" content="IE=edge">
-          <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-        <![endif]-->
-        <!-- Favicon -->
-        <link href="~/img/favicon.png" rel="icon" type="image/png" />
+@inject IHttpContextAccessor httpContextAccessor
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html class="not-ie" lang="en">
+<!--<![endif]-->
+<head>
+    <!-- Basic Meta Tags -->
+    <meta charset="utf-8">
+    <title>RKBC</title>
+    <meta name="description" content="ucorpora demo - Free Business Corporate HTML Template">
+    <meta name="keywords" content="ucorpora, ucorpora demo, free, template, corporate, clean, modern, bootstrap, creative, design">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--[if (gte IE 9)|!(IE)]>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <![endif]-->
+    <!-- Favicon -->
+    <link href="~/img/favicon.png" rel="icon" type="image/png" />
 
-        <!-- Styles -->
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <link href="~/css/styles.css" rel="stylesheet" />
+    <!-- Styles -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="~/css/styles.css" rel="stylesheet" />
 
-        <link href="~/css/bootstrap-override.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-override.css" rel="stylesheet" />
 
-        <!-- Font Avesome Styles -->
-        <link href="~/css/font-awesome/font-awesome.css" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap&subset=korean" rel="stylesheet">
+    <!-- Font Avesome Styles -->
+    <link href="~/css/font-awesome/font-awesome.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap&subset=korean" rel="stylesheet">
 
-        <link rel="stylesheet" href="~/css/flexslider.css" type="text/css" media="screen" />
-        <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.css" />
-        <link href="~/css/site.css" rel="stylesheet" />
-        <!-- JavaScripts -->
-        <script type="text/javascript" src="~/js/jquery-3.4.1.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
-        <script type="text/javascript" src="~/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/css/flexslider.css" type="text/css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.css" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <!-- JavaScripts -->
+    <script type="text/javascript" src="~/js/jquery-3.4.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="~/js/bootstrap.min.js"></script>
 
-        <script type="text/javascript" defer src="~/js/jquery.flexslider.js"></script>
+    <script type="text/javascript" defer src="~/js/jquery.flexslider.js"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js" asp-append-version="false"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.js" asp-append-version="false"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js" asp-append-version="false"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.js" asp-append-version="false"></script>
 
-        <script src="~/js/knockout.validation.js" asp-append-version="false"></script>
-
-
-        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.js"></script>
-        <script src="~/js/knockout.rkbc.js" asp-append-version="false"></script>
-
-        @RenderSection("Scripts", required: false)
-        <script>
-            $(document).ready(function () {
-                var actionkey = window.location.pathname.slice(1);
-                var next = actionkey.indexOf('/');
-                if (next < 0) next = actionkey.indexOf('\\');
-                if (next > 0) { actionkey = actionkey.slice(0, next); }
-                if (!window.location.hash && window.sessionStorage[actionkey]) {
-                    var menu = "#" +
-                        $("#").tabs("select", window.sessionStorage[actionkey]);
-                }
+    <script src="~/js/knockout.validation.js" asp-append-version="false"></script>
 
 
-            });
-        </script>
-    </head>
-    <body>
-        <!-- Header -->
-        <header id="header">
-            <div class="container">
-                <div class="row t-container">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.js"></script>
+    <script src="~/js/knockout.rkbc.js" asp-append-version="false"></script>
 
-                    <!-- Logo -->
-                    <div class="span3">
-                        <div class="logo">
-                            <a href="index.htm"><img src="~/img/rkbc/logo-header.png" alt=""></a>
+    @RenderSection("Scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            var actionkey = window.location.pathname.slice(1);
+            var next = actionkey.indexOf('/');
+            if (next < 0) next = actionkey.indexOf('\\');
+            if (next > 0) { actionkey = actionkey.slice(0, next); }
+            if (!window.location.hash && window.sessionStorage[actionkey]) {
+                var menu = "#" +
+                    $("#").tabs("select", window.sessionStorage[actionkey]);
+            }
 
-                        </div>
+
+        });
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <div class="row t-container">
+
+                <!-- Logo -->
+                <div class="span3">
+                    <div class="logo">
+                        <a href="index.htm"><img src="~/img/rkbc/logo-header.png" alt=""></a>
+
                     </div>
+                </div>
 
-                    <div class="span9">
-                        <div class="row space20"></div>
+                <div class="span9">
+                    <div class="row space20"></div>
 
-                        <nav id="nav" role="navigation">
-                            <a href="#nav" title="Show navigation">Show navigation</a>
-                            <a href="#" title="Hide navigation">Hide navigation</a>
+                    <nav id="nav" role="navigation">
+                        <a href="#nav" title="Show navigation">Show navigation</a>
+                        <a href="#" title="Hide navigation">Hide navigation</a>
 
-                            <ul class="clearfix">
-                                @if (User.Identity.IsAuthenticated)
+                        <ul class="clearfix">
+                            @if (ViewBag.UserSettings.isAdmin)
                             {
                                 <li class="active">
-                                    <a class="nav-link text-dark" href="/Home/Index">Home</a>
+                                    <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
                                     <ul>
                                         <!--Test Id = 3 or 9-->
-                                        <li><a class="nav-link text-dark" href="/Home/Edit/@rkbcSetting.Value.HomePageId">Edit</a></li>
-                                        <li><a class="nav-link text-dark" href="/Attachment/Index">Gallery</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit" asp-route-id="@rkbcSetting.Value.HomePageId">Edit</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Attachment" asp-action="Index">Gallery</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="/Pastor/Index" title="">목회자 칼럼</a>
+                                    <a asp-controller="Pastor" asp-action="Index" title="">목회자 칼럼</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" href="/Pastor/Edit">Edit</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Pastor" asp-action="Index">Edit</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="/Mission/Index" title="">선교</a>
+                                    <a asp-controller="Mission" asp-action="Index" title="">선교</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" href="@Url.Action("Index", "Mission")">Edit</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Mission" asp-action="Index">Edit</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="/School/Index" title="">한국학교</a>
+                                    <a asp-controller="School" asp-action="Index" title="">한국학교</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" href="@Url.Action("Index", "School")">Edit</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="School" asp-action="Index">Edit</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="/Contact/Index" title="">Contact</a>
+                                    <a asp-controller="Contact" asp-action="Index" title="">Contact</a>
                                     <ul>
-                                        <li><a class="nav-link text-dark" href="/Administration/Index">Administration</a></li>
-                                        <li><a class="nav-link text-dark" href="/Roles/Index">Roles</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Administration" asp-action="Index">Administration</a></li>
+                                        <li><a class="nav-link text-dark" asp-controller="Roles" asp-action="Index">Roles</a></li>
                                         <partial name="_LoginPartial" />
                                     </ul>
                                 </li>
@@ -135,62 +137,69 @@
                             }
                             else
                             {
-                                <li class="active"><a href="@Url.Action("Index", "Home")">Home</a></li>
+                                <li class="active"><a asp-controller="Home" asp-action="Index">Home</a></li>
                                 <li><a asp-controller="Pastor" asp-action="Index">목회자 칼럼</a></li>
                                 <li><a asp-controller="Mission" asp-action="Index">선교</a></li>
                                 <li><a asp-controller="School" asp-action="Index">한국학교</a></li>
-                                <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
-                                <partial name="_LoginPartial" />
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <li>
+                                        <a asp-controller="Contact" asp-action="Index">Contact</a>
+                                        <ul>
+                                            <partial name="_LoginPartial" />
+                                        </ul>
+                                    </li>
                                 }
-
-                            </ul>
-
-                        </nav>
-                    </div>
-
+                                else
+                                {
+                                    <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
+                                    <partial name="_LoginPartial" />
+                                }
+                            }
+                        </ul>
+                     </nav>
                 </div>
-
-
             </div>
-        </header>
-        <!-- Header End -->
-        <div class="">
-            <partial name="_CookieConsentPartial" />
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
         </div>
+    </header>
+    <!-- Header End -->
+    <div class="">
+        <partial name="_CookieConsentPartial" />
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
 
-        <!-- Footer -->
-        <footer id="footer">
-            <div class="container">
-                <div class="inner">
-                    <h3>Get In Touch</h3>
-                    <div class="row space30"></div>
-                    <ul class="actions">
-                        <li><i class="icon-phone"></i>+01 919 389 7482</li>
-                        <li><i class="icon-envelope"></i><a href="mailto:eunyoung2u@hotmail.com">eunyoung2u@hotmail.com</a></li>
-                        <li><i class="icon-home"></i><a href="http://rkbc.us">www.rkbc.us</a></li>
-                        <li><i class="icon-facebook"></i><a href="https://www.facebook.com/pg/RaleighKoreanChurch/">Facebook</a></li>
-                    </ul>
-                </div>
-
-
-                <div class="row space50"></div>
-                <div class="row">
-                    <div class="span6">
-                        <div class="logo-footer">
-                            <a href="http://krbc.us">Raleigh Korean Baptist Church</a>
-                        </div>
-                    </div>
-                    <div class="span6 right">
-                        &copy; 2020. All rights reserved.
-                    </div>
-                </div>
-
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <div class="inner">
+                <h3>Get In Touch</h3>
+                <div class="row space30"></div>
+                <ul class="actions">
+                    <li><i class="icon-phone"></i>+01 919 389 7482</li>
+                    <li><i class="icon-envelope"></i><a href="mailto:eunyoung2u@hotmail.com">eunyoung2u@hotmail.com</a></li>
+                    <li><i class="icon-home"></i><a href="http://rkbc.us">www.rkbc.us</a></li>
+                    <li><i class="icon-facebook"></i><a href="https://www.facebook.com/pg/RaleighKoreanChurch/">Facebook</a></li>
+                </ul>
             </div>
-        </footer>
-        <!-- Footer End -->
 
-    </body>
+
+            <div class="row space50"></div>
+            <div class="row">
+                <div class="span6">
+                    <div class="logo-footer">
+                        <a href="http://krbc.us">Raleigh Korean Baptist Church</a>
+                    </div>
+                </div>
+                <div class="span6 right">
+                    &copy; 2020. All rights reserved.
+                </div>
+            </div>
+
+        </div>
+    </footer>
+    <!-- Footer End -->
+
+</body>
 </html>
