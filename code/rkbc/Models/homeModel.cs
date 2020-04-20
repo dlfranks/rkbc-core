@@ -10,13 +10,13 @@ namespace rkbc.core.models
     public enum PageEnum
     {
         Home = 1,
-        Column,
-        Service,
+        Pastor,
+        Mission,
         Korean_School,
         Contact
 
     }
-    public enum SectionEnum
+    public enum HomeSectionEnum
     {
         [Display(Description = "Banner")]
         Banner = 100,
@@ -30,43 +30,18 @@ namespace rkbc.core.models
         Sermon_Video,
         [Display(Description = "Home Gallery")]
         Home_Gallery,
-        
+
 
     }
-    public class Section : IEntity, ISection
+    public class HomeContentItem : IEntity
     {
-        [Key]
         public int id { get; set; }
         public int homePageId { get; set; }
-        public HomePage homePage {get; set;}
+        public virtual HomePage homePage { get; set; }
         public int sectionId { get; set; }
-    }
-    public class HomeAttachment : Section, IAuditStamp
-    {
-        public DateTime? createDt { get; set; }
-        public string createUser { get; set; }
-        public DateTime? lastUpdDt { get; set; }
-        public string lastUpdUser { get; set; }
-        public string fileName { get; set; }
-        public string originalFileName { get; set; }
-        public string caption { get; set; }
-        public bool isOn { get; set; }
-    }
-    public class HomeVideoAttachment: Section
-    {
-        public string url { get; set; }
-        public string caption { get; set; }
-        public bool isOn { get; set; }
-    }
-    
-    public class HomeContentItem : Section
-    {
-
         public string content { get; set; }
         public bool isOn { get; set; }
     }
-    
-    
     public class HomePage :IEntity, IAuditStamp
     {
         public HomePage()
@@ -90,5 +65,19 @@ namespace rkbc.core.models
         public string sundayServiceVideoUrl { get; set; }
         public virtual List<HomeContentItem> announcements { get; set; }
         
+    }
+    public class Contact:IEntity
+    {
+        public int id { get; set; }
+        public DateTime? createDt { get; set; }
+        public string createUser { get; set; }
+        [Required]
+        public string name { get; set; }
+        [Required]
+        [EmailAddress]
+        public string email { get; set; }
+        [Required]
+        public string subject { get; set; }
+        public string message { get; set; }
     }
 }

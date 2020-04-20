@@ -14,6 +14,14 @@
     <Compile Remove="Migrations\20200213200511_creteHomePages.Designer.cs" />
     <Compile Remove="Migrations\20200315171655_updateHomepage3.cs" />
     <Compile Remove="Migrations\20200315171655_updateHomepage3.Designer.cs" />
+    <Compile Remove="Migrations\20200417163544_pastorModel.cs" />
+    <Compile Remove="Migrations\20200417163544_pastorModel.Designer.cs" />
+    <Compile Remove="Migrations\20200417165055_pastorModel2.cs" />
+    <Compile Remove="Migrations\20200417165055_pastorModel2.Designer.cs" />
+    <Compile Remove="Migrations\20200417181047_pastorModel2.cs" />
+    <Compile Remove="Migrations\20200417181047_pastorModel2.Designer.cs" />
+    <Compile Remove="Migrations\20200417181948_pastorModel2.cs" />
+    <Compile Remove="Migrations\20200417181948_pastorModel2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

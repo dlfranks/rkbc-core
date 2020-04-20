@@ -99,7 +99,7 @@ namespace rkbc.web.controllers
             modelObj = await unitOfWork.homePages.get(homePageId).Include("announcements").FirstOrDefaultAsync();
             
             var vm = setupViewModel(modelObj, FormViewMode.View);
-            vm.attachments = await unitOfWork.homeAttachments.get().Where(q => q.sectionId == (int)SectionEnum.Home_Gallery && q.isOn == true)
+            vm.attachments = await unitOfWork.attachments.get().Where(q => q.attachmentSectionEnum == (int)AttachmentSectionEnum.Home_Gallery && q.isOn == true)
                     .Select(q => new HomeImageUrl
                     {
                         imageUrl = fileHelper.generateAssetURL("gallery", q.fileName)
@@ -164,7 +164,7 @@ namespace rkbc.web.controllers
                 {
                     homePageId = modelObj.id,
                     homePage = modelObj,
-                    sectionId = (int)SectionEnum.Church_Announce,
+                    sectionId = (int)HomeSectionEnum.Church_Announce,
                     content = item.content,
                     isOn = true
                 });
@@ -175,7 +175,7 @@ namespace rkbc.web.controllers
                 {
                     homePageId = modelObj.id,
                     homePage = modelObj,
-                    sectionId = (int)SectionEnum.Member_Announce,
+                    sectionId = (int)HomeSectionEnum.Member_Announce,
                     content = item.content,
                     isOn = true
                 });
@@ -186,7 +186,7 @@ namespace rkbc.web.controllers
                 {
                     homePageId = modelObj.id,
                     homePage = modelObj,
-                    sectionId = (int)SectionEnum.School_Announce,
+                    sectionId = (int)HomeSectionEnum.School_Announce,
                     content = item.content,
                     isOn = true
                 });
@@ -210,14 +210,14 @@ namespace rkbc.web.controllers
                 
             };
             
-            vm.churchAnnouncements = model.announcements.Where(q => q.sectionId == (int)SectionEnum.Church_Announce)
+            vm.churchAnnouncements = model.announcements.Where(q => q.sectionId == (int)HomeSectionEnum.Church_Announce)
                 .Select(q => new HomeContentItemViewModel { 
                     id = q.id,
                     homePageId = q.homePageId,
                     sectionId = q.sectionId,
                     content = q.content
                 }).ToList();
-            vm.memberAnnouncements = model.announcements.Where(q => q.sectionId == (int)SectionEnum.Member_Announce)
+            vm.memberAnnouncements = model.announcements.Where(q => q.sectionId == (int)HomeSectionEnum.Member_Announce)
                 .Select(q => new HomeContentItemViewModel
                 {
                     id = q.id,
@@ -225,7 +225,7 @@ namespace rkbc.web.controllers
                     sectionId = q.sectionId,
                     content = q.content
                 }).ToList();
-            vm.schoolAnnouncements = model.announcements.Where(q => q.sectionId == (int)SectionEnum.School_Announce)
+            vm.schoolAnnouncements = model.announcements.Where(q => q.sectionId == (int)HomeSectionEnum.School_Announce)
                 .Select(q => new HomeContentItemViewModel
                 {
                     id = q.id,
@@ -258,26 +258,24 @@ namespace rkbc.web.controllers
         {
             HomePageViewModel model = new HomePageViewModel();
             await TryUpdateModelAsync(model);
-            var userId = userManager.GetUserId(HttpContext.User);
             var currentUser = userService.CurrentUserSettings;
-
             HomePage modelObj = await unitOfWork.homePages.get(model.id).Include("announcements").FirstOrDefaultAsync();
-            var d = HttpContext.User.Identity.getDepartment();
+            
             if (modelObj == null)
             {
                 modelObj = new HomePage();
                 modelObj.createDt = DateTime.UtcNow;
-                modelObj.createUser = userId;
+                modelObj.createUser = currentUser.userId;
                 modelObj.lastUpdDt = DateTime.UtcNow;
-                modelObj.lastUpdUser = userId;
+                modelObj.lastUpdUser = currentUser.userId;
                 unitOfWork.homePages.add(modelObj);
             }
             else
             {
                 if(modelObj.createDt == null ) modelObj.createDt = DateTime.UtcNow;
-                if (modelObj.createUser == null) modelObj.createUser = userId;
+                if (modelObj.createUser == null) modelObj.createUser = currentUser.userId;
                 modelObj.lastUpdDt = DateTime.UtcNow;
-                modelObj.lastUpdUser = userId;
+                modelObj.lastUpdUser = currentUser.userId;
                 unitOfWork.homePages.update(modelObj);
             }
 

@@ -6,18 +6,15 @@ using System.Threading.Tasks;
 
 namespace rkbc.core.repository
 {
+    public interface IEmailSender
+    {
+        Task SendEmailAsync(string email, string name, string subject, string message);
+    }
     public interface IEntity
     {
         int id { get; }
     }
-    public interface IPage
-    {
-        int pageId { get; set; }
-    }
-    public interface ISection
-    {
-        int sectionId { get; set; }
-    }
+    
     public interface IAuditStamp
     {
         DateTime? createDt { get; set; }
@@ -47,9 +44,11 @@ namespace rkbc.core.repository
     public interface IUnitOfWork : IDisposable
     {
         IRepositoryAsync<HomePage> homePages { get; }
+        IRepositoryAsync<PastorPage> pastorPages { get; }
+        IRepositoryAsync<Contact> contacts { get; }
         IRepositoryAsync<HomeContentItem> homeContentItems { get; }
-        IRepositoryAsync<HomeAttachment> homeAttachments { get; }
-        IRepositoryAsync<HomeVideoAttachment> homeVideoAttachments { get; }
+        IRepositoryAsync<Attachment> attachments { get; }
+        
         IRepositoryAsync<UserActivityLog> userActivityLogs { get; }
         ApplicationDbContext getContext();
         Task commitAsync();

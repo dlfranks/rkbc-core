@@ -20,8 +20,10 @@ namespace rkbc.core.repository
         public ApplicationDbContext _context;
         IRepositoryAsync<UserActivityLog> _userActivityLog = null;
         IRepositoryAsync<HomePage> _homePage = null;
-        IRepositoryAsync<HomeAttachment> _homeAttachments = null;
-        IRepositoryAsync<HomeVideoAttachment> _homeVideoAttachments = null;
+        IRepositoryAsync<Contact> _contacts = null;
+        IRepositoryAsync<PastorPage> _pastorPage = null;
+        IRepositoryAsync<Attachment> _attachments = null;
+        
         IRepositoryAsync<HomeContentItem> _homeContentItems = null;
 
         public IRepositoryAsync<HomeContentItem> homeContentItems
@@ -33,24 +35,16 @@ namespace rkbc.core.repository
                 return _homeContentItems;
             }
         }
-        public IRepositoryAsync<HomeAttachment> homeAttachments
+        public IRepositoryAsync<Attachment> attachments
         {
             get
             {
-                if (_homeAttachments == null)
-                    _homeAttachments = new BasicRepository<HomeAttachment>(_context);
-                return _homeAttachments;
+                if (_attachments == null)
+                    _attachments = new BasicRepository<Attachment>(_context);
+                return _attachments;
             }
         }
-        public IRepositoryAsync<HomeVideoAttachment> homeVideoAttachments
-        {
-            get
-            {
-                if (_homeVideoAttachments == null)
-                    _homeVideoAttachments = new BasicRepository<HomeVideoAttachment>(_context);
-                return _homeVideoAttachments;
-            }
-        }
+        
         public IRepositoryAsync<HomePage> homePages
         {
             get
@@ -58,6 +52,24 @@ namespace rkbc.core.repository
                 if (_homePage == null)
                     _homePage = new BasicRepository<HomePage>(_context);
                 return _homePage;
+            }
+        }
+        public IRepositoryAsync<PastorPage> pastorPages
+        {
+            get
+            {
+                if (_pastorPage == null)
+                    _pastorPage = new BasicRepository<PastorPage>(_context);
+                return _pastorPage;
+            }
+        }
+        public IRepositoryAsync<Contact> contacts
+        {
+            get
+            {
+                if (_contacts == null)
+                    _contacts = new BasicRepository<Contact>(_context);
+                return _contacts;
             }
         }
         public IRepositoryAsync<UserActivityLog> userActivityLogs

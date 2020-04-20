@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using rkbc.core.repository;
 
 namespace rkbc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200417164459_pastorModel")]
+    partial class pastorModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,15 +253,12 @@ namespace rkbc.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("rkbc.core.models.Attachment", b =>
+            modelBuilder.Entity("rkbc.core.models.HomeAttachment", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("attachmentSectionEnum")
-                        .HasColumnType("int");
 
                     b.Property<string>("caption")
                         .HasColumnType("nvarchar(max)");
@@ -273,6 +272,9 @@ namespace rkbc.Migrations
                     b.Property<string>("fileName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("homePageId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("isOn")
                         .HasColumnType("bit");
 
@@ -285,45 +287,14 @@ namespace rkbc.Migrations
                     b.Property<string>("originalFileName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("pageEnum")
+                    b.Property<int>("sectionId")
                         .HasColumnType("int");
 
                     b.HasKey("id");
 
-                    b.ToTable("Attachments");
-                });
+                    b.HasIndex("homePageId");
 
-            modelBuilder.Entity("rkbc.core.models.Contact", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime?>("createDt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("createUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Contacts");
+                    b.ToTable("HomeAttachments");
                 });
 
             modelBuilder.Entity("rkbc.core.models.HomeContentItem", b =>
@@ -401,6 +372,35 @@ namespace rkbc.Migrations
                     b.HasKey("id");
 
                     b.ToTable("HomePages");
+                });
+
+            modelBuilder.Entity("rkbc.core.models.HomeVideoAttachment", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("caption")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("homePageId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isOn")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("sectionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("homePageId");
+
+                    b.ToTable("HomeVideoAttachments");
                 });
 
             modelBuilder.Entity("rkbc.core.models.PastorPage", b =>
@@ -490,10 +490,28 @@ namespace rkbc.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("rkbc.core.models.HomeAttachment", b =>
+                {
+                    b.HasOne("rkbc.core.models.HomePage", "homePage")
+                        .WithMany()
+                        .HasForeignKey("homePageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("rkbc.core.models.HomeContentItem", b =>
                 {
                     b.HasOne("rkbc.core.models.HomePage", "homePage")
                         .WithMany("announcements")
+                        .HasForeignKey("homePageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("rkbc.core.models.HomeVideoAttachment", b =>
+                {
+                    b.HasOne("rkbc.core.models.HomePage", "homePage")
+                        .WithMany()
                         .HasForeignKey("homePageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

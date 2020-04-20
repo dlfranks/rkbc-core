@@ -33,9 +33,30 @@ using Microsoft.AspNetCore.Rewrite;
 
 namespace rkbc.config.models
 {
+    public class EmailSettings
+    {
+        public String PrimaryDomain { get; set; }
+
+        public int PrimaryPort { get; set; }
+
+        public String SecondayDomain { get; set; }
+
+        public int SecondaryPort { get; set; }
+
+        public String UsernameEmail { get; set; }
+
+        public String UsernamePassword { get; set; }
+
+        public String FromEmail { get; set; }
+
+        public String ToEmail { get; set; }
+
+        public String CcEmail { get; set; }
+    }
     public class RkbcConfig
     {
         public int HomePageId { get; set; }
+        public int PastorPageId { get; set; }
         public string Version { get; set; }
         public string DefaultPassword { get; set; }
     }
@@ -59,6 +80,11 @@ namespace rkbc
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add our Config object so it can be injected
+            services.Configure<RkbcConfig>(Configuration.GetSection("RkbcConfig"));
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+
+
             var keysFolder = Path.Combine(WebHostEnvironment.ContentRootPath, "temp-keys");
             services.AddDataProtection()
                 .SetApplicationName("rkbc")
@@ -99,6 +125,7 @@ namespace rkbc
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<UserService>();
             services.AddSingleton<FileHelper>();
+            
 
             services.AddMvc(options =>
             {
@@ -110,16 +137,7 @@ namespace rkbc
             //.AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            //ElmahCore
-            //EmailOptions emailOptions = new EmailOptions
-            //{
-            //    MailRecipient = "deana.franks@woodplc.com",
-            //    MailSender = "deana.franks@woodplc.com",
-            //    SmtpServer = "imts@amecfw.com",
-            //    SmtpPort = 25,
-            //    AuthUserName = "ImtsADQueryUser",
-            //    AuthPassword = "qu3rYAD!mtsUsEr"
-            //};
+            
             services.AddControllersWithViews();
             services.AddSession(options =>
             {
@@ -132,11 +150,21 @@ namespace rkbc
                 options.Cookie.IsEssential = true;
             });
 
+            //ElmahCore
+            EmailOptions emailOptions = new EmailOptions
+            {
+                MailRecipient = "deoksoonf@gmail.com",
+                MailSender = "deoksoonf@gmail.com",
+                SmtpServer = "smtp.gmail.com",
+                SmtpPort = 587,
+                AuthUserName = "deoksoonf@gmail.com",
+                AuthPassword = "gmail8516"
+            };
             services.AddElmah<XmlFileErrorLog>(options =>
             {
                 options.FiltersConfig = "elmah.xml";
                 options.LogPath = "./elmahLogs";
-                //options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
+                options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
             });
             //services.AddElmah<SqlErrorLog>(options =>
             //{
@@ -147,9 +175,7 @@ namespace rkbc
             // Add functionality to inject IOptions<T>
             //services.AddOptions();
 
-            // Add our Config object so it can be injected
-            services.Configure<RkbcConfig>(Configuration.GetSection("RkbcConfig"));
-
+            
             services.AddAuthentication("AuthCookies")
             .AddCookie("AuthCookies", options => {
                 options.LoginPath = "/Administration/Login";

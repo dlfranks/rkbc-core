@@ -27,10 +27,10 @@ namespace rkbc.core.repository
         public DbSet<ApplicationRoleClaim> applicationRoleClaims { get; set; }
         public DbSet<ApplicationUserToken> applicationUserTokens { get; set; }
         public DbSet<HomePage> HomePages { get; set; }
+        public DbSet<PastorPage> PastorPages { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
         public DbSet<HomeContentItem> HomeContentItems { get; set; }
-        public DbSet<HomeAttachment> HomeAttachments { get; set; }
-        public DbSet<HomeVideoAttachment> HomeVideoAttachments { get; set; }
-
+        public DbSet<Attachment> Attachments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

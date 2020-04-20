@@ -1,8 +1,14 @@
-﻿<style>
+﻿@model rkbc.core.models.Contact
+<style>
     #contactForm input, #contactForm textarea {
         background-color: #69696926;
     }
 </style>
+<script>
+    $(function () {
+
+    });
+</script>
 <div class="content" style="margin:0 12px;">
 
 
@@ -13,23 +19,32 @@
 
                 <h3>Contact Form</h3>
                 <div id="contactForm">
+                   
                     <form class="form-main" name="ajax-form" id="ajax-form" action="#" method="post">
-                        <div id="ajaxsuccess">E-mail was successfully sent.</div>
-                        <div class="error" id="err-name">Please enter name</div>
-                        <input name="name" id="name" type="text" value="Name" onfocus="if(this.value == 'Name') this.value='';" onblur="if(this.value == '') this.value='Name';">
-
-                        <div class="error" id="err-email">Please enter e-mail</div>
-                        <div class="error" id="err-emailvld">E-mail is not a valid format</div>
-                        <input name="email" id="email" type="text" value="E-mail" onfocus="if(this.value == 'E-mail') this.value='';" onblur="if(this.value == '') this.value='E-mail';">
-
-                        <div class="error" id="err-message">Please enter message</div>
-                        <textarea name="message" id="message" onfocus="if(this.value == 'Message') this.value='';" onblur="if(this.value == '') this.value='Message';">Message</textarea><br>
-                        <div>
-                            <div class="error" id="err-form">There was a problem validating the form please check!</div>
-                            <div class="error" id="err-timedout">The connection to the server timed out!</div>
-                            <div class="error" id="err-state"></div>
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="name">Name:</label>
+                            <input asp-for="name" id="name" type="text" value="name" onfocus="if(this.value == 'Name') this.value='';" onblur="if(this.value == '') this.value='Name';">
+                            <span asp-validation-for="name" class="text-danger"></span>
                         </div>
-                        <button id="send" class="btn f-right">Send Message <i class="icon-ok"></i></button>
+                        <div class="form-group">
+                            <label asp-for="email">Email:</label>
+                            <input asp-for="email" id="email" type="text" value="email" onfocus="if(this.value == 'E-mail') this.value='';" onblur="if(this.value == '') this.value='E-mail';">
+                            <span asp-validation-for="email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="subject">Subject:</label>
+                            <input asp-for="subject" id="subject" type="text" value="subject" onfocus="if(this.value == 'Subject') this.value='';" onblur="if(this.value == '') this.value='Subject';">
+                            <span asp-validation-for="subject" class="text-danger"></span>
+                        </div>
+                        <div class="error" id="err-message">Please enter message</div>
+                        <div class="form-group">
+                            <label asp-for="message">Message:</label>
+                            <textarea name="message" id="message" onfocus="if(this.value == 'Message') this.value='';" onblur="if(this.value == '') this.value='Message';">Message</textarea><br>
+                            <span asp-validation-for="message" class="text-danger"></span>
+                        </div>
+
+                        <button asp-action="SendEmail" id="sendEmail" class="btn f-right">Send Message <i class="icon-ok"></i></button>
                     </form>
                 </div>
             </div>

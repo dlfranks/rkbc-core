@@ -1,7 +1,8 @@
-﻿
+﻿@model rkbc.web.viewmodels.PastorPageViewModel
 @{
     ViewData["Title"] = "Index";
 }
+
 <!-- Titlebar
 ================================================== -->
 <div class="row space40"></div>
@@ -10,7 +11,7 @@
     <div class="container">
 
         <div class="eight columns">
-            <h5 style="margin:0 10px;" class="left">"우리 주 예수 그리스도를 변함없이 사랑하는 모든자 에게 은혜가 있을찌어다" 엡 6:24</h5>
+            <h5 style="margin:0 10px;" class="left">@Model.pastorPage.pageTitle</h5>
         </div>
 
         <div class="eight columns">
@@ -44,19 +45,14 @@
                     </div>
                     <div class="span10">
                         <div class="post-d-info">
-                            <a href="blog-detail.htm"><h4>주님께서는 반드시 우리가 그분께 늘 의지하도록 하신다.</h4></a>
+                            <a href="blog-detail.htm"><h4>@Model.pastorPage.columnTitle</h4></a>
                             <div class="blue-dark">
-                                <i class="icon-user"></i> By 이순신 목사 (Soon-Shin Choi)
+                                <i class="icon-user"></i> By @Model.pastorPage.author
                             </div>
-                            <p>
-                                주님께서는 반드시 우리가 그분께 늘 의지하도록 하신다. 우리가 감당할 수 없는 상황으로 우리를 인도하심으로써 그렇게 하신다. 그렇기때문에 우리가 걱정하더라도 하나님께서는 걱정하지 않으신다. 무엇을 행할 것인지 이미 알고 계시기 때문이다. 그분께는 걸어갈 길과 해야할 일에 대한 계획이 이미 있으며, 그것은 우리를 위해 온전히 준비되어 있다. 이런 이야기가 있다.<br /><br />한 젊은이가 그리스도를 믿는 믿음 때문에 감옥에 있는데 다음날 기둥에 묶여 화형될 처지였다. 같은 감방에 나이도 많고 연륜도 깊은 신자가 있었는데 주님의 도에 더 잘 아는 사람이었다. 날이 어두워지자 젊은이는 호에 불을 붙이려고 했고 그러다가 손가락을 데었다. 손가락의 고통 때문에 소리를 지르면서 그 동료에게 물었다. "손가락 데인것도 참을 수 없는데, 기둥에 묶여 화형되는 걸 어떻게 참죠?" 그 연장자는 조용히 대답했다. "젊은이! 하나님께서는 당신에게 손가락을 데라고 하지 않으셨기 때문에 그 일에 대해서는 아무 은햬도 임하지 않았지만, 믿음을 위해 목숨을 잃는 것은 하나님께서 당신에게 요구하시는 것이므로 그때가 되면 하나님의 은햬가 그곳에 임할 것이오." <br /><br />하나님께서는 우리가 이 세상을 살아갈때 겪는 모든 일을 처리할 계획을 갖고 계신다. 하나님의 넉넉한 은혜는 우리의 부족을 채우신다.
-                            </p>
+                            <p id="column">@Model.pastorPage.column</p>
                         </div>
                         <div class="row space40"></div>
-                        <a href="blog-detail.htm"><img src="~/img/rkbc/pastorFamily.jpg" alt=""></a>
-
-
-
+                        <a href="#"><img src="@Url.Content(Model.imageUrl)" alt=""></a>
                     </div>
                 </div>
                 <div class="row space40"></div>
@@ -123,3 +119,10 @@
 
 </div>
 </div>
+<script>
+    $(function () {
+        var text = $("#column").text().replace(/\r\n|\r|\n/g,"<br />");
+        $("#column").html(text);
+        
+    });
+</script>

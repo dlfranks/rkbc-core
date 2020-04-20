@@ -1,0 +1,157 @@
+﻿@model rkbc.core.models.PastorPage
+@{
+    ViewData["Title"] = "Edit";
+}
+<script>
+    $(function () {
+       
+        $("input[type=text]", "textarea").change(function () {
+            var text = $(this).val();
+            text.replace(/&/g, '&amp;').
+                replace(/>/g, '&gt;').
+                replace(/</g, '&lt;').
+                replace(/"/g, '&quot;');
+                
+        });
+    });
+</script>
+<!-- Titlebar
+================================================== -->
+<div class="row space40"></div>
+<form action="Edit" method="post">
+    <section id="titlebar">
+        <!-- Container -->
+        <div class="container">
+
+            <div class="eight columns">
+                <h5 style="margin:0 10px; width:60%;" class="left">
+                    <label asp-for="pageTitle"></label>
+                    <input type="hidden" asp-for="id" />
+                    <input style="width:100%;" type="text" asp-for="pageTitle" class="form-control" />
+                    <span asp-validation-for="pageTitle" class="text-danger"></span>
+                </h5>
+            </div>
+
+            <div class="eight columns">
+                <nav id="breadcrumbs">
+                    <ul>
+                        <li>You are here:</li>
+                        <li><a href="@Url.Action("Index", "Home")">Home</a></li>
+                        <li>목회자 칼럼</li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+        <!-- Container / End -->
+    </section>
+    <div class="content" style="margin: 0 10px;">
+        <div class="container">
+            <div class="row space40"></div>
+
+            <div class="row">
+                <div class="span12">
+
+                    <!-- Blog Item -->
+                    <div class="row">
+                        <div class="span1">
+
+                            <div class="blog-icon">
+                                <i class="icon-quote-right"></i><br>
+
+                            </div>
+                            <h5>칼 럼</h5>
+                        </div>
+                        <div class="span10">
+                            <div class="post-d-info">
+                                <h4>
+                                    <label asp-for="columnTitle"></label>
+                                    <input style="width:70%;" type="text" asp-for="columnTitle" class="form-control" />
+                                    <span asp-validation-for="columnTitle" class="text-danger"></span>
+                                </h4>
+                                
+                                <div class="blue-dark">
+                                    <i class="icon-user"></i> By <input type="text" asp-for="author" class="form-control" />
+                                    <span asp-validation-for="author" class="text-danger"></span>
+                                </div>
+                                <p>
+                                    <label asp-for="column"></label>
+                                    <textarea style="width:100%;height:200px;" type="text" asp-for="column" class="form-control" ></textarea>
+                                    <span asp-validation-for="column" class="text-danger"></span>
+                                </p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row space40"></div>
+                    <!-- Blog Item End -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="span12">
+                    <h3>새신자 질문 (FAQ)</h3>
+                    <!-- Accordion -->
+                    <div class="accordion" id="accordion2">
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                                    랄리한인교회는 어떤교회인가요?
+                                </a>
+                            </div>
+                            <div id="collapseOne" class="accordion-body collapse in">
+                                <div class="accordion-inner">
+                                    랄리한인교회는 미남침례교회에 소속된교회입니다. 개척한지 16년이 되었으며 개척이래 지금까지 하나님의 은혜로 지속적으로 성장하고 있는 교회입니다.랄리한인교회는 건강한교회를 만들기 위하여 힘쓰고 있습니다. 건강한 교회를 위해서 예배에 성공하고 기도로 승리하며 말씀에 순종하는 표어입니다. 두날개로 날아오르는 건강한교회입니다. 예배에 은혜와 능력이 넘치며 말씀이 살아 움직이는 교회입니다. 랄리한인교회에 오신다면 인생의 새로운 전환기를 맞이하실 것을 확신합니다.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                                    목사님을 만나 뵐수 있나요?
+                                </a>
+                            </div>
+                            <div id="collapseTwo" class="accordion-body collapse">
+                                <div class="accordion-inner">
+                                    예 교회에 처음오시는 분은 누구나 목사님과 5주동안 새생명 성경공부를 하고 있습니다. 개인적으로 만나시길 원하시는 분은 새가족 명단에 심방을 원한다고 기제하시면 전화한 후 심방을 하십니다.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+                                    어떻게 신자가 되나요?
+                                </a>
+                            </div>
+                            <div id="collapseThree" class="accordion-body collapse">
+                                <div class="accordion-inner">
+                                    누구든지 예수 그리스도를 구주로 믿으면 신자가 됩니다. 신자가 된 사람은 침례를 받습니다.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">
+                                    아이들은 어디로 가나요?
+                                </a>
+                            </div>
+                            <div id="collapseFour" class="accordion-body collapse">
+                                <div class="accordion-inner">
+                                    아이들은 교회 뒤에 교육관에서 따로 예배를 드립니다. 아이들을 데여다 주시면 선생님들이 분반을 정해서 가르쳐 주고 잘 돌봐 줄 것입니다.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Accordion End -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="content">
+        <div class="container">
+            <input class="btn btn-gray pad2" type="submit" value="Update" />
+            <a class="btn btn-gray pad2" href="/Pastor/Index">Cancel</a>
+        </div>
+        
+    </div>
+</form>
