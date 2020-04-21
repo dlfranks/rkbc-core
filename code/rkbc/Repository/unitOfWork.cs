@@ -23,7 +23,10 @@ namespace rkbc.core.repository
         IRepositoryAsync<Contact> _contacts = null;
         IRepositoryAsync<PastorPage> _pastorPage = null;
         IRepositoryAsync<Attachment> _attachments = null;
-        
+        IRepositoryAsync<Blog> _blogs = null;
+        IRepositoryAsync<Post> _posts = null;
+        IRepositoryAsync<Comment> _comments = null;
+
         IRepositoryAsync<HomeContentItem> _homeContentItems = null;
 
         public IRepositoryAsync<HomeContentItem> homeContentItems
@@ -79,6 +82,33 @@ namespace rkbc.core.repository
                 if(_userActivityLog == null)
                     _userActivityLog = new BasicRepository<UserActivityLog>(_context);
                 return _userActivityLog;
+            }
+        }
+        public IRepositoryAsync<Blog> blogs
+        {
+            get
+            {
+                if (_blogs == null)
+                    _blogs = new BasicRepository<Blog>(_context);
+                return _blogs;
+            }
+        }
+        public IRepositoryAsync<Post> posts
+        {
+            get
+            {
+                if (_posts == null)
+                    _posts = new BasicRepository<Post>(_context);
+                return _posts;
+            }
+        }
+        public IRepositoryAsync<Comment> comments
+        {
+            get
+            {
+                if (_comments == null)
+                    _comments = new BasicRepository<Comment>(_context);
+                return _comments;
             }
         }
         public ApplicationDbContext getContext()

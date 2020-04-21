@@ -1,0 +1,60 @@
+﻿@model rkbc.web.viewmodels.PostViewModel
+@using rkbc.web.constant;
+@{
+    var isNew = string.IsNullOrEmpty(Model.post.title);
+    ViewData[Constants.Title] = "Edit " + (Model.post.title ?? "new post");
+    var host = Context.Request.Host.ToString();
+    var allCats = ViewData[Constants.AllCats] as List<string> ?? new List<string>();
+}
+
+<form method="post" id="edit" class="container" asp-controller="Blog" asp-action="UpdatePost">
+    <div asp-validation-summary="All"></div>
+    <input type="hidden" asp-for="@Model.post.blogId" />
+    <input type="hidden" asp-for="@Model.post.id" />
+
+    <label asp-for="@Model.image" class="label">File</label>
+    <input asp-for="@Model.image" type="file"/>
+    <span class="desc" id="desc_title">The blog image as it appears on your blog.</span>
+
+    <label asp-for="@Model.post.title" class="label">Title</label>
+    <input asp-for="@Model.post.title" required placeholder="Title of blog post" aria-describedby="desc_title" />
+    <span class="desc" id="desc_title">The title as it appears on the website</span>
+    <br />
+
+    <label asp-for="@Model.post.slug" class="label">Slug</label>
+    <input asp-for="@Model.post.slug" placeholder="The URL name" aria-describedby="desc_slug" />
+    <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
+    <br />
+
+    <label for="categories" class="label">Tags</label>
+    <input type="text" name="selecttag" id="selecttag" aria-describedby="desc_categories" list="taglist" placeholder="@string.Join(", ", Model.post.categories)" />
+    <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.post.categories)" hidden />
+    <span class="desc" id="desc_categories">Select, or build a comma separated list of keywords - to remove double the keyword</span>
+    <datalist id="taglist">
+        @foreach (var cat in allCats)
+        {
+            <option value="@cat" />
+        }
+    </datalist>
+    <br />
+
+    <label asp-for="@Model.post.excerpt" class="label">Excerpt</label>
+    <textarea asp-for="@Model.post.excerpt" rows="3" placeholder="Short description of blog post" aria-describedby="desc_excerpt">@Model.post.excerpt</textarea>
+    <span class="desc" id="desc_excerpt">A brief description of the content of the post</span>
+    <br />
+
+    <textarea asp-for="@Model.post.content" rows="20" aria-label="Content">@Model.post.content</textarea>
+    <br />
+
+    <input type="submit" value="Save" title="Save the post" />
+
+    <input asp-for="@Model.post.isPublished" />
+    <label asp-for="@Model.post.isPublished">Is published</label>
+
+    @if (!isNew)
+    {
+        <input type="submit" value="Delete..." class="delete" title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.post.id" />
+    }
+</form>
+
+

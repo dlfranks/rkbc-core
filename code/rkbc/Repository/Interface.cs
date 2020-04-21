@@ -48,7 +48,10 @@ namespace rkbc.core.repository
         IRepositoryAsync<Contact> contacts { get; }
         IRepositoryAsync<HomeContentItem> homeContentItems { get; }
         IRepositoryAsync<Attachment> attachments { get; }
-        
+        IRepositoryAsync<Blog> blogs { get; }
+        IRepositoryAsync<Post> posts { get; }
+        IRepositoryAsync<Comment> comments { get; }
+
         IRepositoryAsync<UserActivityLog> userActivityLogs { get; }
         ApplicationDbContext getContext();
         Task commitAsync();
@@ -56,5 +59,26 @@ namespace rkbc.core.repository
         Task<bool> tryConcurrencyCommitAsync();
         Task<bool> tryUniqueConstraintCommitAsync();
         void updateCollection<TCOL>(IEnumerable<TCOL> oldList, IEnumerable<TCOL> newList) where TCOL : class, IEntity;
+    }
+    public interface IBlogService
+    {
+        Task<Blog> getBlog(int blogId);
+        Task DeletePost(Post post);
+
+        IAsyncEnumerable<string> GetCategories();
+
+        Task<Post?> GetPostById(string id);
+
+        Task<Post?> GetPostBySlug(string slug);
+
+        IAsyncEnumerable<Post> GetPosts();
+
+        IAsyncEnumerable<Post> GetPosts(int count, int skip = 0);
+
+        IAsyncEnumerable<Post> GetPostsByCategory(string category);
+
+        Task<string> SaveFile(byte[] bytes, string fileName, string? suffix = null);
+
+        Task SavePost(Post post);
     }
 }

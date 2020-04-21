@@ -22,6 +22,8 @@
     <Compile Remove="Migrations\20200417181047_pastorModel2.Designer.cs" />
     <Compile Remove="Migrations\20200417181948_pastorModel2.cs" />
     <Compile Remove="Migrations\20200417181948_pastorModel2.Designer.cs" />
+    <Compile Remove="Migrations\20200420163936_blog.cs" />
+    <Compile Remove="Migrations\20200420163936_blog.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

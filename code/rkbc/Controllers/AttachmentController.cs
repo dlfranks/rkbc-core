@@ -56,7 +56,7 @@ namespace rkbc.web.controllers
         protected FileHelper fileHelper;
         protected IOptions<RkbcConfig> rkbcSetting;
         public AttachmentController(IUnitOfWork _unitOfWork, UserService _userService, 
-                                    IWebHostEnvironment _env, FileHelper _fileHelper, IOptions<RkbcConfig> rkbcConfig)
+                                    FileHelper _fileHelper, IOptions<RkbcConfig> rkbcConfig)
                                     :base(_unitOfWork, _userService)
         {
             this.fileHelper = _fileHelper;
