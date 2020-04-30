@@ -1,5 +1,8 @@
 ﻿@page
 @model RegisterModel
+@using rkbc.core.models;
+@using rkbc.core.service;
+@inject  UserService userService;
 @{
     ViewData["Title"] = "Register";
 }
@@ -28,6 +31,17 @@
                             <input asp-for="Input.ConfirmPassword" class="form-control" />
                             <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                         </div>
+                        <div class="form-group">
+                            <label asp-for="Input.countryCode"></label>
+                            <select asp-items="Html.GetEnumSelectList<CountryEnum>()" asp-for="Input.countryCode" class="form-control"></select>
+                            <span asp-validation-for="Input.countryCode" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.accountType"></label>
+                            <select asp-items="Html.GetEnumSelectList<AccountType>()" asp-for="Input.accountType" class="form-control"></select>
+                            <span asp-validation-for="Input.accountType" class="text-danger"></span>
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Register</button>
                     </form>
                 </div>

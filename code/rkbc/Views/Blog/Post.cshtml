@@ -1,0 +1,166 @@
+﻿@model rkbc.core.models.Post
+@using rkbc.core.models;
+<!-- Titlebar
+================================================== -->
+<section id="titlebar">
+    <!-- Container -->
+    <div class="container">
+
+        <div class="eight columns">
+            <h3 class="left">Blogs</h3>
+        </div>
+
+        <div class="eight columns">
+            <nav id="breadcrumbs">
+                <ul>
+                    <li>You are here:</li>
+                    <li><a asp-controller="Blog" asp-action="Post" asp-route-id="slug">@Model.slug</a></li>
+                    <li>Blogs</li>
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+    <!-- Container / End -->
+</section>
+
+<!-- Content -->
+<div id="content">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <h3></h3>
+            </div>
+
+            <div class="span9">
+                <!-- Blog Detail Content -->
+               
+                <div class="row">
+                    <div class="span1">
+                        @if (Model.postType == (int)BlogPostType.Gallery)
+                        {
+                            <div class="blog-icon">
+                                <i class="icon-camera"></i><br>
+                                <h5>Gallery Post</h5>
+                            </div>
+                        }
+                        else if (Model.postType == (int)BlogPostType.Video)
+                        {
+                            <div class="blog-icon">
+                                <i class="icon-film"></i><br>
+                                <h5>Video Post</h5>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="blog-icon">
+                                <i class="icon-quote-right"></i><br>
+                                <h5>Single Post</h5>
+                            </div>
+                        }
+                    </div>
+                    <div class="span8">
+                        @if (Model.postType == (int)BlogPostType.Gallery)
+                        {
+                            <a href="@Model.GetLink()"><img src="@Url.Content(Model.getImageLink())" alt=""></a>
+                        }
+
+                        <div class="space20">
+                        </div>
+                        @if (Model.postType == (int)BlogPostType.Video)
+                        {
+                            @Html.Raw(Model.getEmbededVideo());
+                        }
+
+
+                        <div class="post-d-info">
+                            <h3><a href="@Model.GetLink()">@Model.title</a></h3>
+                            <div class="blue-dark">
+                                <i class="icon-user"></i> By @(Model.blog.author.firstName + " " + Model.blog.author.lastName)
+                                <i class="icon-comment-alt"></i> With <span itemprop="commentCount">@Model.comments.Count</span> @(Model.comments.Count == 1 ? "comment" : "comments")
+                                <time datetime="@Model.pubDate.ToString("s")" itemprop="datePublished">Published @Model.pubDate.ToString("MMM d, yyyy")</time>
+                                @if (ViewBag.UserSettings.isAdmin || ViewBag.UserSettings.userId == Model.blog.authorId)
+                                {
+                                    <a asp-controller="Blog" asp-action="Edit" asp-route-id="@Model.id" title="Edit the post">Edit post</a>
+                                }
+                            </div>
+                            @Html.Raw(Model.RenderContent())
+                        </div>
+                        <div class="space20"></div>
+                        <div>
+                            @{await Html.RenderPartialAsync("Comment");}
+                        </div>
+
+
+                    </div>
+                </div>
+                <!-- Blog Detail Content End -->
+            </div>
+
+            <!-- Side Bar -->
+            <div class="span3">
+
+                <h3 class="p-t-0">Search</h3>
+                <div class="search-box">
+                    <a href="#" class="search-icon"><i class="icon-search"></i></a>
+                    <input class="search" name="" value="Search">
+                </div>
+                
+                <h3>Categories</h3>
+                <ul class="list-c">
+                    <li><i class="icon-chevron-right"></i><a href="#">Business Plan</a></li>
+                    <li><i class="icon-chevron-right"></i><a href="#">Entertainment</a></li>
+                    <li><i class="icon-chevron-right"></i><a href="#">News & Politics</a></li>
+                    <li><i class="icon-chevron-right"></i><a href="#">Social Media Networks</a></li>
+                    <li><i class="icon-chevron-right"></i><a href="#">Technology & Innovation</a></li>
+                </ul>
+
+                <h3>Tags</h3>
+                <a href="#"><div class="tag">WordPress</div></a>
+                <a href="#"><div class="tag">Webdesign</div></a>
+                <a href="#"><div class="tag">Post-processing</div></a>
+                <a href="#"><div class="tag">Tourism</div></a>
+                <a href="#"><div class="tag">Rendering</div></a>
+                <a href="#"><div class="tag">Photography</div></a>
+
+                <h3>Latest Tweets</h3>
+                <i class="icon-twitter"></i> Saying "Wow, You're cool." when you see someone doing something stupid. <a href="#" rel="external">http://t.co/YywnqBb8</a><br>
+                6 minutes ago
+                <br><br>
+                <i class="icon-twitter"></i> Are you getting ready to work on a new project, take off on a sales trip.
+                <a href="#" rel="external">http://pic.witt.com.co/Uyoyyk#sp</a><br>
+                33 minutes ago
+
+                <h3>Photos From Flickr</h3>
+                <div class="flickr-widget">
+                    <div class="photo-stream">
+                        <img src="img/stream/01.jpg" alt="">
+                    </div>
+                    <div class="photo-stream">
+                        <img src="img/stream/02.jpg" alt="">
+                    </div>
+                    <div class="photo-stream">
+                        <img src="img/stream/03.jpg" alt="">
+                    </div>
+                    <div class="photo-stream">
+                        <img src="img/stream/04.jpg" alt="">
+                    </div>
+                    <div class="photo-stream">
+                        <img src="img/stream/05.jpg" alt="">
+                    </div>
+                    <div class="photo-stream">
+                        <img src="img/stream/06.jpg" alt="">
+                    </div>
+                </div>
+
+                <h3>Text Widget</h3>
+                Amet, consectetur adipisicing elit, sedure doriatlor in fugiat nulla  deserunt mollit anim id est laborum. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit orn.
+
+                <div class="row space30"></div>
+
+                <div class="row space50"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Content End -->

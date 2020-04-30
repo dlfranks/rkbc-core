@@ -30,37 +30,10 @@ using rkbc.config.models;
 using Serilog;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Rewrite;
+using WebEssentials.AspNetCore.OutputCaching;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-namespace rkbc.config.models
-{
-    public class EmailSettings
-    {
-        public String PrimaryDomain { get; set; }
-
-        public int PrimaryPort { get; set; }
-
-        public String SecondayDomain { get; set; }
-
-        public int SecondaryPort { get; set; }
-
-        public String UsernameEmail { get; set; }
-
-        public String UsernamePassword { get; set; }
-
-        public String FromEmail { get; set; }
-
-        public String ToEmail { get; set; }
-
-        public String CcEmail { get; set; }
-    }
-    public class RkbcConfig
-    {
-        public int HomePageId { get; set; }
-        public int PastorPageId { get; set; }
-        public string Version { get; set; }
-        public string DefaultPassword { get; set; }
-    }
-}
 namespace rkbc
 {
     public class Startup
@@ -83,6 +56,7 @@ namespace rkbc
             // Add our Config object so it can be injected
             services.Configure<RkbcConfig>(Configuration.GetSection("RkbcConfig"));
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.Configure<BlogSettings>(Configuration.GetSection("BlogSettings"));
 
 
             var keysFolder = Path.Combine(WebHostEnvironment.ContentRootPath, "temp-keys");
@@ -112,7 +86,7 @@ namespace rkbc
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.Cookie.Expiration = TimeSpan.FromHours(2);
+                options.Cookie.Expiration = TimeSpan.FromMinutes(3);
                 options.Cookie.Path = "/RKBC";
                 options.SlidingExpiration = false;
             });
@@ -124,8 +98,14 @@ namespace rkbc
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<UserService>();
+            services.AddScoped<BlogService>();
             services.AddSingleton<FileHelper>();
-            
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper>(x => {
+                var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
+                var factory = x.GetRequiredService<IUrlHelperFactory>();
+                return factory.GetUrlHelper(actionContext);
+            });
 
             services.AddMvc(options =>
             {
@@ -134,7 +114,7 @@ namespace rkbc
                 //options.Filters.Add(new AuthorizeFilter(policy));
             })
             //.AddXmlSerializerFormatters()
-            //.AddRazorRuntimeCompilation()
+            .AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             
@@ -149,7 +129,15 @@ namespace rkbc
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
-
+            // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
+            services.AddOutputCaching(
+                options =>
+                {
+                    options.Profiles["default"] = new OutputCacheProfile
+                    {
+                        Duration = 3600
+                    };
+                });
             //ElmahCore
             EmailOptions emailOptions = new EmailOptions
             {
@@ -181,6 +169,7 @@ namespace rkbc
                 options.LoginPath = "/Administration/Login";
                 options.AccessDeniedPath = "/Administration/AccessDenied";
                 
+                
             });
 
 
@@ -190,6 +179,7 @@ namespace rkbc
                 //    policy => policy.RequireRole("Admin"));
             });
 
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -234,11 +224,12 @@ namespace rkbc
                 MinimumSameSitePolicy = SameSiteMode.Strict,
             };
             app.UseCookiePolicy(cookiePolicyOptions);
+            app.UseResponseCaching();
             app.UseStaticFiles();
             app.UseSession();
             app.UseSerilogRequestLogging();
             app.UseRouting();
-           
+            app.UseOutputCaching();
             app.UseElmah();
             
            // After UseRouting, so that route information is available for authentication decisions.

@@ -127,6 +127,9 @@ namespace rkbc.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
+                    b.Property<int?>("accountType")
+                        .HasColumnType("int");
+
                     b.Property<string>("address1")
                         .HasColumnType("nvarchar(max)");
 
@@ -293,6 +296,70 @@ namespace rkbc.Migrations
                     b.ToTable("Attachments");
                 });
 
+            modelBuilder.Entity("rkbc.core.models.Blog", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("authorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("blogSlug")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("createDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("lastUpdDt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("authorId");
+
+                    b.ToTable("Blogs");
+                });
+
+            modelBuilder.Entity("rkbc.core.models.Comment", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("authorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isUser")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("postId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("pubDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("authorId");
+
+                    b.HasIndex("postId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("rkbc.core.models.Contact", b =>
                 {
                     b.Property<int>("id")
@@ -439,6 +506,62 @@ namespace rkbc.Migrations
                     b.ToTable("PastorPages");
                 });
 
+            modelBuilder.Entity("rkbc.core.models.Post", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("blogId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("createDt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("excerpt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("imageFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("lastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("postType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("pubDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("slug")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("videoURL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("views")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("blogId");
+
+                    b.ToTable("Posts");
+                });
+
             modelBuilder.Entity("rkbc.core.models.ApplicationRoleClaim", b =>
                 {
                     b.HasOne("rkbc.core.models.ApplicationRole", "Role")
@@ -490,11 +613,40 @@ namespace rkbc.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("rkbc.core.models.Blog", b =>
+                {
+                    b.HasOne("rkbc.core.models.ApplicationUser", "author")
+                        .WithMany()
+                        .HasForeignKey("authorId");
+                });
+
+            modelBuilder.Entity("rkbc.core.models.Comment", b =>
+                {
+                    b.HasOne("rkbc.core.models.ApplicationUser", "author")
+                        .WithMany()
+                        .HasForeignKey("authorId");
+
+                    b.HasOne("rkbc.core.models.Post", "post")
+                        .WithMany("comments")
+                        .HasForeignKey("postId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("rkbc.core.models.HomeContentItem", b =>
                 {
                     b.HasOne("rkbc.core.models.HomePage", "homePage")
                         .WithMany("announcements")
                         .HasForeignKey("homePageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("rkbc.core.models.Post", b =>
+                {
+                    b.HasOne("rkbc.core.models.Blog", "blog")
+                        .WithMany("posts")
+                        .HasForeignKey("blogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

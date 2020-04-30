@@ -113,7 +113,7 @@ namespace rkbc.core.repository
         }
         public ApplicationDbContext getContext()
         {
-            throw new NotImplementedException();
+            return _context;
         }
         public async Task commitAsync()
         {

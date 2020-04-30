@@ -12,13 +12,29 @@ using System.Threading.Tasks;
 
 namespace rkbc.core.models
 {
+    public enum PostListView
+    {
+        TitlesOnly,
+
+        TitlesAndExcerpts,
+
+        FullPosts
+    }
+    public enum BlogPostType
+    {
+        Sigle = 1000,
+        Gallery,
+        Video
+
+    }
     public class Blog : IEntity
     {
         public int id { get; set; }
         public string authorId { get; set; }
-        public virtual ApplicationUser Author { get; set; }
+        public virtual ApplicationUser author { get; set; }
         public DateTime createDt { get; set; } 
         public DateTime lastUpdDt { get; set; }
+        public string blogSlug { get; set; }
         public virtual ICollection<Post> posts {get; set;}
     }
     public class Post : IEntity
@@ -35,7 +51,8 @@ namespace rkbc.core.models
 
         [Required]
         public string excerpt { get; set; } = string.Empty;
-
+        [Required]
+        public int postType { get; set; } = (int)BlogPostType.Sigle;
         public bool isPublished { get; set; } = true;
         public DateTime createDt { get; set; }
         public DateTime lastModified { get; set; } = DateTime.UtcNow;
@@ -46,8 +63,6 @@ namespace rkbc.core.models
         public int views { get; set; } = 0;
         [Required]
         public string title { get; set; } = string.Empty;
-       
-        public IList<string> categories { get; } = new List<string>();
 
         public IList<Comment> comments { get; } = new List<Comment>();
 
@@ -65,9 +80,13 @@ namespace rkbc.core.models
         public bool AreCommentsOpen(int commentsCloseAfterDays) =>
             this.pubDate.AddDays(commentsCloseAfterDays) >= DateTime.UtcNow;
 
-        public string GetEncodedLink() => $"/blog/{System.Net.WebUtility.UrlEncode(this.slug)}/";
+        public string GetEncodedLink()
+        {
 
-        public string GetLink() => $"/blog/{this.slug}/";
+            return $"/blog/{this.blog.blogSlug}/{System.Net.WebUtility.UrlEncode(this.slug)}/";
+        }
+
+        public string GetLink() => $"/blog/{this.blog.blogSlug}/{this.slug}/";
 
         public bool IsVisible() => this.pubDate <= DateTime.UtcNow && this.isPublished;
 
@@ -79,21 +98,39 @@ namespace rkbc.core.models
             if (!string.IsNullOrEmpty(result))
             {
                 // Set up lazy loading of images/iframes
-                var replacement = " src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" data-src=\"";
-                var pattern = "(<img.*?)(src=[\\\"|'])(?<src>.*?)([\\\"|'].*?[/]?>)";
-                result = Regex.Replace(result, pattern, m => m.Groups[1].Value + replacement + m.Groups[4].Value + m.Groups[3].Value);
+                //var replacement = " src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" data-src=\"";
+                //var pattern = "(<img.*?)(src=[\\\"|'])(?<src>.*?)([\\\"|'].*?[/]?>)";
+                //result = Regex.Replace(result, pattern, m => m.Groups[1].Value + replacement + m.Groups[4].Value + m.Groups[3].Value);
 
                 // Youtube content embedded using this syntax: [youtube:xyzAbc123]
-                var video = "<div class=\"video\"><iframe width=\"560\" height=\"315\" title=\"YouTube embed\" src=\"about:blank\" data-src=\"https://www.youtube-nocookie.com/embed/{0}?modestbranding=1&amp;hd=1&amp;rel=0&amp;theme=light\" allowfullscreen></iframe></div>";
-                result = Regex.Replace(
-                    result,
-                    @"\[youtube:(.*?)\]",
-                    m => string.Format(CultureInfo.InvariantCulture, video, m.Groups[1].Value));
+                //var video = "<div class=\"video\"><iframe width=\"560\" height=\"315\" title=\"YouTube embed\" src=\"about:blank\" data-src=\"https://www.youtube-nocookie.com/embed/{0}?modestbranding=1&amp;hd=1&amp;rel=0&amp;theme=light\" allowfullscreen></iframe></div>";
+                //result = Regex.Replace(
+                //    result,
+                //    @"\[youtube:(.*?)\]",
+                //    m => string.Format(CultureInfo.InvariantCulture, video, m.Groups[1].Value));
             }
 
             return result;
         }
-
+        public string getImageLink()
+        {
+            if (string.IsNullOrEmpty(this.imageFileName)) return "";
+            else return "/assets/blog/" + this.imageFileName;
+        }
+        protected string youtubeEmbedUrl()
+        {
+            string videoId = "";
+            if (!String.IsNullOrWhiteSpace(this.videoURL))
+            {
+                videoId = Regex.Match(this.videoURL, "(?:.+?)?(?:\\/v\\/|watch\\/|\\?v=|\\&v=|youtu\\.be\\/|\\/v=|^youtu\\.be\\/)([a-zA-Z0-9_-]{11})+").Groups[1].Value;
+            }
+            return ("https://www.youtube.com/embed/" + videoId);
+        }
+        public string getEmbededVideo()
+        {
+            var video = "<div class=\"video\"><iframe style=\"width:100%;\" title=\"YouTube embed\" src=\"" + youtubeEmbedUrl() + "\" data-src=\"https://www.youtube-nocookie.com/embed/{0}?modestbranding=1&amp;hd=1&amp;rel=0&amp;theme=light\" allowfullscreen></iframe></div>";
+            return video;
+        }
         private static string RemoveDiacritics(string text)
         {
             var normalizedString = text.Normalize(NormalizationForm.FormD);

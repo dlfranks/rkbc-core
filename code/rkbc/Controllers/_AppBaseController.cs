@@ -49,7 +49,7 @@ namespace rkbc.web.controllers
         {
             base.OnActionExecuting(filterContext);
             ViewBag.UserSettings = userService.CurrentUserSettings;
-            //ViewBag.userService = userService;
+            ViewBag.userService = userService;
         }
     }
 }

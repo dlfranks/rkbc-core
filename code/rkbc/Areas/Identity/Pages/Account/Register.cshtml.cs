@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using rkbc.core.models;
+using rkbc.core.service;
 
 namespace RKBC.Areas.Identity.Pages.Account
 {
@@ -20,20 +22,21 @@ namespace RKBC.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger<RegisterModel> _logger;
-        
+        private readonly UserService userService;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<ApplicationRole> roleManager,
-            ILogger<RegisterModel> logger
+            ILogger<RegisterModel> logger,
+            UserService _userService
             )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _logger = logger;
-           
+            userService = _userService;
         }
 
         [BindProperty]
@@ -43,6 +46,7 @@ namespace RKBC.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -58,11 +62,24 @@ namespace RKBC.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-        }
 
+            [Required]
+            [Display(Name = "Country")]
+            public int countryCode { get; set; }
+
+            [Required]
+            [Display(Name = "Account Type")]
+            public int accountType { get; set; }
+
+        }
+        public bool LookupEmail(string email)
+        {
+           var user = _userManager.FindByEmailAsync(email);
+            return user == null ? true : false;
+        }
         public void OnGet(string returnUrl = null)
         {
-            ReturnUrl = returnUrl;
+           ReturnUrl = returnUrl;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -73,7 +90,8 @@ namespace RKBC.Areas.Identity.Pages.Account
                 var role = await _roleManager.FindByNameAsync("user");
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email};
                 user.officeId = 1;
-                user.countryCode = 1;
+                user.countryCode = Input.countryCode;
+                user.accountType = Input.accountType;
                 user.createdDate = DateTime.UtcNow;
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
@@ -92,10 +110,12 @@ namespace RKBC.Areas.Identity.Pages.Account
                         values: new { userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                    
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
+
+                    if (await userService.tryLogOnUser(user))
+                        return LocalRedirect(returnUrl);
+                    else
+                        ModelState.AddModelError("", "Failed to Login");
                 }
                 foreach (var error in result.Errors)
                 {

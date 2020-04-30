@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using rkbc.core.helper;
+using System.Text.RegularExpressions;
 
 namespace rkbc.core.helper
 {
@@ -108,7 +109,10 @@ namespace rkbc.core.helper
                 case "gallery":
                     path = "gallery";
                     break;
-                
+                case "blog":
+                    path = "blog";
+                    break;
+
                 default:
                     throw new InvalidOperationException("Invalid office asset type " + assetType + " specified.");
             }
@@ -213,14 +217,25 @@ namespace rkbc.core.helper
         
         public string youtubeEmbedUrl(string url)
         {
-
-            if(!String.IsNullOrWhiteSpace(url))
+            string youtubeEmbedUrl = null;
+            var id = ExtractVideoIdFromUri(url);
+            if (!String.IsNullOrWhiteSpace(id))
             {
-                string[] s= url.Split("v=");
-                if (s.Length != 2) return null;
-                url = s[1];
+                youtubeEmbedUrl = "https://www.youtube.com/embed/" + id;
             }
-            return ("https://www.youtube.com/embed/" + url); 
+            return (youtubeEmbedUrl);
+        }
+        
+
+        public string ExtractVideoIdFromUri(string url)
+        {
+            string videoId = "";
+            if (!String.IsNullOrWhiteSpace(url))
+            {
+                videoId = Regex.Match(url, "(?:.+?)?(?:\\/v\\/|watch\\/|\\?v=|\\&v=|youtu\\.be\\/|\\/v=|^youtu\\.be\\/)([a-zA-Z0-9_-]{11})+").Groups[1].Value;
+            }
+            return videoId;
+
         }
     }
 }

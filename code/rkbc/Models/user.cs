@@ -40,6 +40,24 @@ namespace rkbc.core.models
         [EnumMember(Value = "User")]
         User,
     }
+    public enum CountryEnum
+    {
+        USA = 2000,
+        South_Korea,
+        Dominican_Republic,
+        Cambodia,
+        China,
+        Mexico,
+        Burkina_Faso,
+        Philippines,
+        North_Korea,
+        VietNam
+    }
+    public enum AccountType
+    {
+        Personal = 1000,
+        Mission
+    }
     public enum GenderEnum
     {
         [Display(Name = "Male")]
@@ -77,6 +95,7 @@ namespace rkbc.core.models
         public DateTime? DOB { get; set; }
         public string address1 { get; set; }
         public int? countryCode { get; set; }
+        public int? accountType { get; set; } 
         public DateTime? createdDate { get; set; }
         public DateTime? updatedDate { get; set; }
 

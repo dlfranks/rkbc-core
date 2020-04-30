@@ -14,23 +14,17 @@ namespace rkbc.core.models
     public class Comment : IEntity
     {
         [Required]
-        public string id { get; set; }
-        [Required]
+        public int id { get; set; }
         public string authorId { get; set; }
-        [Required]
         public virtual ApplicationUser author { get; set; }
         [Required]
         public int postId { get; set; }
         public virtual Post post {get; set;}
         [Required]
         public string content { get; set; } = string.Empty;
-
-        [Required, EmailAddress]
+        public string name { get; set; } = string.Empty;
         public string email { get; set; } = string.Empty;
-
-        
-
-        public bool isAdmin { get; set; } = false;
+        public bool isUser { get; set; } = false;
 
         [Required]
         public DateTime pubDate { get; set; } = DateTime.UtcNow;

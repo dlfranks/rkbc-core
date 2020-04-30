@@ -90,6 +90,16 @@ namespace rkbc.web.viewmodels
         [NotMapped]
         [Display(Name = "Roles")]
         public IList<string> roles { get; set; }
+
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Country")]
+        public int countryCode { get; set; }
+
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Account Type")]
+        public int accountType { get; set; }
     }
 
 }
@@ -146,42 +156,9 @@ namespace rkbc.web.controllers
                 var user = await userManager.Users.Include("UserRoles").Include("UserRoles.Role").Where(q => q.Email == model.Email).FirstOrDefaultAsync();
                 if (user != null)
                 {
-                    //var claims = new[] { new Claim(ClaimTypes.NameIdentifier, user.Email.ToString(), ClaimValueTypes.String), new Claim(ClaimTypes.Name, user.UserName.ToString(), ClaimValueTypes.String)
-                    //    , new Claim(ClaimTypes.Role, "Admin", ClaimValueTypes.String), new Claim(ClaimTypes.Role, "User", ClaimValueTypes.String) };
-                   // var userClaimsIdentity = new ClaimsIdentity(claims, "AuthCookies");
-                    var userClaimsIdentity = await user.GenerateUserClaimsIdentityAsync(userManager);
-                    ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(userClaimsIdentity);
-                    var authProperties = new AuthenticationProperties()
-                    {
-                        //AllowRefresh = <bool>,
-                        // Refreshing the authentication session should be allowed.
-
-                        //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                        // The time at which the authentication ticket expires. A 
-                        // value set here overrides the ExpireTimeSpan option of 
-                        // CookieAuthenticationOptions set with AddCookie.
-
-                        IsPersistent = true,
-                        // Whether the authentication session is persisted across 
-                        // multiple requests. When used with cookies, controls
-                        // whether the cookie's lifetime is absolute (matching the
-                        // lifetime of the authentication ticket) or session-based.
-
-                        //IssuedUtc = <DateTimeOffset>,
-                        // The time at which the authentication ticket was issued.
-
-                        //RedirectUri = <string>
-                        // The full path or absolute URI to be used as an http 
-                        // redirect response value.
-                    };
-                    await HttpContext.SignInAsync(
-                        "AuthCookies", claimsPrincipal, new AuthenticationProperties { IsPersistent = false });
-                    
-                    _logger.LogInformation("User logged in.");
-                    return Redirect("~/Home/Index");
-                }
-                
-                else
+                    if(await userService.tryLogOnUser(user))
+                        return Redirect("~/Home/Index");
+                }else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return View();
@@ -218,7 +195,8 @@ namespace rkbc.web.controllers
             modelObj.address1 = vModel.address1;
             modelObj.updatedDate = DateTime.UtcNow;
             modelObj.DOB = vModel.DOB;
-            
+            modelObj.accountType = vModel.accountType;
+            modelObj.countryCode = vModel.countryCode;
         }
         protected async Task<AppUserViewModel> setupViewModel(ApplicationUser appUser, FormViewMode mode)
         {
@@ -232,6 +210,9 @@ namespace rkbc.web.controllers
             vm.gender = appUser.gender;
             vm.phoneNumber = appUser.PhoneNumber;
             vm.address1 = appUser.address1;
+            vm.countryCode = appUser.countryCode?? (int)CountryEnum.USA;
+            vm.accountType = appUser.accountType?? (int)AccountType.Personal;
+
             
             if (mode != FormViewMode.Create && appUser.UserRoles.Count > 0)
             {
@@ -249,7 +230,7 @@ namespace rkbc.web.controllers
             ViewBag.roleList = allRoles;
             ViewBag.formViewMode = mode;
             ViewBag.UserSettings = userService.CurrentUserSettings;
-            
+            ViewBag.Countrylist = rkbc.web.constant.Constants.getCountryList();
             return vm;
         }
 
@@ -267,8 +248,8 @@ namespace rkbc.web.controllers
                 department = q.department,
                 gender = q.gender,
                 DOB = q.DOB,
-                phoneNumber = q.PhoneNumber,
-                address1 = q.address1,
+                countryCode = q.countryCode?? (int)CountryEnum.USA,
+                accountType = q.accountType?? (int)AccountType.Personal,
                 roles = q.UserRoles != null ? q.UserRoles.Select(r => r.Role.Name).ToList() : null
             }).ToListAsync();
 
@@ -281,7 +262,8 @@ namespace rkbc.web.controllers
             
             ApplicationUser user = new ApplicationUser();
             user.officeId = 1;
-            user.countryCode = 1;
+            user.countryCode = (int)CountryEnum.USA;
+            user.accountType = (int)AccountType.Personal;
             var vm = await setupViewModel(user, FormViewMode.Create);
             return View("Edit",vm);
         }
@@ -295,7 +277,6 @@ namespace rkbc.web.controllers
             var defaultPassWord = rkbcConfig.Value.DefaultPassword;
 
             modelObj.officeId = 1;
-            modelObj.countryCode = 1;
             modelObj.UserName = vModel.Email;
             modelObj.createdDate = DateTime.UtcNow;
             acceptPost(modelObj, vModel, FormViewMode.Create);
@@ -451,6 +432,11 @@ namespace rkbc.web.controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+        public async Task<JsonResult> LookupEmail(string email)
+        {
+            var isValid = await userService.isValidEmail(email);
+            return Json(new { isValid = isValid});
         }
         public async Task Setup()
         {

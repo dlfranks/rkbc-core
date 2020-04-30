@@ -10,9 +10,11 @@ using rkbc.core.models;
 using Microsoft.Extensions.Logging;
 using RKBC.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace rkbc.core.service
 {
+    
     public enum PermissionAction
     {
         Create,
@@ -139,6 +141,16 @@ namespace rkbc.core.service
             if (autoThrow) throw new InvalidOperationException("User " + CurrentUserSettings.userName + " does not have permission to " + action.ToString() );
             return (false);
         }
+        public bool permissionForBlogEditing(PermissionAction action, string id, bool autoThrow = false)
+        {
+            // Can do anything else to yourself
+            if (CurrentUserSettings.userId == id) return (true);
+            //Otherwise only these guys have permission to do anything else
+            if (CurrentUserSettings.isAdmin) return (true);
+
+            if (autoThrow) throw new InvalidOperationException("User " + CurrentUserSettings.userName + " does not have permission to " + action.ToString());
+            return (false);
+        }
         public async Task logOffUser()
         {
             if(httpContext.Request != null && httpContext.Response != null)
@@ -150,7 +162,53 @@ namespace rkbc.core.service
                 httpContext.Session.Clear();
             }
         }
+        public async Task<bool> isValidEmail(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            return user == null ? true : false;
+        }
+        public async Task<bool> tryLogOnUser(ApplicationUser user)
+        {
+            //var claims = new[] { new Claim(ClaimTypes.NameIdentifier, user.Email.ToString(), ClaimValueTypes.String), new Claim(ClaimTypes.Name, user.UserName.ToString(), ClaimValueTypes.String)
+            //    , new Claim(ClaimTypes.Role, "Admin", ClaimValueTypes.String), new Claim(ClaimTypes.Role, "User", ClaimValueTypes.String) };
+            // var userClaimsIdentity = new ClaimsIdentity(claims, "AuthCookies");
+            var userClaimsIdentity = await user.GenerateUserClaimsIdentityAsync(userManager);
+            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(userClaimsIdentity);
+            var authProperties = new AuthenticationProperties()
+            {
+                //AllowRefresh = <bool>,
+                // Refreshing the authentication session should be allowed.
 
-        
+                //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                // The time at which the authentication ticket expires. A 
+                // value set here overrides the ExpireTimeSpan option of 
+                // CookieAuthenticationOptions set with AddCookie.
+
+                IsPersistent = true,
+                // Whether the authentication session is persisted across 
+                // multiple requests. When used with cookies, controls
+                // whether the cookie's lifetime is absolute (matching the
+                // lifetime of the authentication ticket) or session-based.
+
+                //IssuedUtc = <DateTimeOffset>,
+                // The time at which the authentication ticket was issued.
+
+                //RedirectUri = <string>
+                // The full path or absolute URI to be used as an http 
+                // redirect response value.
+            };
+            try
+            {
+                await httpContext.SignInAsync(
+                "AuthCookies", claimsPrincipal, new AuthenticationProperties { IsPersistent = false });
+                logger.LogInformation("User logged in.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogInformation("Failed login.");
+            }
+            return false;
+        }
     }
 }

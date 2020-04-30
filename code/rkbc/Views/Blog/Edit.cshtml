@@ -1,60 +1,256 @@
 ﻿@model rkbc.web.viewmodels.PostViewModel
 @using rkbc.web.constant;
+@using rkbc.core.models;
 @{
     var isNew = string.IsNullOrEmpty(Model.post.title);
     ViewData[Constants.Title] = "Edit " + (Model.post.title ?? "new post");
     var host = Context.Request.Host.ToString();
-    var allCats = ViewData[Constants.AllCats] as List<string> ?? new List<string>();
+
 }
-
-<form method="post" id="edit" class="container" asp-controller="Blog" asp-action="UpdatePost">
-    <div asp-validation-summary="All"></div>
-    <input type="hidden" asp-for="@Model.post.blogId" />
-    <input type="hidden" asp-for="@Model.post.id" />
-
-    <label asp-for="@Model.image" class="label">File</label>
-    <input asp-for="@Model.image" type="file"/>
-    <span class="desc" id="desc_title">The blog image as it appears on your blog.</span>
-
-    <label asp-for="@Model.post.title" class="label">Title</label>
-    <input asp-for="@Model.post.title" required placeholder="Title of blog post" aria-describedby="desc_title" />
-    <span class="desc" id="desc_title">The title as it appears on the website</span>
-    <br />
-
-    <label asp-for="@Model.post.slug" class="label">Slug</label>
-    <input asp-for="@Model.post.slug" placeholder="The URL name" aria-describedby="desc_slug" />
-    <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
-    <br />
-
-    <label for="categories" class="label">Tags</label>
-    <input type="text" name="selecttag" id="selecttag" aria-describedby="desc_categories" list="taglist" placeholder="@string.Join(", ", Model.post.categories)" />
-    <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.post.categories)" hidden />
-    <span class="desc" id="desc_categories">Select, or build a comma separated list of keywords - to remove double the keyword</span>
-    <datalist id="taglist">
-        @foreach (var cat in allCats)
-        {
-            <option value="@cat" />
-        }
-    </datalist>
-    <br />
-
-    <label asp-for="@Model.post.excerpt" class="label">Excerpt</label>
-    <textarea asp-for="@Model.post.excerpt" rows="3" placeholder="Short description of blog post" aria-describedby="desc_excerpt">@Model.post.excerpt</textarea>
-    <span class="desc" id="desc_excerpt">A brief description of the content of the post</span>
-    <br />
-
-    <textarea asp-for="@Model.post.content" rows="20" aria-label="Content">@Model.post.content</textarea>
-    <br />
-
-    <input type="submit" value="Save" title="Save the post" />
-
-    <input asp-for="@Model.post.isPublished" />
-    <label asp-for="@Model.post.isPublished">Is published</label>
-
-    @if (!isNew)
-    {
-        <input type="submit" value="Delete..." class="delete" title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.post.id" />
+<style>
+    input, textarea {
+        width: 100%;
     }
-</form>
+
+    label {
+        font-weight: bold;
+    }
+
+    .form-group {
+        margin-bottom: 30px;
+    }
+</style>
+<script>
+    $(function () {
+        var setupMedia = {};
+        //Youtube id
+        function getYoutubeVideoId(url) {
+            var youtubeLnk = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/user\/\S+|\/ytscreeningroom\?v=|\/sandalsResorts#\w\/\w\/.*\/))([^\/&]{10,12})/);
+            if (!youtubeLnk) return false;
+            else return youtubeLnk[1];
+        }
+        // File upload
+        function handleImageSelect() {
+            if (window.File && window.FileList && window.FileReader) {
+                var displayImageDiv = $("#displayImage");
+                var files = event.target.files;
+                
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+
+                    // Only image uploads supported
+                    if (!file.type.match('image'))
+                        continue;
+
+                    var reader = new FileReader();
+                    reader.addEventListener("load", function (event) {
+                        var image = new Image();
+                        image.alt = file.name;
+                        image.onload = function (e) {
+                            image.setAttribute("data-filename", file.name);
+                            image.setAttribute("width", image.width.toString());
+                            image.setAttribute("height", image.height.toString());
+                            displayImageDiv.empty();
+                            displayImageDiv.append(image.outerHTML);
+                        };
+                        image.src = this.result;
+
+                    });
+
+                    reader.readAsDataURL(file);
+                }
+            }
+            else {
+                console.log("Your browser does not support File API");
+            }
+        }
+        //div:media container that displays an image and appends the file type input to it.
+        //imageHtml: the html elements needed for div.
+        setupMedia['@((int)BlogPostType.Gallery)'] = function (imageHtml, div) {
+            var src = '@Html.Raw(Model.imageUrl)';
+            var html = $(imageHtml);
+            div.append(html);
+            html.find("img").prop("src", src);
+
+            var imageClickButton = $("#imageClickButton", html);
+            imageClickButton.click(function (e) {
+                e.preventDefault();
+                var fileInput = document.createElement("input");
+                fileInput.style.display = "none";
+                fileInput.name = "image",
+                fileInput.type = "file";
+                fileInput.multiple = false;
+                fileInput.accept = "image/*";
+                $(fileInput).on("change", function () {
+                    handleImageSelect();
+                    div.find("input[type=file]").remove();
+                    div.append(fileInput);
+                });
+                
+                fileInput.click();
+                });
+        }
+
+        setupMedia['@((int)BlogPostType.Video)'] = function (videoHtml, div) {
+            var iframeEle = $('<iframe src="" frameborder="0" style="width:100%; height:auto;" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
+            var html = $(videoHtml);
+            div.append(html);
+            var iframeWrapper = html.closest("#iframeWrapper");
+            var src = '@Html.Raw(Model.embededVideoUrl)';
+            if (src) {
+                iframeWrapper.find("iframe").prop("src", src);
+            } else {
+                iframeWrapper.empty();
+            }
+            
+
+            $("#loadVideoButton", html).click(function (e) {
+                e.preventDefault();
+                var valueUrl = html.find("input").val();
+                html.find(".text-danger").text("");
+                var youtubeId = getYoutubeVideoId(valueUrl);
+                if (youtubeId) {
+                    src = "https://www.youtube.com/embed/" + youtubeId;
+                    html.find("iframe").remove();
+                    div.prepend(iframeEle);
+                    iframeEle.prop("src", src);
+                }
+                html.find(".text-danger").text("Only YouTube Link Allowed.");
+
+            });
+        }
+        
+
+        var imageUrl = '@Html.Raw(Model.imageUrl)';
+        var videoUrl = '@Html.Raw(Model.embededVideoUrl)';
+        var postType = '@Html.Raw(Model.post.postType)';
+        var mediaDiv = $("#displayMedia");
+        if (postType == '@((int)BlogPostType.Gallery)' || postType == '@((int)BlogPostType.Video)') {
+            mediaDiv.empty();
+            var htmlScript = $("#htmlPostType-@Model.post.postType")[0].innerHTML;
+            setupMedia["@Model.post.postType"](htmlScript, mediaDiv);
+        }
+
+        $("#post_postType").change(function (e) {
+            e.preventDefault();
+            mediaDiv.empty();
+            var postType = $(this).val();
+            if (postType == '@((int)BlogPostType.Gallery)' || postType == '@((int)BlogPostType.Video)') {
+                var htmlScript = $("#htmlPostType-" + postType)[0].innerHTML;
+            setupMedia[postType](htmlScript, mediaDiv);
+            }
+            
+        });
+    });
+</script>
+<div class="content">
+    <div class="container">
+        <div class="row" style="margin:0 auto">
+            <div class="space40"></div>
+            <div class="span8">
+                <div style="padding:20px;">
+                    <form method="post" id="edit" asp-controller="Blog" asp-action="UpdatePost" enctype="multipart/form-data">
+                        <div asp-validation-summary="All"></div>
+                        <input type="hidden" asp-for="@Model.post.blogId" />
+                        <input type="hidden" asp-for="@Model.post.id" />
+                        <div class="form-group">
+                            <label asp-for="post.postType" class="col-md-2 control-label"></label>
+                            <div class="col-md-10">
+                                <select asp-for="post.postType" asp-items="Html.GetEnumSelectList<BlogPostType>()">
+                                    <option selected="selected" value="">Please select</option>
+                                </select>
+                                <span asp-validation-for="post.postType" class="text-danger" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model.post.title">Title</label>
+                            <input asp-for="@Model.post.title" required placeholder="Title of blog post" aria-describedby="desc_title" class="form-control" />
+                            <p>
+                                <span class="desc" id="desc_title">The title as it appears on the website</span>
+                                <span asp-validation-for="post.title" class="text-danger" />
+                            </p>
+
+                            <br />
+                        </div>
+                        <div id="displayMedia" style="width:100%; height:100%;margin:0 auto;">
+
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model.post.slug">Slug</label>
+                            <input asp-for="@Model.post.slug" placeholder="The URL name" aria-describedby="desc_slug" class="form-control" />
+                            <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
+                            <br />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.post.excerpt">Excerpt</label>
+                            <textarea asp-for="@Model.post.excerpt" rows="3" placeholder="Short description of blog post" aria-describedby="desc_excerpt" class="form-control">@Model.post.excerpt</textarea>
+                            <span class="desc" id="desc_excerpt">A brief description of the content of the post</span>
+                            <br />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="@Model.post.content">Content</label>
+                            <textarea id="Content" asp-for="@Model.post.content" rows="20" aria-label="Content" class="form-control">@Model.post.content</textarea>
+                            <br />
+                        </div>
+                        <div class="form-group">
+                            
+                            <input asp-for="@Model.post.isPublished" />
+                            <label asp-for="@Model.post.isPublished">Is published</label>
+                        </div>
+                        <div class="form-group">
+                            <input class="btn btn-primary" type="submit" value="Save" title="Save the post" />
+                            @if (!isNew)
+                            {
+                                <input type="submit" class="btn btn-gray delete" value="Delete..." title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.post.id" />
+                            }
+                        </div>
+                        
+
+
+
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/html" id="htmlPostType-@((int)BlogPostType.Gallery)">
+        <div class="span8" id="displayImage">
+
+            <img src="@Url.Content(Model.post.getImageLink())" alt="">
+            <div class="space20"></div>
+        </div>
+        <div class="space20"></div>
+        <div class="form-group" id="inputFile">
+            <button class="btn btn-gray" id="imageClickButton">Click for Gallery Image</button>
+            <span class="desc" id="desc_title">The blog image as it appears on your blog.</span>
+            <span asp-validation-for="image" class="text-danger"></span>
+        </div>
+    </script>
+    <script type="text/html" id="htmlPostType-@((int)BlogPostType.Video)">
+        <div id="iframeWrapper">
+            <iframe src="" frameborder="0" style="width:100%; height:auto;" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        
+        <div class="form-group" id="inputVideo">
+            <label asp-for="@Model.post.videoURL">YouTube Link</label>
+            <input asp-for="@Model.post.videoURL" type="text" class="form-control" /><br />
+            <button class="btn" id="loadVideoButton">Load Video</button>
+            <span class="desc" id="desc_title">The Youtube link as it appears on your blog.</span>
+            <span asp-validation-for="post.videoURL" class="text-danger"></span>
+        </div>
+    </script>
+
+}
+<script src="//@host/lib/tinymce/tinymce.min.js"></script> @*with enabled CDN tinymce is not able to find some files*@
+<script src="~/js/admin.js" async></script>
 
 
