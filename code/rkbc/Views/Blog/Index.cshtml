@@ -1,56 +1,12 @@
-﻿@model rkbc.web.viewmodels.BlogIndexViewModel
+﻿@model rkbc.web.viewmodels.PagedResult<rkbc.core.models.Post>
 @using rkbc.web.viewcomponents;
-@{
-    int currentPage = Model.currentPage;
-    int postsPerPage = Model.postsPerPage;
-    int totalposts = Model.totalPosts;
-    int pageCount = totalposts / postsPerPage;
-    int rest = totalposts % postsPerPage;
-    if (rest > 0) pageCount = pageCount + 1;
-}
-<style>
-    .currentPage{background-color:#ee5f5b;}
-</style>
-<script type="text/javascript">
-    $(function () {
-
-        var Page = function () {
-            var pageElements = $(".paging");
-            var prevElement = $("#prevPage");
-            var nextElement = $("#nextPage");
-            var clientCurrentPageNo = @currentPage;
-            var currentPageElement = $(".paging:contains('" + this.clientCurrentPageNo + "')");
-            pageElements.removeClass("currentPage");
-            currentPageElement.addClass("currentPage");
-            //route(clientCurrentPageNo);
-            pageElements.click(function (e) {
-                e.preventDefault();
-                $(".paging").removeClass("currentPage");
-                var pageEle = $(".paging:contains('" + clientCurrentPageNo + "')");
-                pageEle.addClass("currentPage")
-                if ($(this).text() == "prev") {
-                    route(clientCurrentPageNo - 1);
-                    clientCurrentPageNo = clientCurrentPageNo - 1;
-                } else if ($(this).text() == "next") {
-                    route(clientCurrentPageNo + 1);
-                } else {
-                    var page = parseInt($(this).text());
-                    clientCurrentPageNo = page;
-                    route(page);
-                }
-            });
-
-            function route (page) {
-                $.get('/Blog/LoadPosts?blogSlug=@Model.blogSlug&page=' + (page - 1), function (data) {
-                    $('#postRows').empty();
-                    $('#postRows').prepend(data);
-                });
-            };
-        };
-
-        Page();
-    });
-</script>
+@using rkbc.core.models;
+    <style>
+        .currentPage {
+            background-color: #ee5f5b;
+        }
+        .pageDiv li{float:left;}
+    </style>
 <!-- Titlebar
 ================================================== -->
 <section id="titlebar">
@@ -79,111 +35,86 @@
 <div id="content">
     <div class="container">
         <div class="row">
-            <div class="span12" style="padding:20px;">
+            <div class="span12" style="padding: 20px;">
                 <a class="" style="float:left;" asp-controller="Blog" asp-action="Edit">New Post</a>
             </div>
-            
+
             <div class="span9">
-                <div id="postRows">
-                    @await Component.InvokeAsync("PostRow", new { blogSlug = Model.blogSlug, skip = Model.skip, postsPerPage = Model.postsPerPage })
-                </div>
-
-                <div class="row space30"></div>
-
-                <!-- Paging -->
-                @if (pageCount > 1)
+                
+                @foreach (var post in Model.Results)
                 {
+                    <!-- Blog -->
                     <div class="row">
-                        <div class="span9">
-                            @if (currentPage > 1)
+                        <div class="span1">
+                            @if (post.postType == (int)BlogPostType.Gallery)
                             {
-                                <a asp-controller="Blog" asp-action="LoadPosts" asp-route-blogSlug="@Model.blogSlug" asp-route-page="@(currentPage-1)" class="paging">&#62;</a>
+                                <div class="blog-icon">
+                                    <i class="icon-camera"></i><br>
+                                    <h5>Gallery Post</h5>
+                                </div>
+                            }
+                            else if (post.postType == (int)BlogPostType.Video)
+                            {
+                                <div class="blog-icon">
+                                    <i class="icon-film"></i><br>
+                                    <h5>Video Post</h5>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="blog-icon">
+                                    <i class="icon-quote-right"></i><br>
+                                    <h5>Single Post</h5>
+                                </div>
+                            }
+                        </div>
+                        <div class="span8">
+                            @if (post.postType == (int)BlogPostType.Gallery)
+                            {
+                                <a href="@post.GetLink()"><img src="@Url.Action("ImageView", "Asset", new {type="blog", fileName=post.imageFileName})"/></a>
+                            }, 
+
+                            <div class="space20">
+                            </div>
+                            @if (post.postType == (int)BlogPostType.Video)
+                            {
+                                @Html.Raw(post.getEmbededVideo());
                             }
 
-                            @for (int i = pageCount; i > 0; i--)
-                            {
-                                <a href="#" class="paging">@i</a>
-                            }
-                            @if (currentPage <= pageCount)
-                            {
-                                <a href="@ViewData["next"]" class="paging">&#60;</a>
-                            }
+
+                            <div class="post-d-info">
+                                <h3><a href="@post.GetLink()">@post.title</a></h3>
+                                <div class="blue-dark">
+                                    <i class="icon-user"></i> By @(post.blog.author.firstName + " " + post.blog.author.lastName)
+                                    <i class="icon-comment-alt"></i> With <span itemprop="commentCount">@post.comments.Count</span> @(post.comments.Count == 1 ? "comment" : "comments")
+                                    <time datetime="@post.pubDate.ToString("s")" itemprop="datePublished">Published @post.pubDate.ToString("MMM d, yyyy")</time>
+                                    @if (ViewBag.UserSettings.isAdmin || ViewBag.UserSettings.userId == post.blog.authorId)
+                                    {
+                                        <a asp-controller="Blog" asp-action="Edit" asp-route-id="@post.id" title="Edit the post">Edit post</a>
+                                    }
+                                </div>
+                                @Html.Raw(post.RenderContent())
+                            </div>
 
                         </div>
                     </div>
+                    <!-- Blog End -->
                 }
+                <div class="row space30"></div>
+
+                <!-- Paging -->
+                @(await Component.InvokeAsync<PagerViewComponent>(Model))
 
                 <!-- Paging End -->
 
 
                 <div class="row space40"></div>
 
-                @(await Component.InvokeAsync<PagerViewComponent>(Model))
+               
             </div>
 
             <!-- Side Bar -->
-            <div class="span3">
-
-                <h3 class="p-t-0">Search</h3>
-                <div class="search-box">
-                    <a href="#" class="search-icon"><i class="icon-search"></i></a>
-                    <input class="search" name="" value="Search">
-                </div>
-
-                <h3>Categories</h3>
-                <ul class="list-c">
-                    <li><i class="icon-chevron-right"></i><a href="#">Business Plan</a></li>
-                    <li><i class="icon-chevron-right"></i><a href="#">Entertainment</a></li>
-                    <li><i class="icon-chevron-right"></i><a href="#">News & Politics</a></li>
-                    <li><i class="icon-chevron-right"></i><a href="#">Social Media Networks</a></li>
-                    <li><i class="icon-chevron-right"></i><a href="#">Technology & Innovation</a></li>
-                </ul>
-
-                <h3>Tags</h3>
-                <a href="#"><div class="tag">WordPress</div></a>
-                <a href="#"><div class="tag">Webdesign</div></a>
-                <a href="#"><div class="tag">Post-processing</div></a>
-                <a href="#"><div class="tag">Tourism</div></a>
-                <a href="#"><div class="tag">Rendering</div></a>
-                <a href="#"><div class="tag">Photography</div></a>
-
-                <h3>Latest Tweets</h3>
-                <i class="icon-twitter"></i> Saying "Wow, You're cool." when you see someone doing something stupid. <a href="#" rel="external">http://t.co/YywnqBb8</a><br>
-                6 minutes ago
-                <br><br>
-                <i class="icon-twitter"></i> Are you getting ready to work on a new project, take off on a sales trip.
-                <a href="#" rel="external">http://pic.witt.com.co/Uyoyyk#sp</a><br>
-                33 minutes ago
-
-                <h3>Photos From Flickr</h3>
-                <div class="flickr-widget">
-                    <div class="photo-stream">
-                        <img src="img/stream/01.jpg" alt="">
-                    </div>
-                    <div class="photo-stream">
-                        <img src="img/stream/02.jpg" alt="">
-                    </div>
-                    <div class="photo-stream">
-                        <img src="img/stream/03.jpg" alt="">
-                    </div>
-                    <div class="photo-stream">
-                        <img src="img/stream/04.jpg" alt="">
-                    </div>
-                    <div class="photo-stream">
-                        <img src="img/stream/05.jpg" alt="">
-                    </div>
-                    <div class="photo-stream">
-                        <img src="img/stream/06.jpg" alt="">
-                    </div>
-                </div>
-
-                <h3>Text Widget</h3>
-                Amet, consectetur adipisicing elit, sedure doriatlor in fugiat nulla  deserunt mollit anim id est laborum. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit orn.
-
-                <div class="row space30"></div>
-
-                <div class="row space50"></div>
-            </div>
+            
         </div>
     </div>
 </div>

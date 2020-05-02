@@ -26,39 +26,41 @@
       <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <![endif]-->
     <!-- Favicon -->
-    <link href="~/img/favicon.png" rel="icon" type="image/png" />
+    <link href="~/img/favicon.png" rel="icon" type="image/png" asp-append-version="true" />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link href="~/css/styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" asp-append-version="true"/>
+    <link href="~/css/styles.css" rel="stylesheet" asp-append-version="true"/>
 
-    <link href="~/css/bootstrap-override.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-override.css" rel="stylesheet" asp-append-version="true"/>
 
     <!-- Font Avesome Styles -->
-    <link href="~/css/font-awesome/font-awesome.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap&subset=korean" rel="stylesheet">
+    <link href="~/css/font-awesome/font-awesome.css" rel="stylesheet" asp-append-version="true"/>
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap&subset=korean" rel="stylesheet" asp-append-version="true"/>
 
-    <link rel="stylesheet" href="~/css/flexslider.css" type="text/css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.css" />
+    <link rel="stylesheet" href="~/css/flexslider.css" type="text/css" media="screen" asp-append-version="true"/>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.css" asp-append-version="true"/>
     <link href="~/css/site.css" rel="stylesheet" />
-    
+
     <!-- JavaScripts -->
-    <script type="text/javascript" src="~/js/jquery-3.4.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
-    <script type="text/javascript" src="~/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/js/jquery-3.4.1.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/bootstrap.min.js" asp-append-version="true"></script>
 
-    <script type="text/javascript" defer src="~/js/jquery.flexslider.js"></script>
+    <script type="text/javascript" defer src="~/js/jquery.flexslider.js" asp-append-version="true"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js" asp-append-version="false"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.js" asp-append-version="false"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.js" asp-append-version="true"></script>
 
-    <script src="~/js/knockout.validation.js" asp-append-version="false"></script>
+    <script type="text/javascript" src="~/js/knockout.validation.js" asp-append-version="true"></script>
 
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.js"></script>
-    <script src="~/js/knockout.rkbc.js" asp-append-version="false"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.js" asp-append-version="true"></script>
+    <script src="~/js/knockout.rkbc.js" asp-append-version="true"></script>
+    <script src="~/lib/tinymce/tinymce.min.js" type="text/javascript" asp-append-version="true"></script> @*with enabled CDN tinymce is not able to find some files*@
+    <script src="~/js/admin.js" type="text/javascript" async asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
     <script type="text/javascript">
@@ -132,8 +134,8 @@
                                         <li id="SchoolEdit"><a class="nav-link text-dark" asp-controller="School" asp-action="Index">Edit</a></li>
                                     </ul>
                                 </li>
-                                <li id="School">
-                                    <a asp-controller="Blog" asp-action="Index">블라그</a>
+                                <li id="Blog">
+                                    <a asp-controller="Blog" asp-action="AllIndex">블라그</a>
                                     <ul>
                                         <li><a asp-controller="Blog" asp-action="Index" asp-route-id ="@ViewBag.UserSettings.userId" style="text-align:center">My Blog</a></li>
                                     </ul>
@@ -153,11 +155,14 @@
                                 <li id="Pastor"><a asp-controller="Pastor" asp-action="Index">목회자 칼럼</a></li>
                                 <li id="Mission"><a asp-controller="Mission" asp-action="Index">선교</a></li>
                                 <li id="School"><a asp-controller="School" asp-action="Index">한국학교</a></li>
-                                <li id="School">
-                                    <a asp-controller="Blog" asp-action="Index">블라그</a>
+                                <li id="Blog">
+                                    <a asp-controller="Blog" asp-action="AllIndex">블라그</a>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
                                     <ul>
-                                        <li><a asp-controller="Blog" asp-action="Index" asp-route-id ="@ViewBag.UserSettings.userId" style="text-align:center">My Blogs</a></li>
+                                        <li><a asp-controller="Blog" asp-action="Index" asp-route-id="@ViewBag.UserSettings.userId" style="text-align:center">My Blogs</a></li>
                                     </ul>
+                                    }
                                 </li>
                                 @if (User.Identity.IsAuthenticated)
                                 {

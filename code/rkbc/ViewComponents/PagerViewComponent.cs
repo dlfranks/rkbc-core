@@ -14,4 +14,6 @@ namespace rkbc.web.viewcomponents
             return Task.FromResult((IViewComponentResult)View("Default", result));
         }
     }
+
+    
 }

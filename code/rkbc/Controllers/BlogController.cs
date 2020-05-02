@@ -35,32 +35,7 @@ namespace rkbc.web.viewmodels
         public string embededVideoUrl { get; set; }
         public string imageUrl { get; set; }
     }
-    public abstract class PagedResultBase
-    {
-        public int CurrentPage { get; set; }
-        public int PageCount { get; set; }
-        public int PageSize { get; set; }
-        public int RowCount { get; set; }
-
-        public int FirstRowOnPage
-        {
-            get { return (CurrentPage - 1) * PageSize + 1; }
-        }
-        public int LastRowOnPage
-        {
-            get { return Math.Min(CurrentPage * PageSize, RowCount); }
-        }
-    }
-
-    public class PagedResult<T> : PagedResultBase where T : class
-    {
-        public IList<T> Results { get; set; }
-
-        public PagedResult()
-        {
-            Results = new List<T>();
-        }
-    }
+    
 }
 namespace rkbc.web.controllers
 {
@@ -136,68 +111,40 @@ namespace rkbc.web.controllers
             
             return vm;
         }
-        [Route("/Blog/Index")]
-        //[OutputCache(Profile = "default")]
-        public async Task<IActionResult> Index(string id)
-        {
-            Blog blog = null; string blogSlug = "all";
-            if(!string.IsNullOrEmpty(id))
-            {
-                blog = await unitOfWork.blogs.get().Where(q => q.authorId == id).FirstOrDefaultAsync();
-                if (blog == null) return this.NotFound();
-                blogSlug = blog.blogSlug;
-            }
-            
-            
-            return this.LocalRedirectPermanent($"/blog/{blogSlug}/{0}");
-        }
-        [Route("/blog/{blogSlug}/{page:int?}")]
-        //[OutputCache(Profile = "default")]
-        public async Task<IActionResult> Index([FromRoute] string blogSlug, int page = 0)
-        {
-            var blogIndexViewModel = new BlogIndexViewModel();
-            int postCount = 0;
-            if (blogSlug == "all")
-                postCount = await unitOfWork.posts.get().CountAsync();
-            else
-                postCount = await unitOfWork.posts.get().Where(q => q.blog.blogSlug == blogSlug).CountAsync();
-
-            blogIndexViewModel.blogSlug = blogSlug;
-            blogIndexViewModel.currentPage = page + 1;
-            blogIndexViewModel.skip = this.settings.Value.PostsPerPage * page;
-            blogIndexViewModel.postsPerPage = this.settings.Value.PostsPerPage;
-            blogIndexViewModel.search = null;
-            blogIndexViewModel.totalPosts = postCount;
-            this.ViewData[Constants.prev] = $"/blog/{blogSlug}/{page - 1}/";
-            this.ViewData[Constants.next] = $"/blog/{blogSlug}/{page + 1}/";
-
-            //PageResult
-            var query = unitOfWork.posts.get();
-            query = query.Include("blog").Include("blog.author").Include("comments")
-                .Skip(this.settings.Value.PostsPerPage * page).Take(this.settings.Value.PostsPerPage);
-            var posts = query.ToList();
-            var pageResult = new PagedResult<Post>();
-            pageResult.CurrentPage = page;
-            pageResult.PageCount = (postCount / 2);
-            pageResult.PageSize = 2;
-            pageResult.RowCount = 1;
-            pageResult.Results = posts;
-
-            return View(pageResult);
-
-            
-        }
-        public IActionResult LoadPosts(string blogSlug, int page)
+       public async Task<IActionResult> AllIndex(int page = 1)
         {
             var query = unitOfWork.posts.get();
-            if (!string.IsNullOrWhiteSpace(blogSlug) && blogSlug != "all")
-                query = query.Where(q => q.blog.blogSlug == blogSlug);
-
-            query = query.Include("blog").Include("blog.author").Include("comments")
-                .Skip(this.settings.Value.PostsPerPage * page).Take(this.settings.Value.PostsPerPage);
-
-            return ViewComponent("PostRow");
+            
+            query = query.Include("blog").Include("blog.author").Include("comments");
+            int pageSize = settings.Value.PostsPerPage;
+            var result = await GetPagedResultForQuery(query, page, pageSize);
+            return View("Index", result);
         }
+        public async Task<IActionResult> Index(string id, int page=1)
+        {
+            var query = unitOfWork.posts.get();
+            query = query.Where(q => q.blog.authorId == id);
+
+            query = query.Include("blog").Include("blog.author").Include("comments");
+            int pageSize = settings.Value.PostsPerPage;
+            var result = await GetPagedResultForQuery(query, page, pageSize);
+            return View(result);
+        }
+        public async Task<PagedResult<Post>> GetPagedResultForQuery(IQueryable<Post> query, int page, int pageSize)
+        {
+            var result = new PagedResult<Post>();
+            
+            result.CurrentPage = page;
+            result.PageSize = pageSize;
+            result.RowCount = query.Count();
+            var pageCount = (double)result.RowCount / pageSize;
+            result.PageCount = (int)Math.Ceiling(pageCount);
+            var skip = (page - 1) * pageSize;
+            result.Results = await query.Skip(skip).Take(pageSize).ToListAsync();
+
+            return result;
+        }
+
         [Route("/blog/edit/{id?}")]
         public async Task<IActionResult> Edit(int id)
         {
@@ -392,5 +339,6 @@ namespace rkbc.web.controllers
 
             return this.Redirect($"{post.GetEncodedLink()}#comments");
         }
+        
     }
 }

@@ -84,12 +84,7 @@ namespace rkbc
             .AddDefaultTokenProviders();
             //If using the CookieAuthenticationDefaults.AuthenticationSchem, HttpConctex.User.Indentity doesn't work.
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.Expiration = TimeSpan.FromMinutes(3);
-                options.Cookie.Path = "/RKBC";
-                options.SlidingExpiration = false;
-            });
+            
             //services.AddHttpContextAccessor();
 
             //services.AddRazorPages();
@@ -113,21 +108,30 @@ namespace rkbc
                 //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
             })
-            //.AddXmlSerializerFormatters()
-            .AddRazorRuntimeCompilation()
+            .AddXmlSerializerFormatters()
+            //.AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
                 options.IdleTimeout = TimeSpan.FromMinutes(2);
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 //options.Cookie.SameSite = SameSiteMode.Strict;
                 options.Cookie.HttpOnly = true;
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
+            });
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Expiration = TimeSpan.FromMinutes(3);
+                options.Cookie.Path = "/RKBC";
+                options.SlidingExpiration = false;
             });
             // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
             services.AddOutputCaching(
@@ -163,7 +167,6 @@ namespace rkbc
             // Add functionality to inject IOptions<T>
             //services.AddOptions();
 
-            
             services.AddAuthentication("AuthCookies")
             .AddCookie("AuthCookies", options => {
                 options.LoginPath = "/Administration/Login";
@@ -192,7 +195,7 @@ namespace rkbc
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
             }
@@ -224,7 +227,8 @@ namespace rkbc
                 MinimumSameSitePolicy = SameSiteMode.Strict,
             };
             app.UseCookiePolicy(cookiePolicyOptions);
-            app.UseResponseCaching();
+            
+
             app.UseStaticFiles();
             app.UseSession();
             app.UseSerilogRequestLogging();
@@ -236,9 +240,23 @@ namespace rkbc
             //Before UseEndpoints, so that users are authenticated before accessing the endpoints.
             app.UseAuthentication();
             app.UseAuthorization();
-            
-            //app.UseMvc();
 
+            //app.UseMvc();
+            app.UseResponseCaching();
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.GetTypedHeaders().CacheControl =
+                    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(60)
+                    };
+                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+                    new string[] { "Accept-Encoding" };
+
+                await next();
+            });
             app.UseEndpoints(endpoints =>
             {
                 

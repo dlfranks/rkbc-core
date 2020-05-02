@@ -125,6 +125,8 @@ namespace rkbc.core.helper
             
             if (thumbnail) assetFileName = ImageHelper.GetThumbnailFileName(assetFileName);
             path = env.WebRootPath + "\\assets\\" + path + "\\" + assetFileName;
+            Console.WriteLine("env.WebRootPath: " + env.WebRootPath);
+            Console.WriteLine("Full path: " + path);
             return (path);
         }
         public string generateAssetURL(string assetType, string assetFileName)

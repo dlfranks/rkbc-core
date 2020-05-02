@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using rkbc.core.models;
 using rkbc.core.repository;
 using rkbc.core.service;
 
@@ -14,9 +16,13 @@ namespace rkbc.web.controllers
         {
 
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int country)
         {
-            return View();
+
+            var missionBlogs = unitOfWork.blogs.get().Where(q => q.author.accountType == (int)AccountType.Mission && q.author.countryCode == country).Include("posts").Include("author").AsAsyncEnumerable();
+
+            return View(missionBlogs);
         }
+        
     }
 }

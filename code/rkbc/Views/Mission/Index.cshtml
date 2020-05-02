@@ -1,10 +1,17 @@
-﻿<style>
+﻿@model rkbc.web.viewmodels.
+<style>
     @@media (min-width: 767px) {
         iframe{
             height:360px;
         }
     }
 </style>
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs a:first').tab('show');
+    });
+    
+</script>
 <!-- Titlebar
 ================================================== -->
 <div class="row space40"></div>
@@ -21,7 +28,7 @@
                 <ul>
                     <li>You are here:</li>
                     <li><a href="@Url.Action("Index", "Home")">Home</a></li>
-                    <li>목회자 칼럼</li>
+                    <li>선교</li>
                 </ul>
             </nav>
         </div>

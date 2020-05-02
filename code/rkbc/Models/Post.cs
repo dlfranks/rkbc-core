@@ -114,6 +114,7 @@ namespace rkbc.core.models
         }
         public string getImageLink()
         {
+            
             if (string.IsNullOrEmpty(this.imageFileName)) return "";
             else return "/assets/blog/" + this.imageFileName;
         }
