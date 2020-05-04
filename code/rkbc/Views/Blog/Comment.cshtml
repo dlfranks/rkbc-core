@@ -3,57 +3,64 @@
 @using Microsoft.Extensions.Options;
 
 @inject IOptions<BlogSettings> settings
-    <h3>@Model.comments.Count</span> @(Model.comments.Count == 1 ? "Comment" : "Comments")</h3>
+
+<h3><span>@Model.comments.Count</span> @(Model.comments.Count == 1 ? "Comment" : "Comments")</h3>
 @foreach (var comment in Model.comments)
 {
-<div class="comment" id="@comment.id" >
-    <div class="comment-author" style="color:#000000;">@comment.name </div>
-    <span class="comment-date" style="color:#3b3b3b;">@comment.pubDate.ToString("MMMM d, yyyy") </span><br>
-    <br />
-    @comment.RenderContent()
-</div>
+    <div class="comment" id="@comment.id">
+        <div class="comment-author" style="color:#000000;">@comment.name </div>
+        <span class="comment-date" style="color:#3b3b3b;">@comment.pubDate.ToString("MMMM d, yyyy") </span><br>
+        <br />
+        @comment.RenderContent()
+    </div>
 }
 
 <div class="comment-title">
     <h3>Leave a Comment</h3>
-    This comment form is optional.
+    
 </div>
 
 <div class="row space20"></div>
 
 <!-- Blog Form -->
-<form class="form-comment" method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.id" asp-antiforgery="false">
-    <div class="row">
-        @if (!User.Identity.IsAuthenticated)
-        {
-            <div class="span4">
-                E-mail<br>
-                <input id="email" name="email" placeholder="Example: mary@outlook.com" /><br>
+@if (User.Identity.IsAuthenticated)
+{ 
+    <form class="form-comment" method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.id" asp-antiforgery="false">
+        <div class="row">
+            
+                @*<div class="span4">
+                        E-mail<br>
+                        <input id="email" name="email" placeholder="Example: mary@outlook.com" /><br>
+                    </div>
+                    <div class="span4">
+                        Name<br>
+                        <input id="name" name="name" placeholder="Your Name" />
+                    </div>*@
+            
+        </div>
+
+
+        <div class="row">
+            <div class="span8">
+                Comment * <br>
+                <textarea id="content" style="background-color:#e9edeb;color:#000;" name="content" rows="5" cols="200" onfocus="" required placeholder="Enter your comment here..."></textarea>
             </div>
-            <div class="span4">
-                Name<br>
-                <input id="name" name="name" placeholder="Your Name" />
+        </div>
+
+        <div class="row space20"></div>
+
+        <div class="row">
+            <div class="span4 thank">
+                Thank You for Message!
             </div>
-        }
+            <div class="span4 form-group">
+                <input class="btn btn-primary f-right" style="width:auto;height:auto;background-color:#006dcc;padding:5px 20px !important;" type="submit" value="Post comment" />
+            </div>
         </div>
-        
-
-    <div class="row">
-        <div class="span8">
-            Comment * <br>
-            <textarea id="content" style="background-color:#e9edeb;color:#000;" name="content" rows="5" cols="200" onfocus="" required placeholder="Enter your comment here..."></textarea>
-        </div>
-    </div>
-
-    <div class="row space20"></div>
-
-    <div class="row">
-        <div class="span4 thank">
-            Thank You for Message!
-        </div>
-        <div class="span4 form-group">
-            <input class="btn-gray pad2 f-right" style="width:auto;background-color:#3b3b3b;" type="submit" value="Post comment"/>
-        </div>
-    </div>
-</form>
+    </form>
+}
+else
+{
+    <div><a asp-area="Identity" asp-page="/Account/Register">댓글달기위해 등록하기</a></div>
+}
 <!-- Blog Form End -->

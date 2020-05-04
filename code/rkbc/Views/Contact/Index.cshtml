@@ -23,23 +23,23 @@
                     <form class="form-main" name="ajax-form" id="ajax-form" action="#" method="post">
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <div class="form-group">
-                            <label asp-for="name">Name:</label>
-                            <input asp-for="name" id="name" type="text" value="name" onfocus="if(this.value == 'Name') this.value='';" onblur="if(this.value == '') this.value='Name';">
+                            <label asp-for="name">이름:</label>
+                            <input asp-for="name" id="name" type="text" value="name" onfocus="if(this.value == 'Name') this.value='';" onblur="if(this.value == '');">
                             <span asp-validation-for="name" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="email">Email:</label>
+                            <label asp-for="email">이메일:</label>
                             <input asp-for="email" id="email" type="text" value="email" onfocus="if(this.value == 'E-mail') this.value='';" onblur="if(this.value == '') this.value='E-mail';">
                             <span asp-validation-for="email" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="subject">Subject:</label>
+                            <label asp-for="subject">제목:</label>
                             <input asp-for="subject" id="subject" type="text" value="subject" onfocus="if(this.value == 'Subject') this.value='';" onblur="if(this.value == '') this.value='Subject';">
                             <span asp-validation-for="subject" class="text-danger"></span>
                         </div>
                         <div class="error" id="err-message">Please enter message</div>
                         <div class="form-group">
-                            <label asp-for="message">Message:</label>
+                            <label asp-for="message">메세지:</label>
                             <textarea name="message" id="message" onfocus="if(this.value == 'Message') this.value='';" onblur="if(this.value == '') this.value='Message';">Message</textarea><br>
                             <span asp-validation-for="message" class="text-danger"></span>
                         </div>
@@ -54,9 +54,9 @@
                 Raleigh, NC 27615<br>
                 United States<br>
                 <br>
-                <i class="icon-phone"></i>(919) 389-7551<br>
-                <i class="icon-envelope"></i>eunyoung2u@hotmail.com<br>
-                <i class="icon-home"></i><a href="@Url.Action("Index", "Home")">www.rkbc.us</a>
+                <i class="icon-phone"></i> (919) 389-7551<br>
+                <i class="icon-envelope"></i> eunyoung2u@hotmail.com<br>
+                <i class="icon-home"></i><a href="@Url.Action("Index", "Home")"> www.rkbc.us</a>
 
                 <div class="row space40"></div>
                 <div>

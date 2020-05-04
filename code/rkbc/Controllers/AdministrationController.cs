@@ -92,12 +92,10 @@ namespace rkbc.web.viewmodels
         public IList<string> roles { get; set; }
 
         [Required]
-        [EmailAddress]
         [Display(Name = "Country")]
         public int countryCode { get; set; }
 
         [Required]
-        [EmailAddress]
         [Display(Name = "Account Type")]
         public int accountType { get; set; }
     }
@@ -230,7 +228,7 @@ namespace rkbc.web.controllers
             ViewBag.roleList = allRoles;
             ViewBag.formViewMode = mode;
             ViewBag.UserSettings = userService.CurrentUserSettings;
-            ViewBag.Countrylist = rkbc.web.constant.Constants.getCountryList();
+            ViewBag.CountryList = rkbc.web.constant.Constants.getCountryList();
             return vm;
         }
 

@@ -1,6 +1,12 @@
 ﻿@model rkbc.web.viewmodels.AppUserViewModel
 @using rkbc.web.viewmodels
-
+@using rkbc.core.models
+@using rkbc.web.helpers
+<style>
+    p{clear:both;}
+    .row div{padding:10px 0;}
+    
+</style>
 @{
     ViewData["Title"] = "Details";
 }
@@ -11,58 +17,92 @@
             <div>
                 <h4>If you want to </h4>
                 <hr />
-                <dl class="row">
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Email)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Email)
-                    </dd>
+                <div class="row">
+                    <p>
+                        <div class="span2">
+                            @Html.DisplayNameFor(model => model.Email)
+                        </div>
+                        <div class="span10">
+                            @Html.DisplayFor(model => model.Email)
+                        </div>
+                    </p>
 
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.firstName)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.firstName)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.lastName)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.lastName)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.gender)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.gender)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.department)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.department)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.DOB)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.DOB)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.phoneNumber)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.phoneNumber)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.address1)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.address1)
-                    </dd>
+                    <p>
+                        <div class="span2">
+                            @Html.DisplayNameFor(model => model.firstName)
+                        </div>
+                        <div class="span10">
+                            @Html.DisplayFor(model => model.firstName)
+                        </div>
+                    </p>
+                    <p>
+                        <div class="span2">
+                            @Html.DisplayNameFor(model => model.lastName)
+                        </div>
+                        <div class="span10">
+                            @(Model.lastName ?? " ")
+                        </div>
+                    </p>
 
-                </dl>
+                    <p>
+                        <div class="span2">
+                            @Html.DisplayNameFor(model => model.accountType)
+                        </div>
+                        <div class="span10">
+                            @(Model.accountType > 0 ? EnumHelper.GetDisplayName<AccountType>((AccountType)Model.accountType) : "")
+                        </div>
+                    </p>
+                    <p>
+                        <div class="span2">
+
+                            @Html.DisplayNameFor(model => model.countryCode)
+                        </div>
+                        <div class="span10">
+                            @(Model.countryCode > 0 ? EnumHelper.GetDisplayName<CountryEnum>((CountryEnum)Model.countryCode) : "")
+                        </div>
+                    </p>
+                    <p>
+                        <div class="span2">
+                            @Html.DisplayNameFor(model => model.gender)
+                        </div>
+                        <div class="span10">
+                            @(Model.gender != null ? EnumHelper.GetDisplayName<GenderEnum>((GenderEnum)Model.gender) : "")
+                        </div>
+                    </p>
+                    <p>
+                        <div class="span2">
+                            @Html.DisplayNameFor(model => model.department)
+                        </div>
+                        <div class="span10">
+                            @(Model.department != null ? EnumHelper.GetDisplayName<GroupEnum>((GroupEnum)Model.department) : "")
+                        </div>
+                    </p>
+                    <p>
+                        <div class="span2">
+                            @Html.DisplayNameFor(model => model.DOB)
+                        </div>
+                        <div class="span10">
+                            @Html.DisplayFor(model => model.DOB)
+                        </div>
+                    </p>
+                    <p>
+                        <div class="span2">
+                            @Html.DisplayNameFor(model => model.phoneNumber)
+                        </div>
+                        <div class="span10">
+                            @Html.DisplayFor(model => model.phoneNumber)
+                        </div>
+                    </p>
+                    <p>
+                        <div class="span2">
+                            @Html.DisplayNameFor(model => model.address1)
+                        </div>
+                        <div class="span10">
+                            @Html.DisplayFor(model => model.address1)
+                        </div>
+                </p>
+                
+            </div>
             </div>
             <div>
                 @if (ViewBag.FormViewMode == FormViewMode.Delete)

@@ -42,15 +42,25 @@ namespace rkbc.core.models
     }
     public enum CountryEnum
     {
+        [Display(Name = "미국")]
         USA = 2000,
+        [Display(Name = "한국")]
         South_Korea,
+        [Display(Name = "도미니카")]
         Dominican_Republic,
+        [Display(Name = "캄보디아")]
         Cambodia,
+        [Display(Name = "중국")]
         China,
+        [Display(Name = "멕시코")]
         Mexico,
+        [Display(Name = "브키나파소")]
         Burkina_Faso,
+        [Display(Name = "필리핀")]
         Philippines,
+        [Display(Name = "북한")]
         North_Korea,
+        [Display(Name = "베트남")]
         VietNam
     }
     public enum AccountType

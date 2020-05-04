@@ -1,0 +1,101 @@
+﻿@model rkbc.web.viewmodels.PagedResult<rkbc.core.models.Post>
+@using rkbc.web.viewcomponents;
+@using rkbc.core.models;
+<style>
+    @@media (min-width: 767px) {
+        iframe {
+            height: 360px;
+        }
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $(".tab-pane").show();
+        $('.nav-tabs a#@ViewBag.CountryValue').closest('li').removeClass("active");
+        $('.nav-tabs a#@ViewBag.CountryValue').closest('li').addClass("active");
+    });
+
+</script>
+<!-- Titlebar
+================================================== -->
+<div class="row space40"></div>
+<section id="titlebar">
+    <!-- Container -->
+    <div class="container">
+
+        <div class="eight columns">
+            <h5 class="left">선교지 & 선교사 배정</h5>
+        </div>
+
+        <div class="eight columns">
+            <nav id="breadcrumbs">
+                <ul>
+                    <li>You are here:</li>
+                    <li><a href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li>선교</li>
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+    <!-- Container / End -->
+</section>
+<div class="content">
+    <div class="container">
+        <div class="row space40"></div>
+        <!-- Tabs -->
+        <div class="tabbable">
+            <ul class="nav nav-tabs" style="margin-left:15px;">
+                <li class="active"><a id="@(CountryEnum.Dominican_Republic)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)">도미니카</a></li>
+                <li><a id="@(CountryEnum.VietNam)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.VietNam)">베트남</a></li>
+                <li><a id="@(CountryEnum.China)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.China)">홍콩, 중국</a></li>
+                <li><a id="@(CountryEnum.North_Korea)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.North_Korea)">북한</a></li>
+                <li><a id="@(CountryEnum.Mexico)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Mexico)">멕시코</a></li>
+                <li><a id="@(CountryEnum.Burkina_Faso)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Burkina_Faso)">브키나파소</a></li>
+                <li><a id="@(CountryEnum.Philippines)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Philippines)">필리핀</a></li>
+                <li><a id="@(CountryEnum.Cambodia)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Cambodia)">캄보디아</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active">
+                    <h3>@ViewBag.CountryName</h3>
+                    <!-- Content -->
+                    <div id="content">
+                        <div class="container">
+                            <div class="row">
+                                <div class="span12">
+                                    <h3>&nbsp;</h3>
+                                </div>
+
+                                <div class="span9">
+
+                                    @(await Component.InvokeAsync<BlogIndexViewComponent>(Model.Results))
+
+                                    <div class="row space30"></div>
+
+                                    <!-- Paging -->
+                                    @(await Component.InvokeAsync<PagerViewComponent>(Model))
+                                    <!-- Paging End -->
+
+                                    <div class="row space40"></div>
+
+                                </div>
+
+                                <!-- Side Bar -->
+                                <div class="span3">
+                                    <!-- Side Bar -->
+                                    @(await Component.InvokeAsync<BlogSideViewComponent>())
+                                    <!--Side Bar End -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Content End -->
+                </div>
+
+            </div>
+        </div>
+        <!-- Tabs End -->
+    </div>
+</div>
+

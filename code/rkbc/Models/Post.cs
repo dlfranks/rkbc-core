@@ -47,21 +47,29 @@ namespace rkbc.core.models
         public string imageFileName { get; set; }
         public string videoURL { get; set; }
         [Required]
+        [Display(Name = "내용")]
         public string content { get; set; } = string.Empty;
 
         [Required]
+        [Display(Name = "포스트 요약")]
         public string excerpt { get; set; } = string.Empty;
+
         [Required]
+        [Display(Name="포스트 타입")]
         public int postType { get; set; } = (int)BlogPostType.Sigle;
+
+        [Display(Name = "퍼블리쉬?")]
         public bool isPublished { get; set; } = true;
         public DateTime createDt { get; set; }
         public DateTime lastModified { get; set; } = DateTime.UtcNow;
 
         public DateTime pubDate { get; set; } = DateTime.UtcNow;
 
+        [Display(Name = "포스트 고유 링크")]
         public string slug { get; set; } = string.Empty;
         public int views { get; set; } = 0;
         [Required]
+        [Display(Name = "제목")]
         public string title { get; set; } = string.Empty;
 
         public IList<Comment> comments { get; } = new List<Comment>();
@@ -114,7 +122,7 @@ namespace rkbc.core.models
         }
         public string getImageLink()
         {
-            
+           
             if (string.IsNullOrEmpty(this.imageFileName)) return "";
             else return "/assets/blog/" + this.imageFileName;
         }

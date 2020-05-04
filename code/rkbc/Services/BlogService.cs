@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using rkbc.core.helper;
 using Microsoft.EntityFrameworkCore;
+using rkbc.web.viewmodels;
 
 namespace rkbc.core.service
 {
@@ -58,6 +59,20 @@ namespace rkbc.core.service
                
                 throw new InvalidOperationException("Attempted to delete an post that does not exist.", ex);
             }
+        }
+        public async Task<PagedResult<Post>> GetPagedResultForQuery(IQueryable<Post> query, int page, int pageSize)
+        {
+            var result = new PagedResult<Post>();
+
+            result.CurrentPage = page;
+            result.PageSize = pageSize;
+            result.RowCount = query.Count();
+            var pageCount = (double)result.RowCount / pageSize;
+            result.PageCount = (int)Math.Ceiling(pageCount);
+            var skip = (page - 1) * pageSize;
+            result.Results = await query.Skip(skip).Take(pageSize).OrderByDescending(q => q.lastModified).ToListAsync();
+
+            return result;
         }
 
         //[SuppressMessage(

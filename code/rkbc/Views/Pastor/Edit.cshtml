@@ -4,21 +4,21 @@
 }
 <script>
     $(function () {
-       
+
         $("input[type=text]", "textarea").change(function () {
             var text = $(this).val();
             text.replace(/&/g, '&amp;').
                 replace(/>/g, '&gt;').
                 replace(/</g, '&lt;').
                 replace(/"/g, '&quot;');
-                
+
         });
     });
 </script>
 <!-- Titlebar
 ================================================== -->
 <div class="row space40"></div>
-<form action="Edit" method="post">
+<form action="Edit" method="post" id="edit">
     <section id="titlebar">
         <!-- Container -->
         <div class="container">
@@ -69,18 +69,19 @@
                                     <input style="width:70%;" type="text" asp-for="columnTitle" class="form-control" />
                                     <span asp-validation-for="columnTitle" class="text-danger"></span>
                                 </h4>
-                                
+
                                 <div class="blue-dark">
                                     <i class="icon-user"></i> By <input type="text" asp-for="author" class="form-control" />
                                     <span asp-validation-for="author" class="text-danger"></span>
                                 </div>
                                 <p>
                                     <label asp-for="column"></label>
-                                    <textarea style="width:100%;height:200px;" type="text" asp-for="column" class="form-control" ></textarea>
+                                    <textarea id="Content" rows="20" aria-label="Content" type="text" asp-for="column" class="form-control">@Model.column</textarea>
+
                                     <span asp-validation-for="column" class="text-danger"></span>
                                 </p>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class="row space40"></div>
@@ -152,6 +153,8 @@
             <input class="btn btn-gray pad2" type="submit" value="Update" />
             <a class="btn btn-gray pad2" href="/Pastor/Index">Cancel</a>
         </div>
-        
+
     </div>
 </form>
+<script src="~/lib/tinymce/tinymce.min.js" type="text/javascript" asp-append-version="true"></script> @*with enabled CDN tinymce is not able to find some files*@
+<script src="~/js/admin.js" type="text/javascript" async asp-append-version="true"></script>

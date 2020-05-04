@@ -20,9 +20,29 @@ namespace rkbc.web.viewcomponents
         public IViewComponentResult Invoke()
         {
             BlogSideViewModel model = new BlogSideViewModel();
-            
 
-            var latestGalleryBlogs = unitOfWork.posts.get().Where(q => q.postType == (int)BlogPostType.Gallery).OrderByDescending(q => q.lastModified)
+            model.missionNews = unitOfWork.blogs.get().Where(q => q.author.accountType == (int)AccountType.Mission).OrderByDescending(q => q.lastUpdDt)
+                .Select(q => new MissionNews()
+                {
+                    authorName = q.author.firstName + " " + q.author.lastName,
+                    blogId = q.id,
+                    countryCode = (int)q.author.countryCode
+                    
+                }).AsAsyncEnumerable();
+
+            model.latestPostList = unitOfWork.posts.get().OrderByDescending(q => q.lastModified)
+                .Select(q => new LatestPost()
+                {
+                    authorName = q.blog.author.firstName + " " + q.blog.author.lastName,
+                    blogId = q.blogId,
+                    postId = q.id,
+                    postTitle = q.title,
+                    postSlug = q.slug
+
+                }).AsAsyncEnumerable();
+
+
+            model.latestGalleryList = unitOfWork.posts.get().Where(q => q.postType == (int)BlogPostType.Gallery).OrderByDescending(q => q.lastModified)
                 .Select(q => new LatestGalleryPost() {
                     authorName = q.blog.author.firstName + " " + q.blog.author.lastName,
                     blogId = q.blogId,
@@ -30,9 +50,9 @@ namespace rkbc.web.viewcomponents
                     postTitle = q.title,
                     postSlug = q.slug,
                     imageFileName = q.imageFileName
-                }).ToListAsync();
+                }).AsAsyncEnumerable();
 
-            var latestVideoBlogs = unitOfWork.posts.get().Where(q => q.postType == (int)BlogPostType.Video).OrderByDescending(q => q.lastModified)
+            model.latestVideList = unitOfWork.posts.get().Where(q => q.postType == (int)BlogPostType.Video).OrderByDescending(q => q.lastModified)
                 .Select(q => new LatestVideoPost() {
                     authorName = q.blog.author.firstName + " " + q.blog.author.lastName,
                     blogId = q.blogId,
@@ -40,9 +60,9 @@ namespace rkbc.web.viewcomponents
                     postTitle = q.title,
                     postSlug = q.slug,
                     videoIframe = q.getEmbededVideo()
-                }).ToListAsync();
+                }).AsAsyncEnumerable();
 
-            var latestSingleBlogs = unitOfWork.posts.get().Where(q => q.postType == (int)BlogPostType.Sigle).OrderByDescending(q => q.lastModified)
+            model.latestSingleList = unitOfWork.posts.get().Where(q => q.postType == (int)BlogPostType.Sigle).OrderByDescending(q => q.lastModified)
                 .Select(q => new LatestSinglePost() {
                     authorName = q.blog.author.firstName + " " + q.blog.author.lastName,
                     blogId = q.blogId,
@@ -50,18 +70,19 @@ namespace rkbc.web.viewcomponents
                     postTitle = q.title,
                     postSlug = q.slug,
                     singlePostContent = q.RenderContent()
-                }).ToListAsync();
+                }).AsAsyncEnumerable();
 
-            var latestCommentBlogs = unitOfWork.comments.get().OrderByDescending(q => q.pubDate).OrderByDescending(q => q.pubDate)
+            model.latestCommentList = unitOfWork.comments.get().OrderByDescending(q => q.pubDate)
                 .Select(q => new LatestCommentPost()
                 {
                     authorName = q.author.firstName + " " + q.author.lastName,
-                    postId = q.id,
+                    postId = q.postId,
                     postTitle = q.post.title,
                     comment = q.content
-                }).ToListAsync();
+                }).AsAsyncEnumerable();
 
-            return View("BlogSide");
+
+            return View("BlogSide", model);
         }
     }
 }

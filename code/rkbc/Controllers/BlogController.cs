@@ -15,18 +15,74 @@ using rkbc.core.repository;
 using rkbc.core.service;
 using rkbc.web.constant;
 using rkbc.web.controllers;
+using rkbc.web.helpers;
 using rkbc.web.viewmodels;
 
 namespace rkbc.web.viewmodels
 {
+    public class MissionNews
+    {
+        public int countryCode { get; set; }
+        public int blogId { get; set; }
+        public int postId { get; set; }
+        public string authorName { get; set; }
+        public string blogSlug { get; set; }
+    }
+    public abstract class LatestPostBase
+    {
+        public string authorName { get; set; }
+        public int blogId { get; set; }
+        public int postId { get; set; }
+        public string postTitle { get; set; }
+
+        public string postSlug { get; set; }
+    }
+    public class LatestPost : LatestPostBase { }
+    public class LatestGalleryPost : LatestPostBase
+    {
+        public string imageFileName { get; set; }
+
+    }
+    public class LatestVideoPost : LatestPostBase
+    {
+        public string videoIframe { get; set; }
+
+    }
+    public class LatestSinglePost : LatestPostBase
+    {
+        public string singlePostContent { get; set; }
+
+    }
+    public class LatestCommentPost
+    {
+        public string authorName { get; set; }
+        public string postTitle { get; set; }
+        public int postId { get; set; }
+        public string comment { get; set; }
+
+    }
+    public class BlogSideViewModel
+    {
+        public BlogSideViewModel()
+        {
+            //missionNews = new List<MissionNews>();
+            //latestGalleryList = new List<LatestGalleryPost>();
+            //latestVideList = new List<LatestVideoPost>();
+            //latestSingleList = new List<LatestSinglePost>();
+            //latestCommentList = new List<LatestCommentPost>();
+        }
+        public IAsyncEnumerable<MissionNews> missionNews { get; set; }
+        public IAsyncEnumerable<LatestGalleryPost> latestGalleryList { get; set; }
+        public IAsyncEnumerable<LatestVideoPost> latestVideList { get; set; }
+        public IAsyncEnumerable<LatestSinglePost> latestSingleList { get; set; }
+        public IAsyncEnumerable<LatestCommentPost> latestCommentList { get; set; }
+        public IAsyncEnumerable<LatestPostBase> latestPostList { get; set; }
+    }
     public class BlogIndexViewModel
     {
-        public string blogSlug { get; set; }
-        public int currentPage { get; set; }
-        public int postsPerPage { get; set; }
-        public int totalPosts { get; set; }
-        public int skip { get; set; }
-        public string search { get; set; }
+        PagedResult<Post> pagedResult { get; set; }
+        BlogSideViewModel blogSideViewModel { get; set; }
+
     }
     public class PostViewModel
     {
@@ -117,33 +173,40 @@ namespace rkbc.web.controllers
             
             query = query.Include("blog").Include("blog.author").Include("comments");
             int pageSize = settings.Value.PostsPerPage;
-            var result = await GetPagedResultForQuery(query, page, pageSize);
+            var result = await blogService.GetPagedResultForQuery(query, page, pageSize);
             return View("Index", result);
         }
-        public async Task<IActionResult> Index(string id, int page=1)
+        [Route("/Blog/Index/{userId}")]
+        [Route("/Blog/{userId}")]
+        public async Task<IActionResult> Index(string userId, int page=1)
         {
             var query = unitOfWork.posts.get();
-            query = query.Where(q => q.blog.authorId == id);
+            query = query.Where(q => q.blog.authorId == userId);
 
             query = query.Include("blog").Include("blog.author").Include("comments");
             int pageSize = settings.Value.PostsPerPage;
-            var result = await GetPagedResultForQuery(query, page, pageSize);
+            var result = await blogService.GetPagedResultForQuery(query, page, pageSize);
             return View(result);
         }
-        public async Task<PagedResult<Post>> GetPagedResultForQuery(IQueryable<Post> query, int page, int pageSize)
+        [Route("/Mission/Index/{country}")]
+        public async Task<IActionResult> MissionIndex(string country, int page = 1)
         {
-            var result = new PagedResult<Post>();
-            
-            result.CurrentPage = page;
-            result.PageSize = pageSize;
-            result.RowCount = query.Count();
-            var pageCount = (double)result.RowCount / pageSize;
-            result.PageCount = (int)Math.Ceiling(pageCount);
-            var skip = (page - 1) * pageSize;
-            result.Results = await query.Skip(skip).Take(pageSize).ToListAsync();
-
-            return result;
+            CountryEnum value;
+            if(!(Enum.TryParse(country.ToString(), true, out value)))
+            {
+                value = CountryEnum.Dominican_Republic;
+            }
+           
+            var query = unitOfWork.posts.get();
+            query = query.Where(q => q.blog.author.countryCode == (int)value && q.blog.author.accountType == (int)AccountType.Mission);
+            query = query.Include("blog").Include("blog.author").Include("comments");
+            int pageSize = settings.Value.PostsPerPage;
+            var result = await blogService.GetPagedResultForQuery(query, page, pageSize);
+            ViewBag.CountryName = EnumHelper.GetDisplayName<CountryEnum>(value);
+            ViewBag.CountryValue = country;
+            return View("Mission", result);
         }
+
 
         [Route("/blog/edit/{id?}")]
         public async Task<IActionResult> Edit(int id)
@@ -174,6 +237,7 @@ namespace rkbc.web.controllers
             var vm = setupViewModel(post);
             return View(vm);
         }
+        
         [Route("/blog/{blogSlug}/{slug?}")]
         public async Task<IActionResult> Post(string blogSlug, string slug)
         {
@@ -189,6 +253,24 @@ namespace rkbc.web.controllers
                 
                 return View(post);
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> Post(int postId)
+        {
+            var currentUser = userService.CurrentUserSettings;
+            var post = await unitOfWork.posts.get()
+                .Where(p => p.id == postId)
+                .Include("blog").Include("blog.author").Include("comments").FirstOrDefaultAsync();
+
+            //return post is null ? this.NotFound() : (IActionResult)this.View(post);
+            if (post == null)
+                return NotFound();
+            else
+
+                return View(post);
+            
+        }
+
         /// <remarks>This is for redirecting potential existing URLs from the old Miniblog URL format.</remarks>
         [Route("/post/{slug}")]
         [HttpGet]

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using rkbc.core.models;
 using rkbc.core.repository;
 using rkbc.core.service;
+using rkbc.web.viewmodels;
 
 namespace rkbc.web.controllers
 {
@@ -16,12 +17,13 @@ namespace rkbc.web.controllers
         {
 
         }
-        public async Task<IActionResult> Index(int country)
+        public async Task<IActionResult> Index(int country, int page = 1)
         {
+            //PagedResult<Blog> pagedResult = new PagedResult<Blog>();
+            //var missionBlogs = unitOfWork.posts.get().Where(q => q.blog.author.accountType == (int)AccountType.Mission && q.blog.author.countryCode == country).Include("blog").Include("author");
+            //var result = await blogService.GetPagedResultForQuery(query, page, pageSize);
 
-            var missionBlogs = unitOfWork.blogs.get().Where(q => q.author.accountType == (int)AccountType.Mission && q.author.countryCode == country).Include("posts").Include("author").AsAsyncEnumerable();
-
-            return View(missionBlogs);
+            return View();
         }
         
     }

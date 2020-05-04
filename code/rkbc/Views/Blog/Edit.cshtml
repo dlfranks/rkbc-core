@@ -34,7 +34,7 @@
             if (window.File && window.FileList && window.FileReader) {
                 var displayImageDiv = $("#displayImage");
                 var files = event.target.files;
-                
+
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
 
@@ -86,7 +86,7 @@
                     div.find("input[type=file]").remove();
                     div.append(fileInput);
                 });
-                
+
                 fileInput.click();
                 });
         }
@@ -102,7 +102,7 @@
             } else {
                 iframeWrapper.empty();
             }
-            
+
 
             $("#loadVideoButton", html).click(function (e) {
                 e.preventDefault();
@@ -119,7 +119,7 @@
 
             });
         }
-        
+
 
         var imageUrl = '@Html.Raw(Model.imageUrl)';
         var videoUrl = '@Html.Raw(Model.embededVideoUrl)';
@@ -139,7 +139,7 @@
                 var htmlScript = $("#htmlPostType-" + postType)[0].innerHTML;
             setupMedia[postType](htmlScript, mediaDiv);
             }
-            
+
         });
     });
 </script>
@@ -163,7 +163,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label asp-for="@Model.post.title">Title</label>
+                            <label asp-for="@Model.post.title" class="col-md-2 control-label"></label>
                             <input asp-for="@Model.post.title" required placeholder="Title of blog post" aria-describedby="desc_title" class="form-control" />
                             <p>
                                 <span class="desc" id="desc_title">The title as it appears on the website</span>
@@ -176,28 +176,38 @@
 
                         </div>
                         <div class="form-group">
-                            <label asp-for="@Model.post.slug">Slug</label>
+                            <label asp-for="@Model.post.slug" class="col-md-2 control-label"></label>
                             <input asp-for="@Model.post.slug" placeholder="The URL name" aria-describedby="desc_slug" class="form-control" />
-                            <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
+                            <p>
+                                <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
+                                <span asp-validation-for="post.slug" class="text-danger" />
+                            </p>
                             <br />
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="@Model.post.excerpt">Excerpt</label>
+                            <label asp-for="@Model.post.excerpt" class="col-md-2 control-label"></label>
                             <textarea asp-for="@Model.post.excerpt" rows="3" placeholder="Short description of blog post" aria-describedby="desc_excerpt" class="form-control">@Model.post.excerpt</textarea>
-                            <span class="desc" id="desc_excerpt">A brief description of the content of the post</span>
+                            <p>
+                                <span class="desc" id="desc_excerpt">The title as it appears on the website</span>
+                                <span asp-validation-for="post.excerpt" class="text-danger" />
+                            </p>
                             <br />
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="@Model.post.content">Content</label>
-                            <textarea id="Content" asp-for="@Model.post.content" rows="20" aria-label="Content" class="form-control">@Model.post.content</textarea>
+                            <label asp-for="@Model.post.content"></label>
+                            <textarea id="Content" asp-for="post.content" rows="20" aria-label="Content" class="form-control">@Model.post.content</textarea>
+                            <p>
+                                <span class="desc" id="desc_content">The content of the post</span>
+                                <span asp-validation-for="post.content" class="text-danger" />
+                            </p>
                             <br />
                         </div>
                         <div class="form-group">
-                            
+
                             <input asp-for="@Model.post.isPublished" />
-                            <label asp-for="@Model.post.isPublished">Is published</label>
+                            <label asp-for="@Model.post.isPublished">Is published(출판)</label>
                         </div>
                         <div class="form-group">
                             <input class="btn btn-primary" type="submit" value="Save" title="Save the post" />
@@ -206,7 +216,7 @@
                                 <input type="submit" class="btn btn-gray delete" value="Delete..." title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.post.id" />
                             }
                         </div>
-                        
+
 
 
 
@@ -239,7 +249,7 @@
         <div id="iframeWrapper">
             <iframe src="" frameborder="0" style="width:100%; height:auto;" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-        
+
         <div class="form-group" id="inputVideo">
             <label asp-for="@Model.post.videoURL">YouTube Link</label>
             <input asp-for="@Model.post.videoURL" type="text" class="form-control" /><br />
@@ -251,5 +261,6 @@
 
 }
 
-
+<script src="~/lib/tinymce/tinymce.min.js" type="text/javascript" asp-append-version="true"></script> @*with enabled CDN tinymce is not able to find some files*@
+<script src="~/js/admin.js" type="text/javascript" async asp-append-version="true"></script>
 
