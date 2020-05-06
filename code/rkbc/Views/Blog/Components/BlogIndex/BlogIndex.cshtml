@@ -32,14 +32,15 @@
         <div class="span8">
             @if (post.postType == (int)BlogPostType.Gallery)
             {
-                <a href="@post.GetLink()"><img src="@Url.Action("ImageView", "Asset", new {type="blog", fileName=post.imageFileName})" /></a>
+            @*<a href="@post.GetLink()"><img src="@Url.Action("ImageView", "Asset", new {type="blog", fileName=post.imageFileName})" /></a>*@
+            <a href="@post.GetLink()"><img src="@post.getImageLink()" /></a>
             },
 
             <div class="space20">
             </div>
             @if (post.postType == (int)BlogPostType.Video)
             {
-                @Html.Raw(post.getEmbededVideo());
+            @Html.Raw(post.getEmbededVideo());
             }
 
 
@@ -51,7 +52,7 @@
                     <time datetime="@post.pubDate.ToString("s")" itemprop="datePublished">Published @post.pubDate.ToString("MMM d, yyyy")</time>
                     @if (ViewBag.UserSettings.isAdmin || ViewBag.UserSettings.userId == post.blog.authorId)
                     {
-                        <a asp-controller="Blog" asp-action="Edit" asp-route-id="@post.id" title="Edit the post">Edit post</a>
+                    <a asp-controller="Blog" asp-action="Edit" asp-route-id="@post.id" title="Edit the post">Edit post</a>
                     }
                 </div>
                 @Html.Raw(post.RenderContent())

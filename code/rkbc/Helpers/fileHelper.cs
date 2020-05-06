@@ -199,9 +199,9 @@ namespace rkbc.core.helper
             var assetName = mapAssetPath(assetType, assetFileName, false);
             byte[] contents = null;
 
-            //if (File.Exists(assetName))
-            //{
-                using (var f = File.Open(assetName, FileMode.Open))
+            if (File.Exists(assetName))
+            {
+                using (var f = File.Open(assetName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
                     try
                     {
@@ -215,7 +215,7 @@ namespace rkbc.core.helper
                     }
                 }
                     
-            //}
+            }
 
             return (contents);
         }

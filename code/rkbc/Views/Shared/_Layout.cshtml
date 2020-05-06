@@ -105,7 +105,7 @@
                 <!-- Logo -->
                 <div class="span3">
                     <div class="logo">
-                        <a href="index.htm"><img src="~/img/rkbc/logo-header.png" alt=""></a>
+                        <a asp-controller="Home" asp-action="Index"><img src="~/img/rkbc/logo-header.png" alt=""></a>
 
                     </div>
                 </div>
@@ -121,60 +121,63 @@
                             @if (User.Identity.IsAuthenticated && ViewBag.UserSettings.isAdmin)
                             {
                                 <li id="Home" class="active">
-                                    <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                                    <a asp-controller="Home" asp-action="Index"><span>Home</span></a>
                                     <ul>
                                         <!--Test Id = 3 or 9-->
-                                        <li id="HomeEdit"><a class="nav-link text-dark" asp-controller="Home" asp-action="Edit" asp-route-id="@rkbcSetting.Value.HomePageId">Edit</a></li>
-                                        <li id="HomeGallery"><a class="nav-link text-dark" asp-controller="Attachment" asp-action="Index">Gallery</a></li>
+                                        <li id="HomeEdit"><a  asp-controller="Home" asp-action="Edit" asp-route-id="@rkbcSetting.Value.HomePageId">Edit</a></li>
+                                        <li id="HomeGallery"><a  asp-controller="Attachment" asp-action="Index">Gallery</a></li>
                                     </ul>
                                 </li>
                                 <li id="Pastor">
-                                    <a asp-controller="Pastor" asp-action="Index" title="">목회자 칼럼</a>
+                                    <a  asp-controller="Pastor" asp-action="Index" title=""><span>목회자 칼럼</span></a>
                                     <ul>
-                                        <li id="PastorEdit"><a class="nav-link text-dark" asp-controller="Pastor" asp-action="Edit">Edit</a></li>
+                                        <li id="PastorEdit"><a  asp-controller="Pastor" asp-action="Edit">Edit</a></li>
                                     </ul>
                                 </li>
                                 <li id="Mission">
-                                    <a asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)" title="">선교</a>
+                                    <a  asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)" title="">선교</a>
                                     
                                 </li>
                                 <li id="School">
-                                    <a asp-controller="School" asp-action="Index" title="">한국학교</a>
+                                    <a  asp-controller="School" asp-action="Index" title="">한국학교</a>
                                 </li>
                                 <li id="Blog">
-                                    <a asp-controller="Blog" asp-action="AllIndex">블라그</a>
+                                    <a  asp-controller="Blog" asp-action="AllIndex"><span>블라그</span></a>
                                     <ul>
-                                        <li><a asp-controller="Blog" asp-action="Index" asp-route-userId ="@ViewBag.UserSettings.userId" style="text-align:center">My Blog</a></li>
+                                        <li><a  asp-controller="Blog" asp-action="Index" asp-route-userId ="@ViewBag.UserSettings.userId">My Blog</a></li>
                                     </ul>
                                 </li>
                                 <li id="Contact">
-                                    <a asp-controller="Contact" asp-action="Index" title="">Contact</a>
+                                    <a  asp-controller="Contact" asp-action="Index" title=""><span>Contact</span></a>
                                     <ul>
-                                        <li id="ContactAdministration"><a class="nav-link text-dark" asp-controller="Administration" asp-action="Index">Administration</a></li>
-                                        <li id="ContactRoles"><a class="nav-link text-dark" asp-controller="Roles" asp-action="Index">Roles</a></li>
+                                        <li id="ContactAdministration"><a  asp-controller="Administration" asp-action="Index">Administration</a></li>
+                                        <li id="ContactRoles"><a  asp-controller="Roles" asp-action="Index">Roles</a></li>
                                         <partial name="_LoginPartial" />
                                     </ul>
                                 </li>
                             }
                             else
                             {
-                                <li id="Home" class="active"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                                <li id="Pastor"><a asp-controller="Pastor" asp-action="Index">목회자 칼럼</a></li>
-                                <li id="Mission"><a asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)" title="">선교</a></li>
-                                <li id="School"><a asp-controller="School" asp-action="Index">한국학교</a></li>
+                                <li id="Home" class="active"><a  asp-controller="Home" asp-action="Index">Home</a></li>
+                                <li id="Pastor"><a  asp-controller="Pastor" asp-action="Index">목회자 칼럼</a></li>
+                                <li id="Mission"><a  asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)" title="">선교</a></li>
+                                <li id="School"><a  asp-controller="School" asp-action="Index">한국학교</a></li>
                                 <li id="Blog">
-                                    <a asp-controller="Blog" asp-action="AllIndex">블라그</a>
+
                                     @if (User.Identity.IsAuthenticated)
                                     {
+                                    <a asp-controller="Blog" asp-action="AllIndex"><span>블라그</span></a>
                                     <ul>
-                                        <li><a asp-controller="Blog" asp-action="Index" asp-route-id="@ViewBag.UserSettings.userId" style="text-align:center">My Blogs</a></li>
+                                        <li><a asp-controller="Blog" asp-action="Index" asp-route-id="@ViewBag.UserSettings.userId">My Blogs</a></li>
                                     </ul>
+                                    }else{
+                                        <a asp-controller="Blog" asp-action="AllIndex">블라그</a>
                                     }
                                 </li>
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                     <li id="content">
-                                        <a asp-controller="Contact" asp-action="Index">Contact</a>
+                                        <a  asp-controller="Contact" asp-action="Index"><span>Contact</span></a>
                                         <ul>
                                             <partial name="_LoginPartial" />
                                         </ul>
@@ -182,7 +185,7 @@
                                 }
                                 else
                                 {
-                                    <li id="Contact"><a asp-controller="Contact" asp-action="Index">Contact</a></li>
+                                    <li id="Contact"><a  asp-controller="Contact" asp-action="Index">Contact</a></li>
                                     <partial name="_LoginPartial" />
                                 }
                             }
