@@ -122,6 +122,7 @@ namespace rkbc.web.controllers
             try
             {
                 bitmap = new System.Drawing.Bitmap(file.OpenReadStream());
+                
             }
             catch (Exception e)
             {

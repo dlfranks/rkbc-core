@@ -14,9 +14,9 @@ namespace rkbc.web.controllers
         {
             fileHelper = _fileHelper;
         }
-        public FileResult ImageView(string type, string fileName, bool thumbnail = false)
+        public async Task<FileResult> ImageView(string type, string fileName, bool thumbnail = false)
         {
-            var byteImage = fileHelper.assetToByteArray(type, fileName);
+            var byteImage = await fileHelper.assetToByteArray(type, fileName);
             
             return (File(byteImage, "image/jpeg"));
         }

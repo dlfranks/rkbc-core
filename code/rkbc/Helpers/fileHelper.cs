@@ -194,25 +194,28 @@ namespace rkbc.core.helper
             return (img);
         }
 
-        public byte[] assetToByteArray(string assetType, string assetFileName)
+        public async Task<byte[]> assetToByteArray(string assetType, string assetFileName)
         {
             var assetName = mapAssetPath(assetType, assetFileName, false);
             byte[] contents = null;
 
-            if (File.Exists(assetName))
-            {
-                var f = File.Open(assetName, FileMode.Open);
-                try
+            //if (File.Exists(assetName))
+            //{
+                using (var f = File.Open(assetName, FileMode.Open))
                 {
-                    contents = new byte[f.Length];
-                    f.Read(contents, 0, (int)f.Length);
-                    f.Close();
+                    try
+                    {
+                        contents = new byte[f.Length];
+                        await f.ReadAsync(contents, 0, (int)f.Length);
+                        f.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        //Gobble and just return missing or invalid... 
+                    }
                 }
-                catch (Exception ex)
-                {
-                    //Gobble and just return missing or invalid... 
-                }
-            }
+                    
+            //}
 
             return (contents);
         }
