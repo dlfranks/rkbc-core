@@ -22,12 +22,14 @@ namespace rkbc.core.service
         private readonly IHttpContextAccessor contextAccessor;
         private FileHelper fileHelper;
         private IUnitOfWork unitOfWork;
+        private UserService userService;
+
         [SuppressMessage(
                 "Usage",
                 "SecurityIntelliSenseCS:MS Security rules violation",
                 Justification = "Path not derived from user input.")]
         public BlogService(IUnitOfWork _unitOfWork, IWebHostEnvironment env,
-                IHttpContextAccessor contextAccessor, FileHelper _fileHelper)
+                IHttpContextAccessor contextAccessor, FileHelper _fileHelper, UserService _userService)
         {
             if (env is null)
             {
@@ -37,9 +39,45 @@ namespace rkbc.core.service
             this.contextAccessor = contextAccessor;
             this.unitOfWork = _unitOfWork;
             this.fileHelper = _fileHelper;
-            //this.Initialize();
+            this.userService = _userService;
         }
+        public async Task<string> generateBlogSlug(string blogSlug = null)
+        {
+            string userName = userService.CurrentUserSettings.userName.Split('@')[0];
+            bool hasSlug = true;
+            if (string.IsNullOrWhiteSpace(blogSlug)) blogSlug = userName;
+            int count = 1;
+            while (hasSlug)
+            {
+                hasSlug = await unitOfWork.blogs.get().AnyAsync(q => q.blogSlug.Trim().ToLower() == blogSlug.Trim().ToLower());
+                blogSlug = blogSlug + count.ToString();
+                count++;
+            }
+            return blogSlug.Trim().ToLower();
+            
+        }
+        public async Task<string> generateSlug(int blogId, string slug, string title)
+        {
+            int endChar = 7;
+            bool hasSlug = true;
+            if (title.Length < 7) endChar = title.Length;
+            
+            if (String.IsNullOrEmpty(slug)) slug = title.Substring(0, endChar);
 
+            int count = 1;
+            while (hasSlug)
+            {
+                hasSlug = await unitOfWork.posts.get().Where(q => q.blogId == blogId).AnyAsync(q => q.slug.Trim().ToLower() == slug.Trim().ToLower());
+                if (hasSlug)
+                {
+                    slug = slug + count.ToString();
+                    count++;
+                }
+                
+            }
+            return slug.Trim().ToLower();
+
+        }
         public async Task DeletePost(Post post)
         {
             if (post is null)
@@ -70,7 +108,7 @@ namespace rkbc.core.service
             var pageCount = (double)result.RowCount / pageSize;
             result.PageCount = (int)Math.Ceiling(pageCount);
             var skip = (page - 1) * pageSize;
-            result.Results = await query.Skip(skip).Take(pageSize).OrderByDescending(q => q.lastModified).ToListAsync();
+            result.Results = await query.Skip(skip).Take(pageSize).ToListAsync();
 
             return result;
         }
@@ -260,21 +298,6 @@ namespace rkbc.core.service
         //}
 
         protected bool isUser() => this.contextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
-
-        public string generateBlogSlug(string blogName)
-        {
-            string slug = blogName;
-            
-            int i = 2;
-            bool hasName = true;
-            while (hasName)
-            {
-                hasName = unitOfWork.blogs.get().Any(q => q.blogSlug.Contains(slug));
-                if(hasName)
-                    slug = slug + i++;
-            }
-            return slug;
-        }
 
         //protected void SortCache() => this.cache.Sort((p1, p2) => p2.pubDate.CompareTo(p1.pubDate));
 

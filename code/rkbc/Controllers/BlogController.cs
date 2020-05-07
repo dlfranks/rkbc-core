@@ -149,7 +149,6 @@ namespace rkbc.web.controllers
         {
             modelObj.postType = vModel.post.postType;
             modelObj.title = vModel.post.title;
-            modelObj.slug = string.IsNullOrWhiteSpace(vModel.post.slug)? rkbc.core.models.Post.CreateSlug(vModel.post.title) : vModel.post.slug.Trim();
             modelObj.excerpt = vModel.post.excerpt;
             modelObj.content = vModel.post.content;
             modelObj.videoURL = vModel.post.videoURL;
@@ -171,8 +170,7 @@ namespace rkbc.web.controllers
        public async Task<IActionResult> AllIndex(int page = 1)
         {
             var query = unitOfWork.posts.get();
-            
-            query = query.Include("blog").Include("blog.author").Include("comments");
+            query = query.Include("blog").Include("blog.author").Include("comments").OrderByDescending(q => q.lastModified);
             int pageSize = settings.Value.PostsPerPage;
             var result = await blogService.GetPagedResultForQuery(query, page, pageSize);
             return View("Index", result);
@@ -183,8 +181,7 @@ namespace rkbc.web.controllers
         {
             var query = unitOfWork.posts.get();
             query = query.Where(q => q.blog.authorId == userId);
-
-            query = query.Include("blog").Include("blog.author").Include("comments");
+            query = query.Include("blog").Include("blog.author").Include("comments").OrderByDescending(q => q.lastModified);
             int pageSize = settings.Value.PostsPerPage;
             var result = await blogService.GetPagedResultForQuery(query, page, pageSize);
             return View(result);
@@ -200,7 +197,7 @@ namespace rkbc.web.controllers
            
             var query = unitOfWork.posts.get();
             query = query.Where(q => q.blog.author.countryCode == (int)value && q.blog.author.accountType == (int)AccountType.Mission);
-            query = query.Include("blog").Include("blog.author").Include("comments");
+            query = query.Include("blog").Include("blog.author").Include("comments").OrderByDescending(q => q.lastModified);
             int pageSize = settings.Value.PostsPerPage;
             var result = await blogService.GetPagedResultForQuery(query, page, pageSize);
             ViewBag.CountryName = EnumHelper.GetDisplayName<CountryEnum>(value);
@@ -220,6 +217,7 @@ namespace rkbc.web.controllers
             {
                 blog = new Blog();
                 blog.authorId = userService.CurrentUserSettings.userId;
+                blog.blogSlug = await blogService.generateBlogSlug();
                 blog.createDt = DateTime.UtcNow;
                 blog.lastUpdDt = DateTime.UtcNow;
             }
@@ -273,13 +271,13 @@ namespace rkbc.web.controllers
         }
 
         /// <remarks>This is for redirecting potential existing URLs from the old Miniblog URL format.</remarks>
-        [Route("/post/{slug}")]
-        [HttpGet]
-        public IActionResult Redirects(string slug)
-        {
+        //[Route("/post/{slug}")]
+        //[HttpGet]
+        //public IActionResult Redirects(string slug)
+        //{
             
-            return this.LocalRedirectPermanent($"/blog/{slug}");
-        }
+        //    return this.LocalRedirectPermanent($"/blog/{slug}");
+        //}
 
         [HttpPost]
         public async Task<IActionResult> UpdatePost(PostViewModel vModel)
@@ -297,7 +295,7 @@ namespace rkbc.web.controllers
                 blog.lastUpdDt = DateTime.UtcNow;
                 if (string.IsNullOrWhiteSpace(currentUserSetting.email))
                     throw new InvalidOperationException("Can't find user's email");
-                blog.blogSlug = blogService.generateBlogSlug(currentUserSetting.email.Split("@")[0]);
+                blog.blogSlug = await blogService.generateBlogSlug();
                 unitOfWork.blogs.add(blog);
                 if (!(await unitOfWork.tryCommitAsync()))
                 {
@@ -311,6 +309,7 @@ namespace rkbc.web.controllers
                 blog.authorId = userService.CurrentUserSettings.userId;
                 blog.lastUpdDt = DateTime.UtcNow;
             }
+            
             if (vModel.post.id == 0)
             {
                 //new Post
@@ -318,6 +317,7 @@ namespace rkbc.web.controllers
                 modelObj.blog = blog;
                 modelObj.createDt = DateTime.UtcNow;
                 modelObj.lastModified = DateTime.UtcNow;
+                modelObj.slug = await blogService.generateSlug(blog.id, vModel.post.slug, vModel.post.title);
                 unitOfWork.posts.add(modelObj);
             }
             else
@@ -334,7 +334,7 @@ namespace rkbc.web.controllers
                 return View(vm);
             }
             await unitOfWork.commitAsync();
-            return this.Redirect(modelObj.GetEncodedLink());
+            return RedirectToAction("Post", new {postid = modelObj.id});
         }
         [Route("/blog/comment/{postId}")]
         [HttpPost]
