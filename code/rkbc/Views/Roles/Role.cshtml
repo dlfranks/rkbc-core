@@ -20,7 +20,7 @@
                         <span asp-validation-for="roleName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="@(ViewBag.formViewMode == FormViewMode.Create? "Create":"Edit")" class="btn btn-primary" />
+                        <input type="submit" class="btnUpdate" value="@(ViewBag.formViewMode == FormViewMode.Create? "Create":"Edit")" class="btn btn-primary" />
                     </div>
                 </form>
             </div>

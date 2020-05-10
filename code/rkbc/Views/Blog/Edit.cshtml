@@ -213,10 +213,10 @@
                             <label asp-for="@Model.post.isPublished">Is published(출판)</label>
                         </div>
                         <div class="form-group">
-                            <input class="btn btn-primary" type="submit" value="Save" title="Save the post" />
+                            <input class="btn btn-primary btnUpdate" type="submit" value="Save" title="Save the post" />
                             @if (!isNew)
                             {
-                                <input type="submit" class="btn btn-gray delete" value="Delete..." title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.post.id" />
+                                <input type="submit" class="btn btn-gray delete btnDelete" value="Delete..." title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.post.id" />
                             }
                         </div>
 

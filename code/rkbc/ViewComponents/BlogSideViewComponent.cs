@@ -69,7 +69,7 @@ namespace rkbc.web.viewcomponents
                     postId = q.id,
                     postTitle = q.title,
                     postSlug = q.slug,
-                    singlePostContent = q.RenderContent()
+                    singlePostContent = q.excerpt
                 }).AsAsyncEnumerable();
 
             model.latestCommentList = unitOfWork.comments.get().OrderByDescending(q => q.pubDate)

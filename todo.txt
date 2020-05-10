@@ -1,0 +1,5 @@
+Todo:
+1. response cach with page number
+2. slug url
+3, Upload user's picture
+4. active class on main menu and submenu

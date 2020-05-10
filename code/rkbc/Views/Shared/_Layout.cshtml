@@ -29,17 +29,17 @@
     <link href="~/img/favicon.png" rel="icon" type="image/png" asp-append-version="true" />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" asp-append-version="true"/>
-    <link href="~/css/styles.css" rel="stylesheet" asp-append-version="true"/>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" asp-append-version="true" />
+    <link href="~/css/styles.css" rel="stylesheet" asp-append-version="true" />
 
-    <link href="~/css/bootstrap-override.css" rel="stylesheet" asp-append-version="true"/>
+    <link href="~/css/bootstrap-override.css" rel="stylesheet" asp-append-version="true" />
 
     <!-- Font Avesome Styles -->
-    <link href="~/css/font-awesome/font-awesome.css" rel="stylesheet" asp-append-version="true"/>
-    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap&subset=korean" rel="stylesheet" asp-append-version="true"/>
+    <link href="~/css/font-awesome/font-awesome.css" rel="stylesheet" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap&subset=korean" rel="stylesheet" asp-append-version="true" />
 
-    <link rel="stylesheet" href="~/css/flexslider.css" type="text/css" media="screen" asp-append-version="true"/>
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/flexslider.css" type="text/css" media="screen" asp-append-version="true" />
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.css" asp-append-version="true" />
     <link href="~/css/site.css" rel="stylesheet" />
 
     <!-- JavaScripts -->
@@ -59,10 +59,16 @@
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.js" asp-append-version="true"></script>
     <script src="~/js/knockout.rkbc.js" asp-append-version="true"></script>
-    
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif !important;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+    </style>
 
     @RenderSection("Scripts", required: false)
-    @{ 
+    @{
         var urlForMenu = @Url.Action();
     }
     <script type="text/javascript">
@@ -91,8 +97,10 @@
             //        $("#").tabs("select", window.sessionStorage[actionkey]);
             //}
 
-            //TempData messages
-            @Html.jsTempDataMessage(false)
+
+        siteFunction()
+        //TempData messages
+        @Html.jsTempDataMessage(false)
         });
     </script>
 </head>

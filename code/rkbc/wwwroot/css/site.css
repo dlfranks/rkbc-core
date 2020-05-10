@@ -92,7 +92,7 @@ html {
 body {
     /* Margin bottom by footer height */
     /*margin-bottom: 60px;*/
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif !important;
     font-family: 'Nanum Gothic', sans-serif;
 }
 body.wait, body.wait * {

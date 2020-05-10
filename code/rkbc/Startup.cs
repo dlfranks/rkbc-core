@@ -33,6 +33,7 @@ using Microsoft.AspNetCore.Rewrite;
 using WebEssentials.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.ResponseCaching;
 
 namespace rkbc
 {
@@ -84,9 +85,9 @@ namespace rkbc
             .AddDefaultTokenProviders();
             //If using the CookieAuthenticationDefaults.AuthenticationSchem, HttpConctex.User.Indentity doesn't work.
 
-            
-            //services.AddHttpContextAccessor();
 
+            //services.AddHttpContextAccessor();
+            services.AddResponseCaching();
             //services.AddRazorPages();
 
             //Ioc
@@ -134,14 +135,14 @@ namespace rkbc
                 options.SlidingExpiration = false;
             });
             // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
-            services.AddOutputCaching(
-                options =>
-                {
-                    options.Profiles["default"] = new OutputCacheProfile
-                    {
-                        Duration = 3600
-                    };
-                });
+            //services.AddOutputCaching(
+            //    options =>
+            //    {
+            //        options.Profiles["default"] = new OutputCacheProfile
+            //        {
+            //            Duration = 3600
+            //        };
+            //    });
             //ElmahCore
             EmailOptions emailOptions = new EmailOptions
             {
@@ -233,7 +234,7 @@ namespace rkbc
             app.UseSession();
             app.UseSerilogRequestLogging();
             app.UseRouting();
-            app.UseOutputCaching();
+            //app.UseOutputCaching();
             app.UseElmah();
             
            // After UseRouting, so that route information is available for authentication decisions.
@@ -242,21 +243,27 @@ namespace rkbc
             app.UseAuthorization();
 
             //app.UseMvc();
-            //app.UseResponseCaching();
+            app.UseResponseCaching();
 
-            //app.Use(async (context, next) =>
-            //{
-            //    context.Response.GetTypedHeaders().CacheControl =
-            //        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-            //        {
-            //            Public = true,
-            //            MaxAge = TimeSpan.FromSeconds(60)
-            //        };
-            //    context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
-            //        new string[] { "Accept-Encoding" };
+            app.Use(async (context, next) =>
+            {
+                context.Response.GetTypedHeaders().CacheControl =
+                    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(60)
+                    };
+                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+                    new string[] { "Accept-Encoding" };
+                var responseCachingFeature = context.Features.Get<IResponseCachingFeature>();
 
-            //    await next();
-            //});
+                if (responseCachingFeature != null)
+                {
+                    responseCachingFeature.VaryByQueryKeys = new[] { "page" };
+                }
+
+                await next();
+            });
             app.UseEndpoints(endpoints =>
             {
                 

@@ -48,14 +48,23 @@
     @await foreach (var item in Model.latestGalleryList)
     {
         <div class="photo-stream">
-            <img src="@Url.Action("ImageView", "Asset", new {type="blog", fileName=item.imageFileName, thumbnail=true})" alt="">
+            <a asp-controller="Blog" asp-action="Post" asp-route-postId ="@item.postId"><img src="@Url.Action("ImageView", "Asset", new {type="blog", fileName=item.imageFileName, thumbnail=true})" alt=""></a>
         </div>
     }
     
 </div>
 
 <h3 class="p-t-0">Text Widget</h3>
-    Amet, consectetur adipisicing elit, sedure doriatlor in fugiat nulla  deserunt mollit anim id est laborum. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit orn.
+<div class="flickr-widget">
+    @await foreach (var item in Model.latestSingleList)
+    {
+    <div class="photo-stream">
+        <a asp-controller="Blog" asp-action="Post" asp-route-postId="@item.postId"><p>@item.singlePostContent</p></a>
+    </div>
+    }
+
+</div>
+    
 
 <div class="row space30"></div>
 

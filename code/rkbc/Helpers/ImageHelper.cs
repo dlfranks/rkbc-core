@@ -16,6 +16,7 @@ namespace rkbc.core.helper
         
         public static string GetThumbnailFileName(string fullImageFilename)
         {
+            if (string.IsNullOrEmpty(fullImageFilename)) return "";
             return (Path.Combine(Path.GetDirectoryName(fullImageFilename), Path.GetFileNameWithoutExtension(fullImageFilename) + "-thumb" + Path.GetExtension(fullImageFilename)));
         }
 

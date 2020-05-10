@@ -336,7 +336,7 @@ namespace rkbc.web.controllers
             await unitOfWork.commitAsync();
             return RedirectToAction("Post", new {postid = modelObj.id});
         }
-        [Route("/blog/comment/{postId}")]
+        
         [HttpPost]
         public async Task<IActionResult> AddComment(int postId, Comment comment)
         {
@@ -345,7 +345,8 @@ namespace rkbc.web.controllers
             var post = await unitOfWork.posts.get(postId).Include("blog").Include("blog.author").Include("comments").FirstOrDefaultAsync();
 
             
-            if (post is null || !post.AreCommentsOpen(this.settings.Value.CommentsCloseAfterDays))
+            //if (post is null || !post.AreCommentsOpen(this.settings.Value.CommentsCloseAfterDays))
+            if(post is null)
             {
                 return this.NotFound();
             }
@@ -381,13 +382,14 @@ namespace rkbc.web.controllers
             // posted by a spam robot
             post.comments.Add(comment);
             await unitOfWork.commitAsync().ConfigureAwait(false);
-            return this.Redirect($"{post.GetEncodedLink()}#{comment.id}");
+            return RedirectToAction("Post", new { postid = post.id });
         }
-        [Route("/blog/deletepost/{id}")]
+        
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
         public async Task<IActionResult> DeletePost(int id)
         {
-            if(!userService.permissionForBlogEditing(PermissionAction.Delete, userService.CurrentUserSettings.userId, false)) return RedirectToAction("AccessDenied", "Administration");
+            var userId = userService.CurrentUserSettings.userId;
+            if (!userService.permissionForBlogEditing(PermissionAction.Delete, userId, false)) return RedirectToAction("AccessDenied", "Administration");
 
             var existing = await unitOfWork.posts.get(id).Include("blog").Include("blog.author").Include("comments").FirstOrDefaultAsync();
             if (existing is null)
@@ -396,10 +398,9 @@ namespace rkbc.web.controllers
             }
 
             await blogService.DeletePost(existing).ConfigureAwait(false);
-            return this.Redirect("/");
+            return RedirectToAction("Index", new {userId= userId });
         }
 
-        [Route("/blog/comment/{postId}/{commentId}")]
         [Authorize]
         public async Task<IActionResult> DeleteComment(int postId, int commentId)
         {

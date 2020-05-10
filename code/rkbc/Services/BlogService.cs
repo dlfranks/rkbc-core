@@ -43,15 +43,19 @@ namespace rkbc.core.service
         }
         public async Task<string> generateBlogSlug(string blogSlug = null)
         {
-            string userName = userService.CurrentUserSettings.userName.Split('@')[0];
+            string userName = userService.CurrentUserSettings.email.Split('@')[0];
             bool hasSlug = true;
             if (string.IsNullOrWhiteSpace(blogSlug)) blogSlug = userName;
             int count = 1;
             while (hasSlug)
             {
                 hasSlug = await unitOfWork.blogs.get().AnyAsync(q => q.blogSlug.Trim().ToLower() == blogSlug.Trim().ToLower());
-                blogSlug = blogSlug + count.ToString();
-                count++;
+                if (hasSlug)
+                {
+                    blogSlug = blogSlug + count.ToString();
+                    count++;
+                }
+                
             }
             return blogSlug.Trim().ToLower();
             
