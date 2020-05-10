@@ -216,7 +216,7 @@
                             <input class="btn btn-primary btnUpdate" type="submit" value="Save" title="Save the post" />
                             @if (!isNew)
                             {
-                                <input type="submit" class="btn btn-gray delete btnDelete" value="Delete..." title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.post.id" />
+                                <a class="btn btn-gray btnDelete" title="Delete the post..." asp-controller="Blog" asp-action="DeletePost" asp-route-id="@Model.post.id">Delete</a>
                             }
                         </div>
 

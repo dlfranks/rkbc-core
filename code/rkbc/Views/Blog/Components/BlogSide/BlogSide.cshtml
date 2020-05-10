@@ -2,7 +2,9 @@
 @using rkbc.core.models;
 @using rkbc.web.helpers;
 <style>
-    .list-c a:hover{color:#ee5f5b;}
+    .list-c a:hover {
+        color: #ee5f5b;
+    }
 </style>
 <h3 class="p-t-0">Search</h3>
 <div class="search-box">
@@ -11,13 +13,17 @@
 </div>
 
 <h4>해외선교 소식</h4>
-@{ 
+@{
     var countries = (CountryEnum[])Enum.GetValues(typeof(CountryEnum));
 }
 
 @for (int i = 0; i < countries.Length; i++)
 {
-    <a asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@countries[i]"><div class="tag">@(EnumHelper.GetDisplayName<CountryEnum>(countries[i]))</div></a>
+    if (countries[i] != CountryEnum.USA && countries[i] != CountryEnum.South_Korea)
+    {
+        <a asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@countries[i]"><div class="tag">@(EnumHelper.GetDisplayName<CountryEnum>(countries[i]))</div></a>
+    }
+
 
 }
 
@@ -29,7 +35,7 @@
     @await foreach (var item in Model.latestPostList)
     {
 
-        <li><i class="icon-chevron-right"></i><a asp-controller="Blog" asp-action="Post" asp-route-postId ="@item.postId">@item.postTitle</a></li>
+        <li><i class="icon-chevron-right"></i><a asp-controller="Blog" asp-action="Post" asp-route-postId="@item.postId">@item.postTitle</a></li>
     }
 
 </ul>
@@ -37,10 +43,10 @@
 <h4>최신 코멘트</h4>
 @await foreach (var item in Model.latestCommentList)
 {
-    <i class="icon-comment-alt"></i> @item.comment <a asp-controller="Blog" asp-action="Post" asp-route-postId ="@item.postId" rel = "external" > @item.postTitle</a>
+    <i class="icon-comment-alt"></i> @item.comment <a asp-controller="Blog" asp-action="Post" asp-route-postId="@item.postId" rel="external"> @item.postTitle</a>
     <br>
     <br>
-   
+
 }
 
 <h4>Photos From Flickr</h4>
@@ -48,23 +54,23 @@
     @await foreach (var item in Model.latestGalleryList)
     {
         <div class="photo-stream">
-            <a asp-controller="Blog" asp-action="Post" asp-route-postId ="@item.postId"><img src="@Url.Action("ImageView", "Asset", new {type="blog", fileName=item.imageFileName, thumbnail=true})" alt=""></a>
+            <a asp-controller="Blog" asp-action="Post" asp-route-postId="@item.postId"><img src="@Url.Action("ImageView", "Asset", new {type="blog", fileName=item.imageFileName, thumbnail=true})" alt=""></a>
         </div>
     }
-    
+
 </div>
 
 <h3 class="p-t-0">Text Widget</h3>
 <div class="flickr-widget">
     @await foreach (var item in Model.latestSingleList)
     {
-    <div class="photo-stream">
-        <a asp-controller="Blog" asp-action="Post" asp-route-postId="@item.postId"><p>@item.singlePostContent</p></a>
-    </div>
+        <div class="photo-stream">
+            <a asp-controller="Blog" asp-action="Post" asp-route-postId="@item.postId"><p>@item.singlePostContent</p></a>
+        </div>
     }
 
 </div>
-    
+
 
 <div class="row space30"></div>
 

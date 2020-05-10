@@ -1,14 +1,10 @@
 ﻿@model rkbc.web.viewmodels.PagedResult<rkbc.core.models.Post>
 @using rkbc.web.viewcomponents;
 @using rkbc.core.models;
-    <style>
-        .currentPage {
-            background-color: #ee5f5b;
-        }
-        .pageDiv li{float:left;}
-    </style>
+    
 <!-- Titlebar
 ================================================== -->
+<div class="row space40"></div>
 <section id="titlebar">
     <!-- Container -->
     <div class="container">
@@ -40,8 +36,11 @@
             </div>
 
             <div class="span9">
-
-                @(await Component.InvokeAsync<BlogIndexViewComponent>(Model.Results))
+                @foreach (var post in Model.Results)
+                {
+                    await Html.RenderPartialAsync("PostItem.cshtml", post);
+                }
+               
                 <div class="row space30"></div>
 
                 <!-- Paging -->

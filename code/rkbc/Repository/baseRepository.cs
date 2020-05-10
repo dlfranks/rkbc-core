@@ -63,6 +63,11 @@ namespace rkbc.core.Repository
             
             _set.Remove(await get(id).FirstOrDefaultAsync());
         }
+        public void removeRange(IList<T> entities)
+        {
+
+            _set.RemoveRange(entities);
+        }
     }
     
     

@@ -26,6 +26,8 @@
     <Compile Remove="Migrations\20200420163936_blog.Designer.cs" />
     <Compile Remove="Migrations\20200426201937_AddAccountType2.cs" />
     <Compile Remove="Migrations\20200426201937_AddAccountType2.Designer.cs" />
+    <Compile Remove="Migrations\20200510194946_authorNotNull.cs" />
+    <Compile Remove="Migrations\20200510194946_authorNotNull.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

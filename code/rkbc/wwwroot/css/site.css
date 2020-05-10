@@ -164,4 +164,16 @@ a:hover {
         height:400px;
     }
 }
+/*Page style*/
+.currentPage {
+    background-color: #ee5f5b;
+}
 
+.pageDiv ul li {
+    
+}
+/*jGrowl */
+#jGrowl .jGrowl-message{color:#ffffff;}
+#jGrowl .alert {
+    color: #ffffff;
+}

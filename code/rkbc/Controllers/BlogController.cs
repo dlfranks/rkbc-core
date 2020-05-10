@@ -385,7 +385,7 @@ namespace rkbc.web.controllers
             return RedirectToAction("Post", new { postid = post.id });
         }
         
-        [HttpPost, Authorize, AutoValidateAntiforgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeletePost(int id)
         {
             var userId = userService.CurrentUserSettings.userId;

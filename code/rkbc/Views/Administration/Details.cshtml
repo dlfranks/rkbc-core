@@ -107,9 +107,9 @@
             <div>
                 @if (ViewBag.FormViewMode == FormViewMode.Delete)
                 {
-                    <a class="btn" asp-controller="Administration" asp-action="DeleteConfirmed" asp-route-id="@Model.id">Delete</a>
+                    <a class="btn btn-gray" asp-controller="Administration" asp-action="DeleteConfirmed" asp-route-id="@Model.id">Delete</a>
                 }else{
-                    <a class="btn" asp-controller="Administration" asp-action="Edit" asp-route-id="@Model.id">Edit</a>
+                    <a class="btn btn-primary" asp-controller="Administration" asp-action="Edit" asp-route-id="@Model.id">Edit</a>
                 }
                         
                     <a class="btn" asp-controller="Administration" asp-action="Index">Back to List</a>

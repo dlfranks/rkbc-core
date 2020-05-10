@@ -3,7 +3,7 @@
     $('form').submit(function () {
         return false;
     });
-    $(".btnUpdate").click(function () {
+    $(".btnUpdate, .btnCreate").click(function () {
         this.disabled = true;
         this.value = 'Submitting...';
         this.form.submit();

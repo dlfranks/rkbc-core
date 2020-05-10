@@ -34,70 +34,12 @@
             </div>
 
             <div class="span9">
-                <!-- Blog Detail Content -->
 
-                <div class="row">
-                    <div class="span1">
-                        @if (Model.postType == (int)BlogPostType.Gallery)
-                        {
-                        <div class="blog-icon">
-                            <i class="icon-camera"></i><br>
-                            <h5>Gallery Post</h5>
-                        </div>
-                        }
-                        else if (Model.postType == (int)BlogPostType.Video)
-                        {
-                        <div class="blog-icon">
-                            <i class="icon-film"></i><br>
-                            <h5>Video Post</h5>
-                        </div>
-                        }
-                        else
-                        {
-                        <div class="blog-icon">
-                            <i class="icon-quote-right"></i><br>
-                            <h5>Single Post</h5>
-                        </div>
-                        }
-                    </div>
-                    <div class="span8">
-                        @if (Model.postType == (int)BlogPostType.Gallery)
-                        {
-                        <a href="@Model.GetLink()"><img src="@Url.Content(Model.getImageLink())" /></a>
-                        }
-
-                        <div class="space20">
-                        </div>
-                        @if (Model.postType == (int)BlogPostType.Video)
-                        {
-                        @Html.Raw(Model.getEmbededVideo());
-                        }
-
-
-                        <div class="post-d-info">
-                            <h3><a href="@Model.GetLink()">@Model.title</a></h3>
-                            <div class="blue-dark">
-                                <i class="icon-user"></i> By @(Model.blog.author.firstName + " " + Model.blog.author.lastName)
-                                <i class="icon-comment-alt"></i> With <span itemprop="commentCount">@Model.comments.Count</span> @(Model.comments.Count == 1 ? "comment" : "comments")
-                                <time datetime="@Model.pubDate.ToString("s")" itemprop="datePublished">Published @Model.pubDate.ToString("MMM d, yyyy")</time>
-                                @if (ViewBag.UserSettings.isAdmin || ViewBag.UserSettings.userId == Model.blog.authorId)
-                                {
-                                <a asp-controller="Blog" asp-action="Edit" asp-route-id="@Model.id" title="Edit the post">Edit post</a>
-                                }
-                            </div>
-                            @Html.Raw(Model.RenderContent())
-                        </div>
-                        <div class="space20"></div>
-                        <div>
-                            @{await Html.RenderPartialAsync("Comment"); }
-                        </div>
-
-
-                    </div>
-                </div>
-                <!-- Blog Detail Content End -->
+                @{await Html.RenderPartialAsync("PostItem.cshtml", Model); }
+                @{await Html.RenderPartialAsync("Comment"); }
             </div>
-
+            
+            
             <!-- Side Bar -->
             <div class="span3">
                 @(await Component.InvokeAsync<BlogSideViewComponent>())

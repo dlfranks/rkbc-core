@@ -39,6 +39,7 @@ namespace rkbc.core.repository
         T update(T entity);
         Task removeAsync(int id);
         void remove(T entity);
+        void removeRange(IList<T> entities);
     }
     
     public interface IUnitOfWork : IDisposable

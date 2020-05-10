@@ -23,20 +23,20 @@
     <div class="span5 pageDiv">
         @if (Model.PageCount > 1)
         {
-        <ul style="float:right;">
-            <li><a class="paging" href="@urlTemplate.Replace("{0}", "1")">&laquo;</a></li>
+        <ul style="float:right">
+            <li style="float:left;"><a class="paging" href="@urlTemplate.Replace("{0}", "1")">&laquo;</a></li>
             @for (var i = startIndex; i <= finishIndex; i++)
                 {
             if (i == Model.CurrentPage)
                     {
-            <li><span class="paging currentPage">@i</span></li>
+            <li style="float:left;"><span class="paging currentPage">@i</span></li>
                     }
                     else
                     {
-            <li><a class="paging" href="@urlTemplate.Replace("{0}", i.ToString())">@i</a></li>
+            <li style="float:left;"><a class="paging" href="@urlTemplate.Replace("{0}", i.ToString())">@i</a></li>
                     }
                 }
-            <li><a href="@urlTemplate.Replace("{0}", Model.PageCount.ToString())" class="paging">&raquo;</a></li>
+            <li style="float:left;"><a href="@urlTemplate.Replace("{0}", Model.PageCount.ToString())" class="paging">&raquo;</a></li>
         </ul>
         }
     </div>

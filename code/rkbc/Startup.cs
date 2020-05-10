@@ -87,7 +87,7 @@ namespace rkbc
 
 
             //services.AddHttpContextAccessor();
-            services.AddResponseCaching();
+            //services.AddResponseCaching();
             //services.AddRazorPages();
 
             //Ioc
@@ -243,27 +243,27 @@ namespace rkbc
             app.UseAuthorization();
 
             //app.UseMvc();
-            app.UseResponseCaching();
+            //app.UseResponseCaching();
 
-            app.Use(async (context, next) =>
-            {
-                context.Response.GetTypedHeaders().CacheControl =
-                    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-                    {
-                        Public = true,
-                        MaxAge = TimeSpan.FromSeconds(60)
-                    };
-                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
-                    new string[] { "Accept-Encoding" };
-                var responseCachingFeature = context.Features.Get<IResponseCachingFeature>();
+            //app.Use(async (context, next) =>
+            //{
+            //    context.Response.GetTypedHeaders().CacheControl =
+            //        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+            //        {
+            //            Public = true,
+            //            MaxAge = TimeSpan.FromSeconds(60)
+            //        };
+            //    context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+            //        new string[] { "Accept-Encoding" };
+            //    var responseCachingFeature = context.Features.Get<IResponseCachingFeature>();
 
-                if (responseCachingFeature != null)
-                {
-                    responseCachingFeature.VaryByQueryKeys = new[] { "page" };
-                }
+            //    if (responseCachingFeature != null)
+            //    {
+            //        responseCachingFeature.VaryByQueryKeys = new[] { "page" };
+            //    }
 
-                await next();
-            });
+            //    await next();
+            //});
             app.UseEndpoints(endpoints =>
             {
                 

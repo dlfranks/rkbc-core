@@ -405,7 +405,7 @@ namespace rkbc.web.controllers
             {
                 HttpContext.RiseError(new InvalidOperationException("The current user cann't be deleted"));
                 userManager.Logger.LogError("The current user cann't be deleted");
-                TempData["errors"] = "The current user cann't be deleted";
+                TempData["message"] = "The current user cann't be deleted";
                 return RedirectToAction("Index");
             }
             return RedirectToAction("Details", new { id = user.Id, mode = FormViewMode.Delete });
@@ -416,14 +416,16 @@ namespace rkbc.web.controllers
             if (!userService.permissionForUserEditing(PermissionAction.Update, userService.CurrentUserSettings.userId, false)) return RedirectToAction("AccessDenied");
             var user = await userManager.Users.Include("UserRoles").Include("UserRoles.Role").Where(q => q.Id == id).FirstOrDefaultAsync();
             if (user == null) throw new InvalidOperationException("Attempted to delete an user who does not exist.");
-            
-            var result = await userManager.DeleteAsync(user);
-            if (!result.Succeeded)
+            //Does this user have posts to delete?
+            var count = unitOfWork.posts.get().Where(q => q.blog.authorId == user.Id).Count();
+            if(count > 0)
             {
-                userManager.Logger.LogError("", "Bad Request.");
-                throw new InvalidOperationException("Unable to delete user " + user.firstName + " " + user.lastName);
+                TempData["message"] = "All your posts must be deleted before deleting the user.";
+                TempData["duration"] = "sticky";
+                return RedirectToAction("Details", new { id = user.Id, mode = FormViewMode.Delete });
             }
-
+            await userService.deleteUser(user);
+            
             return RedirectToAction("index");
         }
         [AllowAnonymous]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using RKBC.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using rkbc.core.repository;
 
 namespace rkbc.core.service
 {
@@ -60,17 +62,20 @@ namespace rkbc.core.service
     {
         IHttpContextAccessor httpContextAccessor;
         HttpContext httpContext;
+        IUnitOfWork unitOfWork;
         UserManager<ApplicationUser> userManager;
         SignInManager<ApplicationUser> signinManger;
         private readonly ILogger<UserService> logger;
         const string SessionName = "__UserSettings";
-        public UserService(IHttpContextAccessor _httpContextAccessor, 
+        public UserService(IHttpContextAccessor _httpContextAccessor,
+                            IUnitOfWork _unitOfWork,
                             UserManager<ApplicationUser> _userManager,
                             SignInManager<ApplicationUser> _signinManger,
                             ILogger<UserService> _logger)
         {
             this.httpContextAccessor = _httpContextAccessor;
             httpContext = _httpContextAccessor.HttpContext;
+            unitOfWork = _unitOfWork;
             userManager = _userManager;
             signinManger = _signinManger;
             logger = _logger;
@@ -209,6 +214,43 @@ namespace rkbc.core.service
                 logger.LogInformation("Failed login.");
             }
             return false;
+        }
+        public async Task tryDeleteUser(string userId)
+        {
+            var applicationuser = await userManager.FindByIdAsync(userId);
+            
+        }
+        public async Task deleteUser(ApplicationUser user)
+        {
+
+            //delete Blog first if the user has a blog
+            var blogModel = await unitOfWork.blogs.get().Where(q => q.authorId == user.Id).FirstOrDefaultAsync();
+            
+            if (blogModel != null)
+            {
+                unitOfWork.blogs.remove(blogModel);
+                await unitOfWork.commitAsync();
+            }
+            
+            //comment
+            IList<Comment> comments = await unitOfWork.comments.get().Where(q => q.authorId == user.Id).ToListAsync();
+            
+            if (comments.Count > 0)
+            {
+                unitOfWork.comments.removeRange(comments);
+                await unitOfWork.commitAsync();
+            }
+            var applicationuser = await userManager.FindByIdAsync(user.Id);
+            if (applicationuser != null)
+            {
+                var result = await userManager.DeleteAsync(user);
+                if (!result.Succeeded)
+                {
+                    userManager.Logger.LogError("User delete", "Can't delete the user.");
+                    throw new InvalidOperationException("Unable to delete user " + user.firstName + " " + user.lastName);
+                }
+            }
+                
         }
     }
 }

@@ -42,7 +42,7 @@
                     <!-- Service Container End -->
                     <div class="span4">
                         <div class="ic-1"><i class="icon-comment"></i></div>
-                        <div class="title-1"><h4>송구영신 예배</h4></div>
+                        <div class="title-1"><h4>@Model.memberAnnounceTitle</h4></div>
                         <ul class="text-1" style="padding-left:30px">
                             @foreach (var item in Model.memberAnnouncements)
                             {
@@ -52,7 +52,7 @@
                     </div>
                     <div class="span4">
                         <div class="ic-1"><i class="icon-eye-open"></i></div>
-                        <div class="title-1"><h4>한글 학교</h4></div>
+                        <div class="title-1"><h4>@Model.schoolAnnounceTitle</h4></div>
                         <ul class="text-1" style="padding-left:30px">
                             @foreach (var item in Model.schoolAnnouncements)
                             {
