@@ -351,6 +351,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+#rkbc logging directories
 code/rkbc/logs
 code/rkbc/ElmahLogs
 code/rkbc/temp-keys
+errorlogs
