@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<elmah>
+  <errorFilter>
+    <notifiers>
+      <notifier name="Email"/>
+    </notifiers>
+    <test>
+      <and>
+        <greater binding="HttpStatusCode" value="399" type="Int32" />
+        <lesser  binding="HttpStatusCode" value="500" type="Int32" />
+      </and>
+    </test>
+  </errorFilter>
+  
+</elmah>

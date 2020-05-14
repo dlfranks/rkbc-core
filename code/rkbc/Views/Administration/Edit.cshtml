@@ -12,13 +12,13 @@
     });
 
 </script>
-<div class="content">
+<div id="content">
     <div class="container">
         <h1>Edit</h1>
 
-        <h4>AppUserViewModel</h4>
+        <h4>본인 정보 기입</h4>
         <hr />
-        <div class="row">
+        <div>
             <div class="col-md-4">
                 <form method="post" asp-action="@(ViewBag.formViewMode == FormViewMode.Create? "Create" : "Edit")">
                     <div asp-validation-summary="All" class="text-danger"></div>

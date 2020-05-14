@@ -172,11 +172,12 @@ namespace rkbc.core.service
             var user = await userManager.FindByEmailAsync(email);
             return user == null ? true : false;
         }
-        public async Task<bool> tryLogOnUser(ApplicationUser user)
+        public async Task<bool> tryLogOnUser(ApplicationUser user, bool rememberMe = false)
         {
             //var claims = new[] { new Claim(ClaimTypes.NameIdentifier, user.Email.ToString(), ClaimValueTypes.String), new Claim(ClaimTypes.Name, user.UserName.ToString(), ClaimValueTypes.String)
             //    , new Claim(ClaimTypes.Role, "Admin", ClaimValueTypes.String), new Claim(ClaimTypes.Role, "User", ClaimValueTypes.String) };
             // var userClaimsIdentity = new ClaimsIdentity(claims, "AuthCookies");
+            
             var userClaimsIdentity = await user.GenerateUserClaimsIdentityAsync(userManager);
             ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(userClaimsIdentity);
             var authProperties = new AuthenticationProperties()
@@ -184,12 +185,12 @@ namespace rkbc.core.service
                 //AllowRefresh = <bool>,
                 // Refreshing the authentication session should be allowed.
 
-                //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(480),
                 // The time at which the authentication ticket expires. A 
                 // value set here overrides the ExpireTimeSpan option of 
                 // CookieAuthenticationOptions set with AddCookie.
 
-                IsPersistent = true,
+                IsPersistent = rememberMe,
                 // Whether the authentication session is persisted across 
                 // multiple requests. When used with cookies, controls
                 // whether the cookie's lifetime is absolute (matching the
@@ -205,7 +206,7 @@ namespace rkbc.core.service
             try
             {
                 await httpContext.SignInAsync(
-                "AuthCookies", claimsPrincipal, new AuthenticationProperties { IsPersistent = false });
+                "AuthCookies", claimsPrincipal, authProperties);
                 logger.LogInformation("User logged in.");
                 return true;
             }
@@ -214,11 +215,6 @@ namespace rkbc.core.service
                 logger.LogInformation("Failed login.");
             }
             return false;
-        }
-        public async Task tryDeleteUser(string userId)
-        {
-            var applicationuser = await userManager.FindByIdAsync(userId);
-            
         }
         public async Task deleteUser(ApplicationUser user)
         {

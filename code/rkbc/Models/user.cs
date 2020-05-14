@@ -42,9 +42,9 @@ namespace rkbc.core.models
     }
     public enum CountryEnum
     {
-        [Display(Name = "미국")]
+        [Display(Name = "미국(USA)")]
         USA = 2000,
-        [Display(Name = "한국")]
+        [Display(Name = "한국(South Korea)")]
         South_Korea,
         [Display(Name = "도미니카")]
         Dominican_Republic,

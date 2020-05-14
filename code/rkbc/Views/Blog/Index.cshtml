@@ -18,7 +18,7 @@
                 <ul>
                     <li>You are here:</li>
                     <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li>Blogs</li>
+                    <li>@ViewBag.title</li>
                 </ul>
             </nav>
         </div>
@@ -32,7 +32,11 @@
     <div class="container">
         <div class="row">
             <div class="span12" style="padding: 20px;">
-                <a class="" style="float:left;" asp-controller="Blog" asp-action="Edit">New Post</a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a class="" style="float:left;" asp-controller="Blog" asp-action="Edit">New Post</a>
+                }
+
             </div>
 
             <div class="span9">

@@ -173,6 +173,7 @@ namespace rkbc.web.controllers
             query = query.Include("blog").Include("blog.author").Include("comments").OrderByDescending(q => q.lastModified);
             int pageSize = settings.Value.PostsPerPage;
             var result = await blogService.GetPagedResultForQuery(query, page, pageSize);
+            ViewBag.title = "Blog";
             return View("Index", result);
         }
         [Route("/Blog/Index/{userId}")]
@@ -184,6 +185,7 @@ namespace rkbc.web.controllers
             query = query.Include("blog").Include("blog.author").Include("comments").OrderByDescending(q => q.lastModified);
             int pageSize = settings.Value.PostsPerPage;
             var result = await blogService.GetPagedResultForQuery(query, page, pageSize);
+            ViewBag.title = "My Blog";
             return View(result);
         }
         [Route("/Mission/Index/{country}")]

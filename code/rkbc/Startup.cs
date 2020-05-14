@@ -121,7 +121,7 @@ namespace rkbc
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromMinutes(2);
+                options.IdleTimeout = TimeSpan.FromMinutes(480);
                 //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 //options.Cookie.SameSite = SameSiteMode.Strict;
                 options.Cookie.HttpOnly = true;
@@ -157,6 +157,7 @@ namespace rkbc
             {
                 options.FiltersConfig = "elmah.xml";
                 options.LogPath = "./elmahLogs";
+                options.ApplicationName = "rkbc-core";
                 options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
             });
             //services.AddElmah<SqlErrorLog>(options =>
@@ -203,17 +204,17 @@ namespace rkbc
 
             //app.Use(async (context, next) =>
             //{
-            //    var url = context.Request.Path.Value;
-            //    await context.Response.WriteAsync(context.Request.Path.Value);
+                //var url = context.Request.Path.Value;
+                //await context.Response.WriteAsync(context.Request.Path.Value);
                 
-            //    // Rewrite to index
-            //    //if (url.Contains("/home/privacy"))
-            //    //{
-            //    //    // rewrite and continue processing
-            //    //    context.Request.Path = "/home/index";
-            //    //}
+                // Rewrite to index
+                //if (url.Contains("/home/privacy"))
+                //{
+                //    // rewrite and continue processing
+                //    context.Request.Path = "/home/index";
+                //}
 
-            //    //await next();
+                //await next();
             //});
             //Testing for hosting process
             //app.Run(async (context) =>
@@ -228,16 +229,18 @@ namespace rkbc
                 MinimumSameSitePolicy = SameSiteMode.Strict,
             };
             app.UseCookiePolicy(cookiePolicyOptions);
-            
+            app.UseSerilogRequestLogging();
 
             app.UseStaticFiles();
-            app.UseSession();
-            app.UseSerilogRequestLogging();
+            
+            
             app.UseRouting();
             //app.UseOutputCaching();
             app.UseElmah();
             
-           // After UseRouting, so that route information is available for authentication decisions.
+            //Call UseSession after UseRouting and before UseEndpoints.
+            app.UseSession();
+            // After UseRouting, so that route information is available for authentication decisions.
             //Before UseEndpoints, so that users are authenticated before accessing the endpoints.
             app.UseAuthentication();
             app.UseAuthorization();
