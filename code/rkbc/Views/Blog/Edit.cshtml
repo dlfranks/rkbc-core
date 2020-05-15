@@ -175,7 +175,7 @@
                         <div id="displayMedia" style="width:100%; height:100%;margin:0 auto;">
 
                         </div>
-                        @if (Model.post.id == 0)
+                        @*@if (Model.post.id == 0)
                         {
                             <div class="form-group">
                                 <label asp-for="@Model.post.slug" class="col-md-2 control-label"></label>
@@ -186,7 +186,7 @@
                                 </p>
                                 <br />
                             </div>
-                        }
+                        }*@
 
                         <div class="form-group">
                             <label asp-for="@Model.post.excerpt" class="col-md-2 control-label"></label>
@@ -264,6 +264,4 @@
 
 }
 
-<script src="~/lib/tinymce/tinymce.min.js" type="text/javascript" asp-append-version="true"></script> @*with enabled CDN tinymce is not able to find some files*@
-<script src="~/js/admin.js" type="text/javascript" async asp-append-version="true"></script>
 

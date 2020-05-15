@@ -18,8 +18,8 @@
     <!-- Basic Meta Tags -->
     <meta charset="utf-8">
     <title>RKBC(랄리 한인 교회)</title>
-    <meta name="description" content="Raleigh Korean Baptist Church, 랄리 한인 교회">
-    <meta name="keywords" content="Raleigh Korean Baptist Church, 랄리 한인 교회">
+    <meta name="description" content="Raleigh Korean Baptist Church, Raleigh Baptist Church, 랄리 한인 교회, 랄리 침례 한인 교회, 랄리침례 한인교회, 랄리침례한인교회, 랄리한인교회">
+    <meta name="keywords" content="Raleigh Korean Baptist Church, Raleigh Baptist Church, 랄리 한인 교회, 랄리 침례 한인 교회, 랄리침례 한인교회, 랄리침례한인교회, 랄리한인교회">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--[if (gte IE 9)|!(IE)]>
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -59,6 +59,9 @@
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.7/jquery.jgrowl.min.js" asp-append-version="true"></script>
     <script src="~/js/knockout.rkbc.js" asp-append-version="true"></script>
+    <script src="~/lib/tinymce/tinymce.min.js" type="text/javascript" asp-append-version="true"></script> @*with enabled CDN tinymce is not able to find some files*@
+    <script src="~/js/admin.js" type="text/javascript" async asp-append-version="true"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     <style>
         body {
@@ -217,7 +220,7 @@
             <div class="inner">
                 <h3>Get In Touch</h3>
                 <div class="row space30"></div>
-                <ul class="actions">
+                <ul class="actions" style="margin:0;">
                     <li><i class="icon-phone"></i>+01 919 389 7482</li>
                     <li><i class="icon-envelope"></i><a href="mailto:eunyoung2u@hotmail.com">eunyoung2u@hotmail.com</a></li>
                     <li><i class="icon-home"></i><a href="http://rkbc.us">www.rkbc.us</a></li>

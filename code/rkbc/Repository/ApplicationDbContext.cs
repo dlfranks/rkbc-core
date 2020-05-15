@@ -9,9 +9,18 @@ using rkbc.web.viewmodels;
 
 namespace rkbc.core.repository
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string,
-                                                          ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin,
-                                                          ApplicationRoleClaim, ApplicationUserToken>
+    public class DBAudit
+    {
+        public int id { get; set; }
+        public string action { get; set; }
+        public DateTime date { get; set; }
+        public string user { get; set; }
+        public string recordTypeName { get; set; }
+        public int? singleId { get; set; }
+        public string complexId { get; set; }
+        public string recordData { get; set; }
+    }
+    public class ApplicationDbContext : AuditableDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -126,5 +135,56 @@ namespace rkbc.core.repository
         }
 
         
+    }
+
+    public class AuditableDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string,
+                                                          ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin,
+                                                          ApplicationRoleClaim, ApplicationUserToken>
+    {
+        public AuditableDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+
+        }
+        public DbSet<DBAudit> audit { get; set; }
+        public override int SaveChanges()
+        {
+            var modifiedEntities = ChangeTracker.Entries();
+
+            foreach (var change in modifiedEntities)
+            {
+                var entityType = change.Entity.GetType().Name;
+                if (entityType == "LogItem")
+                    continue;
+
+                if (change.State == EntityState.Modified)
+                {
+                    foreach (var prop in change.OriginalValues.Properties)
+                    {
+                        var id = change.CurrentValues["Id"].ToString();
+
+                        //here both originalValue and currentValue  are same and it's newly updated value 
+                        var originalValue = change.OriginalValues[prop]?.ToString();
+                        var currentValue = change.CurrentValues[prop]?.ToString();
+                        if (originalValue != currentValue)
+                        {
+                            audit.Add(
+                                new DBAudit()
+                                {
+                                    action = "U",
+                                    date = DateTime.Now,
+                                    user = " ",
+                                    recordTypeName = "",
+                                    singleId =1,
+                                    complexId = "",
+                                    recordData = ""
+                                    
+                                }
+                            );
+                        }
+                    }
+                }
+            }
+            return base.SaveChanges();
+        }
     }
 }

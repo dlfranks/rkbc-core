@@ -119,6 +119,10 @@ namespace rkbc.core.repository
         {
             await _context.SaveChangesAsync();
         }
+        public void commit()
+        {
+            _context.SaveChanges();
+        }
         public async Task<bool> tryCommitAsync()
         {
             try { await commitAsync(); }

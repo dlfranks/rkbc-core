@@ -95,6 +95,7 @@ namespace rkbc.web.viewmodels
 }
 namespace rkbc.web.controllers
 {
+    [Authorize(Roles = "Admin, User")]
     public class BlogController : AppBaseController
     {
         private FileHelper fileHelper;
@@ -102,7 +103,7 @@ namespace rkbc.web.controllers
         private readonly IOptionsSnapshot<BlogSettings> settings;
         private IUrlHelper urlHelper;
         public BlogController(FileHelper _fileHelper, IOptionsSnapshot<BlogSettings> _settings,
-            IUnitOfWork _unitOfWork, 
+            IUnitOfWork _unitOfWork,
             UserService _userService,
             BlogService _blogService,
             IUrlHelper _urlHelper) : base(_unitOfWork, _userService)
@@ -122,7 +123,7 @@ namespace rkbc.web.controllers
             try
             {
                 bitmap = new System.Drawing.Bitmap(file.OpenReadStream());
-                
+
             }
             catch (Exception e)
             {
@@ -155,7 +156,7 @@ namespace rkbc.web.controllers
             if (modelObj.isPublished)
                 modelObj.pubDate = DateTime.UtcNow;
             modelObj.videoURL = vModel.post.videoURL;
-            if(vModel.image != null && vModel.image.Length > 0)
+            if (vModel.image != null && vModel.image.Length > 0)
                 acceptImage(modelObj, vModel.image);
         }
         protected PostViewModel setupViewModel(Post model)
@@ -164,9 +165,10 @@ namespace rkbc.web.controllers
             vm.post = model;
             vm.embededVideoUrl = fileHelper.youtubeEmbedUrl(model.videoURL) == null ? "" : fileHelper.youtubeEmbedUrl(model.videoURL);
             vm.imageUrl = fileHelper.generateAssetURL("blog", model.imageFileName);
-            
+
             return vm;
         }
+        [AllowAnonymous]
        public async Task<IActionResult> AllIndex(int page = 1)
         {
             var query = unitOfWork.posts.get();
@@ -178,6 +180,7 @@ namespace rkbc.web.controllers
         }
         [Route("/Blog/Index/{userId}")]
         [Route("/Blog/{userId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string userId, int page=1)
         {
             var query = unitOfWork.posts.get();
@@ -189,6 +192,7 @@ namespace rkbc.web.controllers
             return View(result);
         }
         [Route("/Mission/Index/{country}")]
+        [AllowAnonymous]
         public async Task<IActionResult> MissionIndex(string country, int page = 1)
         {
             CountryEnum value;
@@ -240,6 +244,7 @@ namespace rkbc.web.controllers
         }
         
         [Route("/blog/{blogSlug}/{slug?}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Post(string blogSlug, string slug)
         {
             var currentUser = userService.CurrentUserSettings;
@@ -256,6 +261,7 @@ namespace rkbc.web.controllers
         }
         
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Post(int postId)
         {
             var currentUser = userService.CurrentUserSettings;
@@ -336,6 +342,7 @@ namespace rkbc.web.controllers
                 return View(vm);
             }
             await unitOfWork.commitAsync();
+            //unitOfWork.commit();
             return RedirectToAction("Post", new {postid = modelObj.id});
         }
         
@@ -387,7 +394,7 @@ namespace rkbc.web.controllers
             return RedirectToAction("Post", new { postid = post.id });
         }
         
-        [Authorize]
+       
         public async Task<IActionResult> DeletePost(int id)
         {
             var userId = userService.CurrentUserSettings.userId;
@@ -403,7 +410,7 @@ namespace rkbc.web.controllers
             return RedirectToAction("Index", new {userId= userId });
         }
 
-        [Authorize]
+        
         public async Task<IActionResult> DeleteComment(int postId, int commentId)
         {
             var post = await blogService.GetPostById(postId).ConfigureAwait(false);

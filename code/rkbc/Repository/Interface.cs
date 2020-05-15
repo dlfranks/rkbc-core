@@ -56,6 +56,7 @@ namespace rkbc.core.repository
         IRepositoryAsync<UserActivityLog> userActivityLogs { get; }
         ApplicationDbContext getContext();
         Task commitAsync();
+        void commit();
         Task<bool> tryCommitAsync();
         Task<bool> tryConcurrencyCommitAsync();
         Task<bool> tryUniqueConstraintCommitAsync();

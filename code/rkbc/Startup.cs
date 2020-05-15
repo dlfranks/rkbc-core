@@ -80,7 +80,7 @@ namespace rkbc
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 
             }).AddRoles<ApplicationRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
             //.AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>()
             .AddDefaultTokenProviders();
             //If using the CookieAuthenticationDefaults.AuthenticationSchem, HttpConctex.User.Indentity doesn't work.
@@ -110,7 +110,7 @@ namespace rkbc
                 //options.Filters.Add(new AuthorizeFilter(policy));
             })
             .AddXmlSerializerFormatters()
-            //.AddRazorRuntimeCompilation()
+            .AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             
@@ -153,19 +153,19 @@ namespace rkbc
                 AuthUserName = "deoksoonf@gmail.com",
                 AuthPassword = "gmail8516"
             };
-            services.AddElmah<XmlFileErrorLog>(options =>
-            {
-                options.FiltersConfig = "elmah.xml";
-                options.LogPath = "./elmahLogs";
-                options.ApplicationName = "rkbc-core";
-                options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
-            });
-            //services.AddElmah<SqlErrorLog>(options =>
+            //services.AddElmah<XmlFileErrorLog>(options =>
             //{
-            //    options.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
-            //    options.ApplicationName = "RKBC"; //Configuration["RKBC"];
+            //    options.FiltersConfig = "elmah.xml";
+            //    options.LogPath = "./elmahLogs";
+            //    options.ApplicationName = "rkbc-core";
             //    options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
             //});
+            services.AddElmah<SqlErrorLog>(options =>
+            {
+                options.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
+                options.ApplicationName = "rkbc"; //Configuration["RKBC"];
+                options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
+            });
             // Add functionality to inject IOptions<T>
             //services.AddOptions();
 
@@ -237,7 +237,12 @@ namespace rkbc
             app.UseRouting();
             //app.UseOutputCaching();
             app.UseElmah();
-            
+            //app.Run(async (context) =>
+            //{
+            //    await context.Response.WriteAsync("Hello World!");
+            //    int[] numbers = new int[5];
+            //    await context.Response.WriteAsync(numbers[6].ToString());
+            //});
             //Call UseSession after UseRouting and before UseEndpoints.
             app.UseSession();
             // After UseRouting, so that route information is available for authentication decisions.

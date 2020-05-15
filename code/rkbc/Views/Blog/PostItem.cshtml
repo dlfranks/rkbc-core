@@ -29,7 +29,7 @@
     <div class="span8">
         @if (Model.postType == (int)BlogPostType.Gallery)
         {
-            <a href="@Model.GetLink()"><img src="@Url.Content(Model.getImageLink())" /></a>
+            <a asp-controller="Blog" asp-action="Post" asp-route-postId="@Model.id"><img src="@Url.Content(Model.getImageLink())" /></a>
         }
 
         <div class="space20">
@@ -41,7 +41,7 @@
 
 
         <div class="post-d-info">
-            <h3 style="text-align:center;"><a href="@Model.GetLink()">@Model.title</a></h3>
+            <h3 style="text-align:center;"><a asp-controller="Blog" asp-action="Post" asp-route-postId="@Model.id">@Model.title</a></h3>
             <div class="blue-dark">
                 <i class="icon-user"></i> By @(Model.blog.author.firstName + " " + Model.blog.author.lastName)
                 <i class="icon-comment-alt"></i> With <span itemprop="commentCount">@Model.comments.Count</span> @(Model.comments.Count == 1 ? "comment" : "comments")
