@@ -175,19 +175,7 @@
                         <div id="displayMedia" style="width:100%; height:100%;margin:0 auto;">
 
                         </div>
-                        @if (Model.post.id == 0)
-                        {
-                            <div class="form-group">
-                                <label asp-for="@Model.post.slug" class="col-md-2 control-label"></label>
-                                <input asp-for="@Model.post.slug" placeholder="The URL name" aria-describedby="desc_slug" class="form-control" />
-                                <p>
-                                    <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
-                                    <span asp-validation-for="post.slug" class="text-danger" />
-                                </p>
-                                <br />
-                            </div>
-                        }
-
+                        
                         <div class="form-group">
                             <label asp-for="@Model.post.excerpt" class="col-md-2 control-label"></label>
                             <textarea asp-for="@Model.post.excerpt" rows="3" placeholder="Short description of blog post" aria-describedby="desc_excerpt" class="form-control">@Model.post.excerpt</textarea>

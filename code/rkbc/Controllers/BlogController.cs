@@ -319,7 +319,7 @@ namespace rkbc.web.controllers
                 modelObj.blog = blog;
                 modelObj.createDt = DateTime.UtcNow;
                 modelObj.lastModified = DateTime.UtcNow;
-                modelObj.slug = await blogService.generateSlug(blog.id, vModel.post.slug, vModel.post.title);
+                modelObj.slug = await blogService.generateSlug(blog.id, blog.blogSlug);
                 unitOfWork.posts.add(modelObj);
             }
             else

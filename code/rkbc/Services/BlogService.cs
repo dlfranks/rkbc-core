@@ -60,10 +60,11 @@ namespace rkbc.core.service
             return blogSlug.Trim().ToLower();
             
         }
-        public async Task<string> generateSlug(int blogId, string slug, string title)
+        public async Task<string> generateSlug(int blogId, string slug)
         {
             int endChar = 7;
             bool hasSlug = true;
+            var title = slug;
             if (title.Length < 7) endChar = title.Length;
             
             if (String.IsNullOrEmpty(slug)) slug = title.Substring(0, endChar);
