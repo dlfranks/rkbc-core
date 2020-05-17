@@ -110,7 +110,7 @@ namespace rkbc
                 //options.Filters.Add(new AuthorizeFilter(policy));
             })
             .AddXmlSerializerFormatters()
-            //.AddRazorRuntimeCompilation()
+            .AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             
