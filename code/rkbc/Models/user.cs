@@ -120,7 +120,7 @@ namespace rkbc.core.models
             var roles = await manager.GetRolesAsync(this);
             userClaimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, this.Email));
             userClaimsIdentity.AddClaim(new Claim(ClaimTypes.Name, this.UserName));
-
+            userClaimsIdentity.AddClaim(new Claim("UserId", this.Id));
             foreach (var role in roles)
             {
                 userClaimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));

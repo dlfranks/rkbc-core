@@ -42,5 +42,7 @@ namespace rkbc.config.models
         public int PastorPageId { get; set; }
         public string Version { get; set; }
         public string DefaultPassword { get; set; }
+        public bool DbContextAuditInline { get; set; }
+        public bool DbContextAuditStamp { get; set; }
     }
 }

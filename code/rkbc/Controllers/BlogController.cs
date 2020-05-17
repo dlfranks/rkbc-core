@@ -341,8 +341,8 @@ namespace rkbc.web.controllers
                 var vm = setupViewModel(modelObj);
                 return View(vm);
             }
-            await unitOfWork.commitAsync();
-            //unitOfWork.commit();
+            //await unitOfWork.commitAsync();
+            unitOfWork.commit();
             return RedirectToAction("Post", new {postid = modelObj.id});
         }
         
