@@ -46,11 +46,10 @@ namespace rkbc.core.models
         public virtual Blog blog {get; set;}
         public string imageFileName { get; set; }
         public string videoURL { get; set; }
-        [Required]
+        
         [Display(Name = "내용")]
         public string content { get; set; } = string.Empty;
 
-        [Required]
         [Display(Name = "포스트 요약")]
         public string excerpt { get; set; } = string.Empty;
 

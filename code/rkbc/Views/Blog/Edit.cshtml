@@ -144,23 +144,23 @@
     });
 </script>
 <div class="content">
-    <div class="container">
+    <div class="container" style="padding:20px;">
         <div class="row" style="margin:0 auto">
             <div class="space40"></div>
             <div class="span8">
-                <div style="padding:20px;">
-                    <form method="post" id="edit" asp-controller="Blog" asp-action="UpdatePost" enctype="multipart/form-data">
+                <div class="">
+                    <form method="post" id="edit" asp-controller="Blog" asp-action="UpdatePost" enctype="multipart/form-data" style="width:97%">
                         <div asp-validation-summary="All"></div>
                         <input type="hidden" asp-for="@Model.post.blogId" />
                         <input type="hidden" asp-for="@Model.post.id" />
                         <div class="form-group">
                             <label asp-for="post.postType" class="col-md-2 control-label"></label>
-                            <div class="col-md-10">
+                            
                                 <select asp-for="post.postType" asp-items="Html.GetEnumSelectList<BlogPostType>()">
                                     <option selected="selected" value="">Please select</option>
                                 </select>
                                 <span asp-validation-for="post.postType" class="text-danger" />
-                            </div>
+                            
                         </div>
                         <div class="form-group">
                             <label asp-for="@Model.post.title" class="col-md-2 control-label"></label>
@@ -175,22 +175,10 @@
                         <div id="displayMedia" style="width:100%; height:100%;margin:0 auto;">
 
                         </div>
-                        @*@if (Model.post.id == 0)
-                        {
-                            <div class="form-group">
-                                <label asp-for="@Model.post.slug" class="col-md-2 control-label"></label>
-                                <input asp-for="@Model.post.slug" placeholder="The URL name" aria-describedby="desc_slug" class="form-control" />
-                                <p>
-                                    <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
-                                    <span asp-validation-for="post.slug" class="text-danger" />
-                                </p>
-                                <br />
-                            </div>
-                        }*@
-
+                        
                         <div class="form-group">
                             <label asp-for="@Model.post.excerpt" class="col-md-2 control-label"></label>
-                            <textarea asp-for="@Model.post.excerpt" rows="3" placeholder="Short description of blog post" aria-describedby="desc_excerpt" class="form-control">@Model.post.excerpt</textarea>
+                            <textarea asp-for="@Model.post.excerpt" placeholder="Short description of blog post" aria-describedby="desc_excerpt" class="form-control" style="width:97%">@Model.post.excerpt</textarea>
                             <p>
                                 <span class="desc" id="desc_excerpt">The title as it appears on the website</span>
                                 <span asp-validation-for="post.excerpt" class="text-danger" />
