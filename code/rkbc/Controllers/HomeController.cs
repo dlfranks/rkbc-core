@@ -93,8 +93,8 @@ namespace rkbc.web.controllers
         [Route("/RKBC")]
         public async Task<IActionResult> Index()
         {
-            //int homePageId = rkbcSetting.Value.HomePageId;
-            int homePageId = 9;
+            int homePageId = rkbcSetting.Value.HomePageId;
+            //int homePageId = 9;
             HomePage modelObj = new HomePage();
             modelObj = await unitOfWork.homePages.get(homePageId).Include("announcements").FirstOrDefaultAsync();
             
