@@ -167,7 +167,7 @@
                             <input asp-for="@Model.post.title" required placeholder="Title of blog post" aria-describedby="desc_title" class="form-control" />
                             <p>
                                 <span class="desc" id="desc_title">The title as it appears on the website</span>
-                                <span asp-validation-for="post.title" class="text-danger" />
+                                <span asp-validation-for="@Model.post.title" class="text-danger" />
                             </p>
 
                             <br />

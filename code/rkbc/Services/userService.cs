@@ -162,9 +162,9 @@ namespace rkbc.core.service
             {
 
                 await httpContextAccessor.HttpContext.SignOutAsync("AuthCookies");
-                
-                
-                httpContext.Session.Clear();
+
+
+                httpContextAccessor.HttpContext.Session.Clear();
             }
         }
         public async Task<bool> isValidEmail(string email)

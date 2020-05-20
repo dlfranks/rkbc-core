@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -95,7 +96,6 @@ namespace rkbc.web.viewmodels
 }
 namespace rkbc.web.controllers
 {
-    [Authorize(Roles = "Admin, User")]
     public class BlogController : AppBaseController
     {
         private FileHelper fileHelper;
@@ -103,7 +103,7 @@ namespace rkbc.web.controllers
         private readonly IOptionsSnapshot<BlogSettings> settings;
         private IUrlHelper urlHelper;
         public BlogController(FileHelper _fileHelper, IOptionsSnapshot<BlogSettings> _settings,
-            IUnitOfWork _unitOfWork,
+            IUnitOfWork _unitOfWork, 
             UserService _userService,
             BlogService _blogService,
             IUrlHelper _urlHelper) : base(_unitOfWork, _userService)
@@ -113,37 +113,57 @@ namespace rkbc.web.controllers
             settings = _settings;
             urlHelper = _urlHelper;
         }
-        protected void acceptImage(Post modelObj, IFormFile file)
+        protected void acceptImage(Post modelObj, IFormFile file, out List<string> errmsg)
         {
+            errmsg = new List<string>();
+            
+            // Verify we have an image
+            if (file == null)
+            {
+                errmsg.Add("No file was chosen for an attached image, please select a file!");
+                return;
+            }
+            if (file.Length == 0)
+            {
+                errmsg.Add("No file was chosen for an attached image, please select a file!");
+                return;
+            }
             var extension = fileHelper.getExtension(file.FileName);
             var fileName = fileHelper.getFileName(file.FileName);
             var assetFileName = fileHelper.newAssetFileName("blog", extension);
             var assetFileAndPathName = fileHelper.mapAssetPath("blog", assetFileName, false);
             System.Drawing.Bitmap bitmap = null;
+
             try
             {
                 bitmap = new System.Drawing.Bitmap(file.OpenReadStream());
-
+                
             }
             catch (Exception e)
             {
                 var msg = "Unable to read image format, please upload either .jpeg or .png images.";
+                errmsg.Add(msg);
                 ModelState.AddModelError("image", msg);
-                //ElmahCore.XmlFileErrorLog.;
+                HttpContext.RiseError(new InvalidOperationException(msg));
             }
             try
             {
+                //Adjust image size based on selection width 600
+                bitmap = ImageHelper.ScaleImage(bitmap, BlogImageWidthConstants.FullSizeWidth, null);
                 ImageHelper.saveJpegImage(bitmap, assetFileAndPathName, 75L);
+                ImageHelper.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
                 //Thumbnail width 150;
 
             }
             catch (Exception e)
             {
                 var msg = "Internal error, unable to save the image.";
+                errmsg.Add(msg);
                 ModelState.AddModelError("image", msg);
+                HttpContext.RiseError(new InvalidOperationException(msg));
                 //ElmahCore
             }
-            ImageHelper.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
+            
             modelObj.imageFileName = assetFileName;
         }
         protected void acceptPost(Post modelObj, PostViewModel vModel)
@@ -156,8 +176,22 @@ namespace rkbc.web.controllers
             if (modelObj.isPublished)
                 modelObj.pubDate = DateTime.UtcNow;
             modelObj.videoURL = vModel.post.videoURL;
-            if (vModel.image != null && vModel.image.Length > 0)
-                acceptImage(modelObj, vModel.image);
+            var errmsg = new List<string>();
+            if (ModelState.IsValid)
+            {
+                if (vModel.image != null && vModel.image.Length > 0)
+                {
+                    List<string> fileerrmsg;
+                    acceptImage(modelObj, vModel.image, out fileerrmsg);
+                    foreach (var msg in fileerrmsg) ModelState.AddModelError("", msg);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "No file was chosen for an attached image, please select a file!");
+                }
+            }
+            
+            
         }
         protected PostViewModel setupViewModel(Post model)
         {
@@ -165,10 +199,9 @@ namespace rkbc.web.controllers
             vm.post = model;
             vm.embededVideoUrl = fileHelper.youtubeEmbedUrl(model.videoURL) == null ? "" : fileHelper.youtubeEmbedUrl(model.videoURL);
             vm.imageUrl = fileHelper.generateAssetURL("blog", model.imageFileName);
-
+            
             return vm;
         }
-        [AllowAnonymous]
        public async Task<IActionResult> AllIndex(int page = 1)
         {
             var query = unitOfWork.posts.get();
@@ -180,7 +213,6 @@ namespace rkbc.web.controllers
         }
         [Route("/Blog/Index/{userId}")]
         [Route("/Blog/{userId}")]
-        [AllowAnonymous]
         public async Task<IActionResult> Index(string userId, int page=1)
         {
             var query = unitOfWork.posts.get();
@@ -192,7 +224,6 @@ namespace rkbc.web.controllers
             return View(result);
         }
         [Route("/Mission/Index/{country}")]
-        [AllowAnonymous]
         public async Task<IActionResult> MissionIndex(string country, int page = 1)
         {
             CountryEnum value;
@@ -244,7 +275,6 @@ namespace rkbc.web.controllers
         }
         
         [Route("/blog/{blogSlug}/{slug?}")]
-        [AllowAnonymous]
         public async Task<IActionResult> Post(string blogSlug, string slug)
         {
             var currentUser = userService.CurrentUserSettings;
@@ -261,7 +291,6 @@ namespace rkbc.web.controllers
         }
         
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Post(int postId)
         {
             var currentUser = userService.CurrentUserSettings;
@@ -339,10 +368,9 @@ namespace rkbc.web.controllers
             if (!ModelState.IsValid)
             {
                 var vm = setupViewModel(modelObj);
-                return View(vm);
+                return View("Edit", vm);
             }
-            //await unitOfWork.commitAsync();
-            unitOfWork.commit();
+            await unitOfWork.commitAsync();
             return RedirectToAction("Post", new {postid = modelObj.id});
         }
         
@@ -394,7 +422,7 @@ namespace rkbc.web.controllers
             return RedirectToAction("Post", new { postid = post.id });
         }
         
-       
+        [Authorize]
         public async Task<IActionResult> DeletePost(int id)
         {
             var userId = userService.CurrentUserSettings.userId;
@@ -410,7 +438,7 @@ namespace rkbc.web.controllers
             return RedirectToAction("Index", new {userId= userId });
         }
 
-        
+        [Authorize]
         public async Task<IActionResult> DeleteComment(int postId, int commentId)
         {
             var post = await blogService.GetPostById(postId).ConfigureAwait(false);

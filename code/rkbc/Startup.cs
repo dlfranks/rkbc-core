@@ -124,15 +124,18 @@ namespace rkbc
                 options.IdleTimeout = TimeSpan.FromMinutes(480);
                 //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 //options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Cookie.Path = "/RKBC";
                 options.Cookie.HttpOnly = true;
                 // Make the session cookie essential
-                options.Cookie.IsEssential = true;
+                //options.Cookie.IsEssential = true;
             });
             services.ConfigureApplicationCookie(options =>
             {
+                
                 options.Cookie.Expiration = TimeSpan.FromMinutes(3);
                 options.Cookie.Path = "/RKBC";
                 options.SlidingExpiration = false;
+
             });
             // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
             //services.AddOutputCaching(
