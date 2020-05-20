@@ -100,6 +100,7 @@ namespace rkbc.web.controllers
             
             var vm = setupViewModel(modelObj, FormViewMode.View);
             vm.attachments = await unitOfWork.attachments.get().Where(q => q.attachmentSectionEnum == (int)AttachmentSectionEnum.Home_Gallery && q.isOn == true)
+                    .OrderByDescending(q => q.createDt)
                     .Select(q => new HomeImageUrl
                     {
                         imageUrl = fileHelper.generateAssetURL("gallery", q.fileName)
