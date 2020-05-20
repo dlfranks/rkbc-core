@@ -114,6 +114,7 @@ namespace rkbc.web.controllers
             serverCount = query.Count();
             var lst = await query
                 .Skip(vmodel.getStartRecord.Value).Take(vmodel.getRecordCount.Value)
+                .OrderByDescending(q => q.createDt)
                 .Select(q => new AttachmentViewModel { 
                     id = q.id,
                     sectionId = q.attachmentSectionEnum,

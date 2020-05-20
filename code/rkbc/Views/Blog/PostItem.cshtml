@@ -29,7 +29,7 @@
     <div class="span8">
         @if (Model.postType == (int)BlogPostType.Gallery)
         {
-            <a href="@Model.GetLink()"><img src="@Url.Content(Model.getImageLink())" /></a>
+            <a href="@Url.Action("ImageView", "Asset", new {type="blog", fileName=Model.imageFileName, thumbnail=false})"><img src="@Url.Content(Model.getImageLink())" /></a>
         }
 
         <div class="space20">
