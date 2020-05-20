@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -112,13 +113,27 @@ namespace rkbc.web.controllers
             settings = _settings;
             urlHelper = _urlHelper;
         }
-        protected void acceptImage(Post modelObj, IFormFile file)
+        protected void acceptImage(Post modelObj, IFormFile file, out List<string> errmsg)
         {
+            errmsg = new List<string>();
+            
+            // Verify we have an image
+            if (file == null)
+            {
+                errmsg.Add("No file was chosen for an attached image, please select a file!");
+                return;
+            }
+            if (file.Length == 0)
+            {
+                errmsg.Add("No file was chosen for an attached image, please select a file!");
+                return;
+            }
             var extension = fileHelper.getExtension(file.FileName);
             var fileName = fileHelper.getFileName(file.FileName);
             var assetFileName = fileHelper.newAssetFileName("blog", extension);
             var assetFileAndPathName = fileHelper.mapAssetPath("blog", assetFileName, false);
             System.Drawing.Bitmap bitmap = null;
+
             try
             {
                 bitmap = new System.Drawing.Bitmap(file.OpenReadStream());
@@ -127,22 +142,28 @@ namespace rkbc.web.controllers
             catch (Exception e)
             {
                 var msg = "Unable to read image format, please upload either .jpeg or .png images.";
+                errmsg.Add(msg);
                 ModelState.AddModelError("image", msg);
-                //ElmahCore.XmlFileErrorLog.;
+                HttpContext.RiseError(new InvalidOperationException(msg));
             }
             try
             {
+                //Adjust image size based on selection width 600
+                bitmap = ImageHelper.ScaleImage(bitmap, BlogImageWidthConstants.FullSizeWidth, null);
                 ImageHelper.saveJpegImage(bitmap, assetFileAndPathName, 75L);
+                ImageHelper.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
                 //Thumbnail width 150;
 
             }
             catch (Exception e)
             {
                 var msg = "Internal error, unable to save the image.";
+                errmsg.Add(msg);
                 ModelState.AddModelError("image", msg);
+                HttpContext.RiseError(new InvalidOperationException(msg));
                 //ElmahCore
             }
-            ImageHelper.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
+            
             modelObj.imageFileName = assetFileName;
         }
         protected void acceptPost(Post modelObj, PostViewModel vModel)
@@ -155,8 +176,22 @@ namespace rkbc.web.controllers
             if (modelObj.isPublished)
                 modelObj.pubDate = DateTime.UtcNow;
             modelObj.videoURL = vModel.post.videoURL;
-            if(vModel.image != null && vModel.image.Length > 0)
-                acceptImage(modelObj, vModel.image);
+            var errmsg = new List<string>();
+            if (ModelState.IsValid)
+            {
+                if (vModel.image != null && vModel.image.Length > 0)
+                {
+                    List<string> fileerrmsg;
+                    acceptImage(modelObj, vModel.image, out fileerrmsg);
+                    foreach (var msg in fileerrmsg) ModelState.AddModelError("", msg);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "No file was chosen for an attached image, please select a file!");
+                }
+            }
+            
+            
         }
         protected PostViewModel setupViewModel(Post model)
         {
@@ -333,7 +368,7 @@ namespace rkbc.web.controllers
             if (!ModelState.IsValid)
             {
                 var vm = setupViewModel(modelObj);
-                return View(vm);
+                return View("Edit", vm);
             }
             await unitOfWork.commitAsync();
             return RedirectToAction("Post", new {postid = modelObj.id});

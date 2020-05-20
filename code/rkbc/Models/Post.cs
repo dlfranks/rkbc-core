@@ -12,6 +12,13 @@ using System.Threading.Tasks;
 
 namespace rkbc.core.models
 {
+    public static class BlogImageWidthConstants
+    {
+        public const int ThumbnailWidth = 150;
+        public const int ThumbnailWidthLandscape = 200;
+        public const int SmallWidth = 600;
+        public const int FullSizeWidth = 1200;
+    }
     public enum PostListView
     {
         TitlesOnly,

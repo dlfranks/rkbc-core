@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ElmahCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -217,11 +218,14 @@ namespace rkbc.web.controllers
                 var msg = "Unable to read image format, please upload either .jpeg or .png images.";
                 ModelState.AddModelError("gallery", msg);
                 errmsg.Add(msg);
-                //ElmahCore.XmlFileErrorLog.;
+                HttpContext.RiseError(new InvalidOperationException(msg));
             }
             try
             {
+                //Adjust image size based on selection width 600
+                bitmap = ImageHelper.ScaleImage(bitmap, BlogImageWidthConstants.SmallWidth, null);
                 ImageHelper.saveJpegImage(bitmap, assetFileAndPathName, 75L);
+                ImageHelper.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
                 //Thumbnail width 150;
 
             }
@@ -230,9 +234,9 @@ namespace rkbc.web.controllers
                 var msg = "Internal error, unable to save the image.";
                 ModelState.AddModelError("GalleryImageUrl", msg);
                 errmsg.Add(msg);
-                //ElmahCore
+                HttpContext.RiseError(new InvalidOperationException(msg));
             }
-            ImageHelper.GenerateThumbnail(bitmap, 150, assetFileAndPathName);
+            
             modelObj.fileName = assetFileName;
             //Update the database
             if (errmsg.Count == 0)
