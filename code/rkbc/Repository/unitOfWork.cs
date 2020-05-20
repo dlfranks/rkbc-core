@@ -128,7 +128,7 @@ namespace rkbc.core.repository
             try { await commitAsync(); }
             catch(Exception e)
             {
-                //Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                //HttpContext.RiseErrors;
                 new InvalidOperationException("exception", e);
                 return (false);
             }

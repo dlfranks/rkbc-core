@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
@@ -367,43 +368,8 @@ namespace rkbc.core.repository
         //        base.SaveChanges();
         //    }
         //}
-        private IEnumerable<TableChange> GetTableChangeRecordsForChange(EntityEntry dbEntry, string userId)
-        {
-            List<TableChange> result = new List<TableChange>();
-            foreach (var ent in this.ChangeTracker.Entries().Where(p => p.State == EntityState.Deleted || p.State == EntityState.Modified).ToList())
-            {
-                // For each changed record, get the audit record entries and add them
-                foreach (TableChange x in GetTableChangeRecordsForChange(ent, _ChangeUser))
-                {
-                    this.TableChanges.Add(x);
-                    val = true;
-                }
-            }
-
-            if (dbEntry.State == EntityState.Modified)
-            {
-                foreach (var property in dbEntry.Entity.GetType().GetTypeInfo().DeclaredProperties)
-                {
-
-                    // For updates, we only want to capture the columns that actually changed
-                    if (!object.Equals(dbEntry.Property(property.Name).OriginalValue, dbEntry.Property(property.Name).CurrentValue))
-                    {
-                        result.Add(new TableChange()
-                        {
-                            Action = "U",
-                            ColumnName = property.Name,
-                            CreatedBy = userId,
-                            CreatedOn = DateTime.Now,
-                            OldValue = dbEntry.Property(property.Name).OriginalValue.ToString(),
-                            NewValue = dbEntry.Property(property.Name).CurrentValue.ToString(),
-                            TableName = dbEntry.Entity.GetType().GetTypeInfo().Name,
-                            TableID = dbEntry.Property("ID").CurrentValue.ToString()
-                        });
-                    }
-
-                }
-            }
-        }
+       
+        
         public override int SaveChanges()
         {
             bool withInlineAudit = rkbcSetting.Value.DbContextAuditInline;
@@ -426,6 +392,18 @@ namespace rkbc.core.repository
 
                     var aaa = entry.Collections;
                     var originalValues = entry.OriginalValues;
+
+                    if(entry.State == EntityState.Modified)
+                    {
+                        foreach (var property in entry.Entity.GetType().GetTypeInfo().DeclaredProperties)
+                        {
+                            // For updates, we only want to capture the columns that actually changed
+                            if (!object.Equals(entry.Property(property.Name).OriginalValue, entry.Property(property.Name).CurrentValue))
+                            {
+
+                            }
+                        }
+                    }
                 }
                 //Record what was changed
                 this.ChangeTracker.DetectChanges();

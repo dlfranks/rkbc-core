@@ -187,7 +187,8 @@ namespace rkbc.web.controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "No file was chosen for an attached image, please select a file!");
+                    if(modelObj.id == 0)
+                        ModelState.AddModelError("", "No file was chosen for an attached image, please select a file!");
                 }
             }
             
@@ -370,7 +371,8 @@ namespace rkbc.web.controllers
                 var vm = setupViewModel(modelObj);
                 return View("Edit", vm);
             }
-            await unitOfWork.commitAsync();
+            //await unitOfWork.commitAsync();
+            unitOfWork.commit();
             return RedirectToAction("Post", new {postid = modelObj.id});
         }
         
