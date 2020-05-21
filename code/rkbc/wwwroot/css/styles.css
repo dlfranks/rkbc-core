@@ -1134,9 +1134,9 @@ table a:hover{
   .search {
     width:80%;
     height:34px;
-    color:#fff;
-    background:#fb8865;
-    border:0px;
+    color:#999;
+    background:#fff;
+    border:1px solid #999;
     padding-left:5%;
     padding-right:15%;
   }
@@ -1146,7 +1146,7 @@ table a:hover{
     font-size:14px;
     top:7px;
     right:12px;
-    color:#fff;
+    color:#999;
     text-decoration:none;    
   }
 

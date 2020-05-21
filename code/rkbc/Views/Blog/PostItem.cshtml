@@ -1,7 +1,9 @@
 ﻿@model rkbc.core.models.Post
 @using rkbc.core.models;
 <!-- Blog Detail Content -->
-
+@{ 
+    string action = ViewContext.RouteData.Values["action"].ToString();
+}
 <div class="row">
     <div class="span1">
         @if (Model.postType == (int)BlogPostType.Gallery)
@@ -40,19 +42,26 @@
         }
 
 
-        <div class="post-d-info">
-            <h3 style="text-align:center;"><a href="@Model.GetLink()">@Model.title</a></h3>
-            <div class="blue-dark">
-                <i class="icon-user"></i> By @(Model.blog.author.firstName + " " + Model.blog.author.lastName)
-                <i class="icon-comment-alt"></i> With <span itemprop="commentCount">@Model.comments.Count</span> @(Model.comments.Count == 1 ? "comment" : "comments")
-                <time datetime="@Model.pubDate.ToString("s")" itemprop="datePublished">Published @Model.pubDate.ToString("MMM d, yyyy")</time>
-                @if (ViewBag.UserSettings.isAdmin || ViewBag.UserSettings.userId == Model.blog.authorId)
-                {
-                    <a asp-controller="Blog" asp-action="Edit" asp-route-id="@Model.id" title="Edit the post">Edit post</a>
-                }
-            </div>
-            @Html.Raw(Model.RenderContent())
+    <div class="post-d-info">
+        <h3 style="text-align:center;"><a asp-controller="Blog" asp-action="Post" asp-route-postId="@Model.id" style="color:#3b3b3b;">@Model.title</a></h3>
+        <div class="blue-dark" style="color:#3b3b3b !important;">
+            <i class="icon-user"></i> By @(Model.blog.author.firstName + " " + Model.blog.author.lastName)
+            <i class="icon-comment-alt"></i> With <span itemprop="commentCount">@Model.comments.Count</span> @(Model.comments.Count == 1 ? "comment" : "comments")<br />
+            <time style="color:#3b3b3b;" datetime="@Model.pubDate.ToString("s")" itemprop="datePublished">Published @Model.pubDate.ToString("MMM d, yyyy")</time>
+            @if (ViewBag.UserSettings.isAdmin || ViewBag.UserSettings.userId == Model.blog.authorId)
+            {
+                <a asp-controller="Blog" asp-action="Edit" asp-route-id="@Model.id" title="Edit the post">Edit post</a>
+            }
         </div>
+        <blockquote style="color:#3b3b3b;">
+            @Model.excerpt
+        </blockquote>
+            @if (action == "Post")
+            {
+                @Html.Raw(Model.RenderContent())
+            }
+
+    </div>
         <div class="space20"></div>
         
 
