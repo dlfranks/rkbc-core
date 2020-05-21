@@ -187,7 +187,7 @@ namespace rkbc.web.controllers
                 }
                 else
                 {
-                    if(modelObj.id == 0)
+                    if(modelObj.postType == (int)BlogPostType.Gallery && modelObj.id == 0)
                         ModelState.AddModelError("", "No file was chosen for an attached image, please select a file!");
                 }
             }
@@ -274,23 +274,6 @@ namespace rkbc.web.controllers
             var vm = setupViewModel(post);
             return View(vm);
         }
-        
-        [Route("/blog/{blogSlug}/{slug?}")]
-        public async Task<IActionResult> Post(string blogSlug, string slug)
-        {
-            var currentUser = userService.CurrentUserSettings;
-            var post = await unitOfWork.posts.get()
-                .Where(p => p.slug == slug)
-                .Include("blog").Include("blog.author").Include("comments").FirstOrDefaultAsync();
-
-            //return post is null ? this.NotFound() : (IActionResult)this.View(post);
-            if (post == null)
-                return NotFound();
-            else
-                
-                return View(post);
-        }
-        
         [HttpGet]
         public async Task<IActionResult> Post(int postId)
         {
@@ -371,8 +354,7 @@ namespace rkbc.web.controllers
                 var vm = setupViewModel(modelObj);
                 return View("Edit", vm);
             }
-            //await unitOfWork.commitAsync();
-            unitOfWork.commit();
+            await unitOfWork.commitAsync();
             return RedirectToAction("Post", new {postid = modelObj.id});
         }
         

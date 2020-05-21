@@ -68,7 +68,10 @@
 
                                 <div class="span9">
 
-                                    @(await Component.InvokeAsync<BlogIndexViewComponent>(Model.Results))
+                                    @foreach (var post in Model.Results)
+                                    {
+                                        await Html.RenderPartialAsync("PostItem.cshtml", post);
+                                    }
 
                                     <div class="row space30"></div>
 
