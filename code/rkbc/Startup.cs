@@ -166,11 +166,11 @@ namespace rkbc
             services.AddElmah<SqlErrorLog>(options =>
             {
                 options.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
-                options.ApplicationName = "rkbc"; //Configuration["RKBC"];
+                options.ApplicationName = "rkbc.us"; //Configuration["RKBC"];
                 options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
             });
             // Add functionality to inject IOptions<T>
-            //services.AddOptions();
+            services.AddOptions();
 
             services.AddAuthentication("AuthCookies")
             .AddCookie("AuthCookies", options => {

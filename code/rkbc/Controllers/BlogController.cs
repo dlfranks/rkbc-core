@@ -355,6 +355,7 @@ namespace rkbc.web.controllers
                 return View("Edit", vm);
             }
             await unitOfWork.commitAsync();
+            
             return RedirectToAction("Post", new {postid = modelObj.id});
         }
         

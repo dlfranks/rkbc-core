@@ -42,7 +42,7 @@ namespace rkbc.core.repository
         void removeRange(IList<T> entities);
     }
     
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork 
     {
         IRepositoryAsync<HomePage> homePages { get; }
         IRepositoryAsync<PastorPage> pastorPages { get; }

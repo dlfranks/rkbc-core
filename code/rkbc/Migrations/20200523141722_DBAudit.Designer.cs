@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using rkbc.core.repository;
 
 namespace rkbc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200523141722_DBAudit")]
+    partial class DBAudit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -560,42 +562,6 @@ namespace rkbc.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("rkbc.core.models.UserActivityLog", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("activity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("activityDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("firstname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isMobileInterface")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("lastname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("offices")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("userAgent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("UserActivityLogs");
-                });
-
             modelBuilder.Entity("rkbc.core.repository.DBAudit", b =>
                 {
                     b.Property<int>("id")
@@ -626,7 +592,7 @@ namespace rkbc.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("DBAudits");
+                    b.ToTable("audit");
                 });
 
             modelBuilder.Entity("rkbc.core.models.ApplicationRoleClaim", b =>

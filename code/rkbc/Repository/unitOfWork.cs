@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ElmahCore;
 
 namespace rkbc.core.repository
 {
@@ -118,6 +119,7 @@ namespace rkbc.core.repository
         public async Task commitAsync()
         {
             await _context.SaveChangesAsync();
+            
         }
         public void commit()
         {
@@ -128,7 +130,7 @@ namespace rkbc.core.repository
             try { await commitAsync(); }
             catch(Exception e)
             {
-                //HttpContext.RiseErrors;
+                ElmahExtensions.RiseError(e);
                 new InvalidOperationException("exception", e);
                 return (false);
             }
@@ -186,13 +188,13 @@ namespace rkbc.core.repository
                 if (newList.Where(q => q.id == item.id).Count() == 0)
                     _context.Entry(item).State = EntityState.Deleted;
         }
-        public void Dispose()
-        {
-            if (_context != null)
-            {
-                _context.Dispose();
-            }
-            GC.SuppressFinalize(this);
-        }
+        //public void Dispose()
+        //{
+        //    if (_context != null)
+        //    {
+        //        _context.Dispose();
+        //    }
+        //    GC.SuppressFinalize(this);
+        //}
     }
 }

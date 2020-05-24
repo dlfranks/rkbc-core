@@ -154,6 +154,7 @@ namespace rkbc.web.controllers
                 var user = await userManager.Users.Include("UserRoles").Include("UserRoles.Role").Where(q => q.Email == model.Email).FirstOrDefaultAsync();
                 if (user != null)
                 {
+                    userService.sessionClear();
                     if(await userService.tryLogOnUser(user, model.RememberMe))
                         return Redirect("~/Home/Index");
                 }else

@@ -13,6 +13,7 @@ using RKBC.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using rkbc.core.repository;
+using ElmahCore;
 
 namespace rkbc.core.service
 {
@@ -167,6 +168,10 @@ namespace rkbc.core.service
                 httpContextAccessor.HttpContext.Session.Clear();
             }
         }
+        public void sessionClear()
+        {
+            httpContextAccessor.HttpContext.Session.Clear();
+        }
         public async Task<bool> isValidEmail(string email)
         {
             var user = await userManager.FindByEmailAsync(email);
@@ -208,13 +213,41 @@ namespace rkbc.core.service
                 await httpContext.SignInAsync(
                 "AuthCookies", claimsPrincipal, authProperties);
                 logger.LogInformation("User logged in.");
+                //Record the logon
+                await recordUserLogon(user.UserName);
                 return true;
             }
             catch (Exception ex)
             {
-                logger.LogInformation("Failed login.");
+               logger.LogInformation("Failed login.");
+                httpContextAccessor.HttpContext.RiseError(ex);
             }
             return false;
+        }
+        public async Task recordUserLogon(string userName)
+        {
+            try
+            {
+                var u = await userManager.FindByNameAsync(userName);
+                var roles = await userManager.GetRolesAsync(u);
+                var entry = new UserActivityLog()
+                {
+                    username = userName,
+                    activity = "logon",
+                    activityDate = DateTime.Now,
+                    firstname = u.firstName,
+                    lastname = u.lastName,
+                    isMobileInterface = false,
+                    offices = ":" + (String.Join(":", roles)) + ":",
+                    userAgent = httpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString()
+            };
+                unitOfWork.userActivityLogs.add(entry);
+                await unitOfWork.commitAsync();
+            }
+            catch (Exception ex)
+            {
+                httpContextAccessor.HttpContext.RiseError(ex);
+            }
         }
         public async Task deleteUser(ApplicationUser user)
         {
