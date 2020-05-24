@@ -397,7 +397,7 @@ namespace rkbc.core.repository
                 
                 saveResult = await base.SaveChangesAsync(cancellationToken);
                 
-                performAuditSave(modLst, withInlineAudit);
+                await performAuditSave(modLst, withInlineAudit);
                 
             }
             else
