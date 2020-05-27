@@ -1,4 +1,5 @@
-﻿using rkbc.core.repository;
+﻿using Microsoft.Extensions.Localization;
+using rkbc.core.repository;
 using rkbc.web.constant;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,11 @@ namespace rkbc.core.models
     }
     public class Post : IEntity
     {
+        //private readonly IStringLocalizer<Post> localizer;
+        //public Post(IStringLocalizer<Post> _localizer)
+        //{
+        //    localizer = _localizer;
+        //}
         [Required]
         public int id { get; set; }
         [Required]
@@ -54,10 +60,10 @@ namespace rkbc.core.models
         public string imageFileName { get; set; }
         public string videoURL { get; set; }
         
-        [Display(Name = "내용")]
+        [Display(Name = "Content")]
         public string content { get; set; } = string.Empty;
 
-        [Display(Name = "포스트 요약")]
+        [Display(Name = "Excerpt")]
         public string excerpt { get; set; } = string.Empty;
 
         [Required]

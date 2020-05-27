@@ -1,10 +1,16 @@
 ﻿@model rkbc.web.viewmodels.PagedResult<rkbc.core.models.Post>
 @using rkbc.web.viewcomponents;
 @using rkbc.core.models;
-    
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+
+@{ 
+    ViewData["NewPost"] = localizer["New Post"];
+}   
 <!-- Titlebar
 ================================================== -->
 <div class="row space40"></div>
+@await  Html.PartialAsync("_SelectLanguagePartial")
 <section id="titlebar">
     <!-- Container -->
     <div class="container">
@@ -34,7 +40,7 @@
             <div class="span12" style="padding: 20px;">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a class="" style="float:left;" asp-controller="Blog" asp-action="Edit">New Post</a>
+                <a class="" style="float:left;" asp-controller="Blog" asp-action="Edit">@ViewData["NewPost"]</a>
                 }
 
             </div>

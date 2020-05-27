@@ -34,9 +34,37 @@ using WebEssentials.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.ResponseCaching;
+using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace rkbc
 {
+    //public class CulturedQueryStringValueProviderFactory : IValueProviderFactory
+    //{
+    //    public Task CreateValueProviderAsync(ValueProviderFactoryContext context)
+    //    {
+    //        if (context == null)
+    //        {
+    //            throw new ArgumentNullException(nameof(context));
+    //        }
+
+    //        var query = context.ActionContext.HttpContext.Request.Query;
+    //        if (query != null && query.Count > 0)
+    //        {
+    //            var valueProvider = new QueryStringValueProvider(
+    //                BindingSource.Query,
+    //                query,
+    //                CultureInfo.CurrentCulture);
+
+    //            context.ValueProviders.Add(valueProvider);
+    //        }
+
+    //        return Task.CompletedTask;
+    //    }
+    //}
     public class Startup
     {
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
@@ -102,20 +130,45 @@ namespace rkbc
                 var factory = x.GetRequiredService<IUrlHelperFactory>();
                 return factory.GetUrlHelper(actionContext);
             });
-
+            //Localization
+            services.AddLocalization(options =>
+            {
+                options.ResourcesPath = "Resources";
+            });
             services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
                 //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
             })
+            .AddViewLocalization(options => { 
+                options.ResourcesPath = "Resources"; })
+            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+            .AddDataAnnotationsLocalization()
             .AddXmlSerializerFormatters()
             .AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            
-            services.AddControllersWithViews()
-                .AddNewtonsoftJson(options =>
+            services.Configure<RequestLocalizationOptions>(options => {
+                var supportedCultures = new List<CultureInfo> { 
+                    new CultureInfo("en"), //English
+                    new CultureInfo("fr"), //French
+                    new CultureInfo("zh"), //Chinese
+                    new CultureInfo("ko"), //Korean
+                    new CultureInfo("es") //spanish
+                };
+                options.DefaultRequestCulture = new RequestCulture("en");
+                //Formatting numbers, dates, etc
+                options.SupportedCultures = supportedCultures;
+                //UI string that we have localized.
+                options.SupportedUICultures = supportedCultures;
+            });
+            services.AddControllersWithViews(options => {
+                //var index = options.ValueProviderFactories.IndexOf(
+                //options.ValueProviderFactories.OfType<QueryStringValueProviderFactory>().Single());
+                //options.ValueProviderFactories[index] = new CulturedQueryStringValueProviderFactory();
+            })
+            .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddSession(options =>
@@ -170,7 +223,7 @@ namespace rkbc
                 options.Notifiers.Add(new ErrorMailNotifier("Email", emailOptions));
             });
             // Add functionality to inject IOptions<T>
-            services.AddOptions();
+            //services.AddOptions();
 
             services.AddAuthentication("AuthCookies")
             .AddCookie("AuthCookies", options => {
@@ -235,8 +288,8 @@ namespace rkbc
             app.UseSerilogRequestLogging();
 
             app.UseStaticFiles();
-            
-            
+            var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(options.Value);
             app.UseRouting();
             //app.UseOutputCaching();
             app.UseElmah();
