@@ -20,7 +20,7 @@
                 <h3>Contact Form</h3>
                 <div id="contactForm">
                    
-                    <form class="form-main" asp-action="SendEmail" name="ajax-form" id="ajax-form" method="post">
+                    <form class="form-main" name="ajax-form" id="ajax-form" asp-action="SendEmail" method="post">
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <div class="form-group">
                             <label asp-for="name">이름:</label>
@@ -44,7 +44,7 @@
                             <span asp-validation-for="message" class="text-danger"></span>
                         </div>
 
-                        <button  type="submit" id="sendEmail" class="btn btnUpdate f-right">Send Message <i class="icon-ok"></i></button>
+                        <button  id="sendEmail" class="btn btnUpdate f-right">Send Message <i class="icon-ok"></i></button>
                     </form>
                 </div>
             </div>
