@@ -123,4 +123,22 @@
   <data name="Excerpt" xml:space="preserve">
     <value>요약</value>
   </data>
+  <data name="Is Published?" xml:space="preserve">
+    <value>출판?</value>
+  </data>
+  <data name="Post Type" xml:space="preserve">
+    <value>포스트 타입</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>제목</value>
+  </data>
+  <data name="The  Subject as it appears on the website" xml:space="preserve">
+    <value>웹 사이트에 나타나는 제목</value>
+  </data>
+  <data name="The content of the post" xml:space="preserve">
+    <value>게시물의 내용게시물의 내용</value>
+  </data>
+  <data name="The excerpt as it appears on the website" xml:space="preserve">
+    <value>웹 사이트에 나타나는 요약</value>
+  </data>
 </root>
