@@ -20,6 +20,7 @@ using rkbc.core.service;
 using System.ComponentModel.DataAnnotations;
 using rkbc.config.models;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Localization;
 
 namespace rkbc.web.viewmodels
 {
@@ -306,12 +307,16 @@ namespace rkbc.web.controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public void setup()
+        public IActionResult SetLanguage(string culture, string returnUrl)
         {
-            var homePage = new HomePage()
-            {
 
-            };
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddDays(1) }
+            );
+
+            return LocalRedirect(returnUrl);
         }
     }
 }

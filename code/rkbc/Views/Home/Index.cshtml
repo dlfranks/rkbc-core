@@ -1,9 +1,11 @@
-﻿@model rkbc.web.viewmodels.HomePageViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model rkbc.web.viewmodels.HomePageViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home Page";
 }
-    <div class="row space40"></div>
+<div class="row space40"></div>
 <!-- Content -->
 <div class="container">
     <!-- Slider -->
@@ -68,14 +70,14 @@
                 <!-- Line -->
                 <div class="span12"><hr></div>
                 <div class="span9">
-                    <h2 style="font-weight:500">예배에 오신걸 환영합니다</h2>
+                    <h2 style="font-weight:500">@Localizer["Welcome to Our Worship Service"]</h2>
                 </div>
                 <div class="span3">
                     <!-- Button -->
-                    <div class="btn btn-blue f-right">
+                    <div class="btn btn-blue f-right" style="padding-right:20px;padding-left:20px;">
                         <!-- Title -->
-                        <h4 style="color:white;"><i class="icon-signin hidden-tablet"></i> <a style="color:white;" asp-controller="Pastor" asp-action="Index">목회자 칼럼</a></h4>
-                    </div>
+                        <h4 style="color:white;"><i class="icon-signin hidden-tablet"></i> <a style="color:white;" asp-controller="Pastor" asp-action="Index">@Localizer["Pastor Column"]</a></h4>
+</div>
                 </div>
                 <div class="space30 visible-phone"></div>
                 <!-- Line -->
@@ -87,16 +89,16 @@
             </div>
             <div class="span4">
                 <div class="ic-1"></div>
-                <div class="title-1"><h4>예배 안내:</h4></div>
+                <div class="title-1"><h4>@Localizer["Service Times"]:</h4></div>
                 <!-- List -->
                 <div class="text-1">
                     <ul class="list-b">
                         <!-- List Items -->
-                        <li><i class="icon-ok"></i> 아침 전통예배 9:00 AM</li>
-                        <li><i class="icon-ok"></i> 아침 찬양예배 11:00 AM</li>
-                        <li><i class="icon-ok"></i> 새벽기도: 6:00 AM (월-금), 7:00 AM (토)</li>
-                        <li><i class="icon-ok"></i> 수요일예배 7:00 PM</li>
-                        <li><i class="icon-ok"></i> Youth Meeting: Friday, 6:00 PM </li>
+                        <li><i class="icon-ok"></i> @Localizer["Traditional Service"]: 9:00 AM</li>
+                        <li><i class="icon-ok"></i> @Localizer["Contemporary Service"]: 11:00 AM</li>
+                        <li><i class="icon-ok"></i> @Localizer["Daliy Early Morning Prayer Meeting"]: 6:00 AM (@Localizer["Monday-Friday"]), 7:00 AM (@Localizer["Saturday"])</li>
+                        <li><i class="icon-ok"></i> @Localizer["Wendesday Service"]: 7:00 PM</li>
+                        <li><i class="icon-ok"></i> @Localizer["Yourth Service"]: @Localizer["Friday"], 6:00 PM </li>
                     </ul>
                 </div>
                 <!-- List End -->
@@ -106,45 +108,51 @@
         <!--Korean School-->
         <div class="row">
             <div class="space40"></div>
-            <h3>Raleigh Vision Korean School</h3>
+            <h3>@Localizer["Raleigh Vision Korean School"]</h3>
 
-            <div class="span8">
-                <div class="title-1"><h4>Our Service:</h4></div>
-                <!-- List -->
-                <div class="text-1">
-                    <ul class="list-b">
-                        <!-- List Items -->
-                        <li><i class="icon-ok"></i> 봄 학기 (Spring Semester): 1월 마지막 주 토요일 (January last week Sat.)</li>
-                        <li><i class="icon-ok"></i> 가을학기 (Fall Semester): 8월 마지막 주 토요일 (August last week Sat.)</li>
-                        <li><i class="icon-ok"></i> 시간(Time): 토요일 10:00am-1:00pm</li>
-                        <li><i class="icon-ok"></i> 수업료(tuition): 1인:$50.00, 2인:$80.00, 3인:$100.00</li>
-                        <li><i class="icon-ok"></i> 영어기초 학생반</li>
-                        <li><i class="icon-ok"></i> <a style="color:Highlight" href="document//koreanschoolapplication.pdf">입학원서(Admission Application)</a></li>
-                    </ul>
-                </div>
-                <!-- List End -->
-            </div>
-            <div class="span4">
-                <h3>Address</h3>
-                9130 Baileywick Rd<br>
-                Raleigh, NC 27615<br>
-                United States<br>
-                <br>
-                <i class="icon-phone"></i> (919) 389-7551<br>
-                <i class="icon-envelope"></i> eunyoung2u@hotmail.com<br>
+                        <div class="span8">
+                            <div class="title-1"><h4>@Localizer["Our Service"]:</h4></div>
+                            <!-- List -->
+                            <div class="text-1">
+                                <ul class="list-b">
+                                    <!-- List Items -->
+                                    <li><i class="icon-ok"></i> @Localizer["Spring Semester"]: @Localizer["Last Saturday In January"]</li>
+
+                                    <li><i class="icon-ok"></i> @Localizer["Fall Semester"]: @Localizer["Last Saturday In August"]</li>
+
+                                    <li><i class="icon-ok"></i> @Localizer["Time"]: @Localizer["Saturday"] 10:00am-1:00pm</li>
+
+                                    <li><i class="icon-ok"></i> @Localizer["Tuition"]: 1 Student:$50.00, 2 Students:$80.00, 3 Students:$100.00</li>
+
+                                    <li><i class="icon-ok"></i> @Localizer["English as a  second language class"]</li>
+
+                                    <li><i class="icon-ok"></i> <a style="color:Highlight" href="document//koreanschoolapplication.pdf">@Localizer["Admission Application"]</a></li>
+                                </ul>
+                            </div>
+                            <!-- List End -->
+                        </div>
+                        <div class="span4">
+                            <h3>@Localizer["Address"]</h3>
+                            9130 Baileywick Rd<br>
+                            Raleigh, NC 27615<br>
+                            United States<br>
+                            <br>
+                            <i class="icon-phone"></i> (919) 389-7551<br>
+                            <i class="icon-envelope"></i> eunyoung2u@hotmail.com<br>
 
 
-                <div class="row space40"></div>
+                            <div class="row space40"></div>
 
 
-            </div>
-            <div class="space20"></div>
+                        </div>
+                        <div class="space20"></div>
         </div>
 
         <!-- Our Clients -->
         <div class="row">
             <div class="span12">
-                <h3>Our Church</h3>
+                <h3>@Localizer["Our Church"]</h3>
+
             </div>
         </div>
         <script>
@@ -176,7 +184,7 @@
 
 
 
-                                        
+
                                     </div>
                                 </div>
                             }
@@ -186,14 +194,14 @@
                             {
                                 <div class="span4">
                                     <div class="">
-                                        
+
                                         @if ((j * 6 + i) < Model.attachments.Count)
-                                            {
-                                                <a href="@Url.Content(Model.attachments[j *6 + i].imageUrl)" rel="external" >
-                                                    <img src="@Url.Content(Model.attachments[j *6 + i].imageUrl)" alt="" style="margin-bottom:10px;">
-                                                </a>
-                                            }    
-                                        
+                                        {
+                                            <a href="@Url.Content(Model.attachments[j *6 + i].imageUrl)" rel="external">
+                                                <img src="@Url.Content(Model.attachments[j *6 + i].imageUrl)" alt="" style="margin-bottom:10px;">
+                                            </a>
+                                        }
+
                                     </div>
                                 </div>
                             }
@@ -201,14 +209,14 @@
 
 
 
-            </li>
-        }
+                    </li>
+                }
 
 
 
 
-                </ul>
-            </div>
+            </ul>
+        </div>
         <!-- Our Clients End -->
 
         <div class="space50"></div>

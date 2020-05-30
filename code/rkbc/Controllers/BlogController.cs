@@ -106,21 +106,20 @@ namespace rkbc.web.controllers
         private readonly IOptionsSnapshot<BlogSettings> settings;
         private IUrlHelper urlHelper;
         private readonly IStringLocalizer<BlogController> localizer;
-        private RequestCultureProvider cultureProvider;
+        
         public BlogController(FileHelper _fileHelper, IOptionsSnapshot<BlogSettings> _settings,
             IUnitOfWork _unitOfWork, 
             UserService _userService,
             BlogService _blogService,
             IUrlHelper _urlHelper,
-            IStringLocalizer<BlogController> _localizer,
-            RequestCultureProvider _cultureProvider) : base(_unitOfWork, _userService)
+            IStringLocalizer<BlogController> _localizer) : base(_unitOfWork, _userService)
         {
             fileHelper = _fileHelper;
             blogService = _blogService;
             settings = _settings;
             urlHelper = _urlHelper;
             localizer = _localizer;
-            cultureProvider = _cultureProvider;
+            
         }
         protected void acceptImage(Post modelObj, IFormFile file, out List<string> errmsg)
         {
@@ -454,18 +453,7 @@ namespace rkbc.web.controllers
 
             return this.Redirect($"{post.GetEncodedLink()}#comments");
         }
-        [HttpPost]
-        public IActionResult SetLanguage(string culture, string returnUrl)
-        {
-            
-            Response.Cookies.Append(
-                CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddDays(1) }
-            );
-            
-            return LocalRedirect(returnUrl);
-        }
+        
         
     }
 }

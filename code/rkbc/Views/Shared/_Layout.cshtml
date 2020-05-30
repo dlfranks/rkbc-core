@@ -4,9 +4,12 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Http
 @using rkbc.web.constant
+@using Microsoft.AspNetCore.Mvc.Localization
+
 @inject SignInManager<ApplicationUser> signInManager
 @inject IOptions<RkbcConfig> rkbcSetting
 @inject IHttpContextAccessor httpContextAccessor
+@inject IViewLocalizer Localizer
 <!DOCTYPE html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
 <!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
@@ -110,6 +113,7 @@
 <body>
     <!-- Header -->
     <header id="header">
+        @await  Html.PartialAsync("_SelectLanguagePartial")
         <div class="container">
             <div class="row t-container">
 
@@ -132,34 +136,34 @@
                             @if (User.Identity.IsAuthenticated && ViewBag.UserSettings.isAdmin)
                             {
                             <li id="Home" class="active">
-                                <a asp-controller="Home" asp-action="Index"><span>Home</span></a>
+                                <a asp-controller="Home" asp-action="Index"><span>@Localizer["Home"]</span></a>
                                 <ul>
                                     <!--Test Id = 3 or 9-->
-                                    <li id="HomeEdit"><a asp-controller="Home" asp-action="Edit" asp-route-id="@rkbcSetting.Value.HomePageId">Edit</a></li>
-                                    <li id="HomeGallery"><a asp-controller="Attachment" asp-action="Index">Gallery</a></li>
+                                    <li id="HomeEdit"><a asp-controller="Home" asp-action="Edit" asp-route-id="@rkbcSetting.Value.HomePageId">@Localizer["Edit"]</a></li>
+                                    <li id="HomeGallery"><a asp-controller="Attachment" asp-action="Index">@Localizer["Gallery"]</a></li>
                                 </ul>
                             </li>
                             <li id="Pastor">
-                                <a asp-controller="Pastor" asp-action="Index" title=""><span>목회자 칼럼</span></a>
+                                <a asp-controller="Pastor" asp-action="Index" title=""><span>@Localizer["Pastor"]</span></a>
                                 <ul>
-                                    <li id="PastorEdit"><a asp-controller="Pastor" asp-action="Edit">Edit</a></li>
+                                    <li id="PastorEdit"><a asp-controller="Pastor" asp-action="Edit">@Localizer["Edit"]</a></li>
                                 </ul>
                             </li>
                             <li id="Mission">
-                                <a asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)" title="">Mission</a>
+                                <a asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)" title="">@Localizer["Mission"]</a>
 
                             </li>
                             <li id="School">
-                                <a asp-controller="School" asp-action="Index" title="">한국학교</a>
+                                <a asp-controller="School" asp-action="Index" title="">@Localizer["Korean School"]</a>
                             </li>
                             <li id="Blog">
-                                <a asp-controller="Blog" asp-action="AllIndex"><span>블라그</span></a>
+                                <a asp-controller="Blog" asp-action="AllIndex"><span>@Localizer["Blog"]</span></a>
                                 <ul>
-                                    <li><a asp-controller="Blog" asp-action="Index" asp-route-userId="@ViewBag.UserSettings.userId">My Blog</a></li>
+                                    <li><a asp-controller="Blog" asp-action="Index" asp-route-userId="@ViewBag.UserSettings.userId">@Localizer["My Blog"]</a></li>
                                 </ul>
                             </li>
                             <li id="Contact">
-                                <a asp-controller="Contact" asp-action="Index" title=""><span>Contact</span></a>
+                                <a asp-controller="Contact" asp-action="Index" title=""><span>@Localizer["Contact"]</span></a>
                                 <ul>
                                     <li id="ContactAdministration"><a asp-controller="Administration" asp-action="Index">Administration</a></li>
                                     <li id="ContactRoles"><a asp-controller="Roles" asp-action="Index">Roles</a></li>
@@ -169,35 +173,35 @@
                             }
                             else
                             {
-                            <li id="Home" class="active"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                            <li id="Pastor"><a asp-controller="Pastor" asp-action="Index">목회자 칼럼</a></li>
-                            <li id="Mission"><a asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)" title="">Mission</a></li>
-                            <li id="School"><a asp-controller="School" asp-action="Index">한국학교</a></li>
+                            <li id="Home" class="active"><a asp-controller="Home" asp-action="Index">@Localizer["Home"]</a></li>
+                            <li id="Pastor"><a asp-controller="Pastor" asp-action="Index">@Localizer["Pastor"]</a></li>
+                            <li id="Mission"><a asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)" title="">@Localizer["Mission"]</a></li>
+                            <li id="School"><a asp-controller="School" asp-action="Index">@Localizer["Korean School"]</a></li>
                             <li id="Blog">
 
                                 @if (User.Identity.IsAuthenticated)
                                     {
-                                <a asp-controller="Blog" asp-action="AllIndex"><span>블라그</span></a>
-                                <ul>
-                                    <li><a asp-controller="Blog" asp-action="Index" asp-route-id="@ViewBag.UserSettings.userId">My Blogs</a></li>
-                                </ul>
+                                        <a asp-controller="Blog" asp-action="AllIndex"><span>@Localizer["Blog"]</span></a>
+                                        <ul>
+                                            <li><a asp-controller="Blog" asp-action="Index" asp-route-id="@ViewBag.UserSettings.userId">@Localizer["My Blog"]</a></li>
+                                        </ul>
                                     }else{
-                                <a asp-controller="Blog" asp-action="AllIndex">블라그</a>
+                                        <a asp-controller="Blog" asp-action="AllIndex">@Localizer["Blog"]</a>
                                     }
                             </li>
                             @if (User.Identity.IsAuthenticated)
                                 {
-                            <li id="content">
-                                <a asp-controller="Contact" asp-action="Index"><span>Contact</span></a>
-                                <ul>
-                                    <partial name="_LoginPartial" />
-                                </ul>
-                            </li>
+                                    <li id="content">
+                                        <a asp-controller="Contact" asp-action="Index"><span>@Localizer["Contact"]</span></a>
+                                        <ul>
+                                            <partial name="_LoginPartial" />
+                                        </ul>
+                                    </li>
                                 }
                                 else
                                 {
-                            <li id="Contact"><a asp-controller="Contact" asp-action="Index">Contact</a></li>
-                            <partial name="_LoginPartial" />
+                                    <li id="Contact"><a asp-controller="Contact" asp-action="Index">@Localizer["Contact"]</a></li>
+                                    <partial name="_LoginPartial" />
                                 }
                             }
                         </ul>
@@ -244,6 +248,6 @@
         </div>
     </footer>
     <!-- Footer End -->
-    <img id="loading" src="~/css/ajax-loader.gif"/>
+    <img id="loading" src="~/css/ajax-loader.gif" />
 </body>
 </html>

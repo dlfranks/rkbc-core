@@ -117,49 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Blog" xml:space="preserve">
-    <value>블라그</value>
+  <data name="Address" xml:space="preserve">
+    <value>地址</value>
   </data>
-  <data name="Burkina Faso" xml:space="preserve">
-    <value>브키나파소</value>
+  <data name="Admission Application" xml:space="preserve">
+    <value>入学申请</value>
   </data>
-  <data name="Cambodia" xml:space="preserve">
-    <value>캄보디아</value>
+  <data name="Contemporary Service" xml:space="preserve">
+    <value>当代服务</value>
   </data>
-  <data name="China, Hong Kong" xml:space="preserve">
-    <value>중국,홍콩</value>
+  <data name="Daliy Early Morning Prayer Meeting" xml:space="preserve">
+    <value>每日清晨祷告会</value>
   </data>
-  <data name="Dominican Republic" xml:space="preserve">
-    <value>도미니카</value>
+  <data name="English as a  second language class" xml:space="preserve">
+    <value>英语作为第二语言课程</value>
   </data>
-  <data name="Internal error, unable to save the image." xml:space="preserve">
-    <value>에러가 발생해서 저장에 실패했습니다.</value>
+  <data name="Fall Semester" xml:space="preserve">
+    <value>秋季学期</value>
   </data>
-  <data name="Mexico" xml:space="preserve">
-    <value>멕시코</value>
+  <data name="Friday" xml:space="preserve">
+    <value>星期五</value>
   </data>
-  <data name="Mission Coutries" xml:space="preserve">
-    <value>선교지 &amp; 선교사 배정</value>
+  <data name="Last Saturday In August" xml:space="preserve">
+    <value>八月的最后一个星期六</value>
   </data>
-  <data name="My Blog" xml:space="preserve">
-    <value>내 블라그</value>
+  <data name="Last Saturday In January" xml:space="preserve">
+    <value>一月的最后一个星期六</value>
   </data>
-  <data name="No file was chosen for an attached image, please select a file!" xml:space="preserve">
-    <value>이미지를 선택해 주세요.</value>
+  <data name="Monday-Friday" xml:space="preserve">
+    <value>周一至周五</value>
   </data>
-  <data name="North Korea" xml:space="preserve">
-    <value>북한</value>
+  <data name="Our Church" xml:space="preserve">
+    <value>我们的教会</value>
   </data>
-  <data name="Philippines" xml:space="preserve">
-    <value>필리핀</value>
+  <data name="Our Program" xml:space="preserve">
+    <value>我们的计划</value>
   </data>
-  <data name="Required" xml:space="preserve">
-    <value>입력해야합니다.</value>
+  <data name="Pastor Column" xml:space="preserve">
+    <value>牧师专栏</value>
   </data>
-  <data name="Unable to read image format, please upload either .jpeg or .png images." xml:space="preserve">
-    <value>Jpeg 이나 Png 포맷을 선택해 주세요.</value>
+  <data name="Raleigh Vision Korean School" xml:space="preserve">
+    <value>罗利视觉韩国学校</value>
   </data>
-  <data name="Vietnam" xml:space="preserve">
-    <value>베트남</value>
+  <data name="Saturday" xml:space="preserve">
+    <value>星期六</value>
+  </data>
+  <data name="Service Times" xml:space="preserve">
+    <value>服务时间</value>
+  </data>
+  <data name="Spring Semester" xml:space="preserve">
+    <value>春季学期</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>时间</value>
+  </data>
+  <data name="Traditional Service" xml:space="preserve">
+    <value>传统服务</value>
+  </data>
+  <data name="Tuition" xml:space="preserve">
+    <value>学费</value>
+  </data>
+  <data name="Welcome to Our Worship Service" xml:space="preserve">
+    <value>欢迎来到我们的敬拜服务</value>
+  </data>
+  <data name="Wendesday Service" xml:space="preserve">
+    <value>周三服务</value>
+  </data>
+  <data name="Yourth Service" xml:space="preserve">
+    <value>青年服务</value>
   </data>
 </root>

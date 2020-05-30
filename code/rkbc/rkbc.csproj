@@ -59,6 +59,7 @@
 
   
   <ItemGroup>
+    <Folder Include="Areas\Identity\Pages\Resources\" />
     <Folder Include="logs\" />
     <Folder Include="wwwroot\assets\blog\" />
     <Folder Include="wwwroot\gallary\" />

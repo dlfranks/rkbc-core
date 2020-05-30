@@ -152,7 +152,6 @@ namespace rkbc
             services.Configure<RequestLocalizationOptions>(options => {
                 var supportedCultures = new List<CultureInfo> { 
                     new CultureInfo("en"), //English
-                    new CultureInfo("fr"), //French
                     new CultureInfo("zh"), //Chinese
                     new CultureInfo("ko"), //Korean
                     new CultureInfo("es") //spanish

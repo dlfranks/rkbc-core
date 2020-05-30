@@ -117,49 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Blog" xml:space="preserve">
-    <value>블라그</value>
-  </data>
   <data name="Burkina Faso" xml:space="preserve">
-    <value>브키나파소</value>
+    <value>布基纳法索</value>
   </data>
   <data name="Cambodia" xml:space="preserve">
-    <value>캄보디아</value>
+    <value>柬埔寨</value>
   </data>
   <data name="China, Hong Kong" xml:space="preserve">
-    <value>중국,홍콩</value>
+    <value>中国香港</value>
   </data>
   <data name="Dominican Republic" xml:space="preserve">
-    <value>도미니카</value>
-  </data>
-  <data name="Internal error, unable to save the image." xml:space="preserve">
-    <value>에러가 발생해서 저장에 실패했습니다.</value>
+    <value>多明尼加共和国</value>
   </data>
   <data name="Mexico" xml:space="preserve">
-    <value>멕시코</value>
+    <value>墨西哥</value>
   </data>
   <data name="Mission Coutries" xml:space="preserve">
-    <value>선교지 &amp; 선교사 배정</value>
-  </data>
-  <data name="My Blog" xml:space="preserve">
-    <value>내 블라그</value>
-  </data>
-  <data name="No file was chosen for an attached image, please select a file!" xml:space="preserve">
-    <value>이미지를 선택해 주세요.</value>
+    <value>任务国</value>
   </data>
   <data name="North Korea" xml:space="preserve">
-    <value>북한</value>
+    <value>北朝鲜</value>
   </data>
   <data name="Philippines" xml:space="preserve">
-    <value>필리핀</value>
-  </data>
-  <data name="Required" xml:space="preserve">
-    <value>입력해야합니다.</value>
-  </data>
-  <data name="Unable to read image format, please upload either .jpeg or .png images." xml:space="preserve">
-    <value>Jpeg 이나 Png 포맷을 선택해 주세요.</value>
+    <value>菲律宾</value>
   </data>
   <data name="Vietnam" xml:space="preserve">
-    <value>베트남</value>
+    <value>越南</value>
   </data>
 </root>

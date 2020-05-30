@@ -8,15 +8,39 @@
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var cultureItems = LocOptions.Value.SupportedCultures
-        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName.ToString()})
         .ToList();
+    var currentCulture = requestCulture.RequestCulture.Culture;
+   
 }
+<style>
+    #languages{margin-right:300px;height:30px;}
+    #languages li{
+        float:left;
+        margin-right:10px;
+        margin-top:5px;
+    }
+    #languages li a{
+        color:#3b3b3b;
+    }
+    
+</style>
+    <div id="languages">
+        <ul style="float:right;">
+            @foreach (var item in cultureItems)
+            {
+                if (item.Value == currentCulture.Name)
+                {
+                    <li><a style="color:#83adff;" asp-controller="Home" asp-action="SetLanguage" asp-route-culture="@item.Value" asp-route-returnUrl="@Context.Request.Path">@Localizer[item.Text]</a></li>
+                }
+                else
+                {
+                    <li><a style="cursor:pointer;" asp-controller="Home" asp-action="SetLanguage" asp-route-culture="@item.Value" asp-route-returnUrl="@Context.Request.Path">@Localizer[item.Text]</a></li>
+                }
 
-<div title="@Localizer["Request culture provider:"] @requestCulture?.Provider?.GetType().Name">
-    <form id="selectLanguage" asp-controller="Blog" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path"
-          method="post" class="form-horizontal" role="form">
-        @Localizer["Lanuage:"] <select name="Culture"
-                                       asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
-        <button type="submit" class="btnUpdate btn btn-default btn-xs">Save</button>
-    </form>
-</div>
+            }
+
+        </ul>
+
+
+    </div>
