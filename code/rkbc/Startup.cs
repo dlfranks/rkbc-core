@@ -116,7 +116,7 @@ namespace rkbc
 
             //services.AddHttpContextAccessor();
             //services.AddResponseCaching();
-            //services.AddRazorPages();
+            services.AddRazorPages();
 
             //Ioc
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
