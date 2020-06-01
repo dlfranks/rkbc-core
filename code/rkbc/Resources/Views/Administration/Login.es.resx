@@ -117,22 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Account Type" xml:space="preserve">
-    <value>계정타입</value>
-  </data>
-  <data name="Confirm Password" xml:space="preserve">
-    <value>비밀번호 재 입력</value>
-  </data>
-  <data name="Country" xml:space="preserve">
-    <value>나라</value>
-  </data>
-  <data name="Email" xml:space="preserve">
-    <value>이메일</value>
-  </data>
-  <data name="Passwprd" xml:space="preserve">
-    <value>비밀번호</value>
+  <data name="Log in" xml:space="preserve">
+    <value>Iniciar sesión</value>
   </data>
   <data name="Register" xml:space="preserve">
-    <value>가입</value>
+    <value>Registrarse</value>
+  </data>
+  <data name="Use your account to log in or" xml:space="preserve">
+    <value>Use su cuenta para iniciar sesión o</value>
   </data>
 </root>

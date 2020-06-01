@@ -94,6 +94,7 @@ namespace rkbc.web.viewmodels
         public IFormFile image { get; set; }
         public string embededVideoUrl { get; set; }
         public string imageUrl { get; set; }
+        public string blogName { get; set; }
     }
     
 }

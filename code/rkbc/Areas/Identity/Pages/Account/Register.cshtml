@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col-md-4">
                 <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <h4>Create a new account.</h4>
+                    <h4>@localizer["Create a new account."]</h4>
                     <hr />
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-group">
@@ -38,16 +38,16 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Input.countryCode"></label>
-                        <select asp-items="Html.GetEnumSelectList<CountryEnum>()" asp-for="Input.countryCode" class="form-control"></select>
+                        <select asp-items="@Model.countryOptions" asp-for="Input.countryCode" class="form-control"></select>
                         <span asp-validation-for="Input.countryCode" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Input.accountType"></label>
-                        <select asp-items="Html.GetEnumSelectList<AccountType>()" asp-for="Input.accountType" class="form-control"></select>
+                        <select asp-items="@Model.accountTypeOptions" asp-for="Input.accountType" class="form-control"></select>
                         <span asp-validation-for="Input.accountType" class="text-danger"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btnUpdate">Register</button>
+                    <button type="submit" class="btn btn-primary btnUpdate">@localizer["Register"]</button>
                 </form>
             </div>
         </div>

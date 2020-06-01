@@ -28,6 +28,8 @@
     <Compile Remove="Migrations\20200426201937_AddAccountType2.Designer.cs" />
     <Compile Remove="Migrations\20200510194946_authorNotNull.cs" />
     <Compile Remove="Migrations\20200510194946_authorNotNull.Designer.cs" />
+    <Compile Remove="Migrations\20200531193749_addBlogName.cs" />
+    <Compile Remove="Migrations\20200531193749_addBlogName.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,5 +66,18 @@
     <Folder Include="wwwroot\assets\blog\" />
     <Folder Include="wwwroot\gallary\" />
     <Folder Include="wwwroot\logs\" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\web\viewmodels\InputModel.es.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\web\viewmodels\InputModel.ko.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\web\viewmodels\InputModel.zh.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

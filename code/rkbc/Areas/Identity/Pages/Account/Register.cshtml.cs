@@ -10,8 +10,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using rkbc.core.models;
+using rkbc.web.viewmodels;
 using rkbc.core.service;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using rkbc.web.helpers;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Localization;
 
 namespace RKBC.Areas.Identity.Pages.Account
 {
@@ -23,20 +29,22 @@ namespace RKBC.Areas.Identity.Pages.Account
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly UserService userService;
-
+        private readonly IStringLocalizer<RegisterModel> Localizer;
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<ApplicationRole> roleManager,
             ILogger<RegisterModel> logger,
-            UserService _userService
-            )
+            UserService _userService,
+            IStringLocalizer<RegisterModel> _localizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _logger = logger;
             userService = _userService;
+            Localizer = _localizer;
+            Input = new InputModel();
         }
 
         [BindProperty]
@@ -44,34 +52,9 @@ namespace RKBC.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
-        public class InputModel
-        {
+        public List<SelectListItem> countryOptions { get; set; }
+        public List<SelectListItem> accountTypeOptions { get; set; }
 
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
-
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
-
-            [Required]
-            [Display(Name = "Country")]
-            public int countryCode { get; set; }
-
-            [Required]
-            [Display(Name = "Account Type")]
-            public int accountType { get; set; }
-
-        }
         public bool LookupEmail(string email)
         {
            var user = _userManager.FindByEmailAsync(email);
@@ -79,9 +62,26 @@ namespace RKBC.Areas.Identity.Pages.Account
         }
         public void OnGet(string returnUrl = null)
         {
-           ReturnUrl = returnUrl;
-        }
+            var names = Enum.GetNames(typeof(CountryEnum));
+            var countryList = new List<SelectListItem>();
+            for (int i = 0; i < names.Length; i++)
+            {
+                var value = (CountryEnum)Enum.Parse(typeof(CountryEnum), names[i]);
+                countryList.Add(new SelectListItem{ Value = ((int)value).ToString(), Text = Localizer[EnumHelper.GetDisplayName(value)] });
+            }
+            countryOptions = countryList;
+            var accountNames = Enum.GetNames(typeof(AccountType));
+            var accountTypeList = new List<SelectListItem>();
+            for (int i = 0; i < accountNames.Length; i++)
+            {
+                var value = (AccountType)Enum.Parse(typeof(AccountType), accountNames[i]);
+                accountTypeList.Add(new SelectListItem { Value = ((int)value).ToString(), Text = Localizer[EnumHelper.GetDisplayName(value)]});
+            }
+            accountTypeOptions = accountTypeList;
 
+            ReturnUrl = returnUrl;
+        }
+        
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
