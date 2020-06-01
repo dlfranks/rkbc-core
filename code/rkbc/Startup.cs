@@ -146,7 +146,7 @@ namespace rkbc
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddDataAnnotationsLocalization()
             .AddXmlSerializerFormatters()
-            .AddRazorRuntimeCompilation()
+            //.AddRazorRuntimeCompilation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.Configure<RequestLocalizationOptions>(options => {
