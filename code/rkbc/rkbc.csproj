@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+  <RootNamespace>rkbc.web</RootNamespace>
     <!--<RuntimeIdentifier>win8-x64</RuntimeIdentifier>
     <ServerGarbageCollection>false</ServerGarbageCollection>-->
   </PropertyGroup>

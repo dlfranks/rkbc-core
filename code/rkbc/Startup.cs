@@ -130,6 +130,7 @@ namespace rkbc
                 var factory = x.GetRequiredService<IUrlHelperFactory>();
                 return factory.GetUrlHelper(actionContext);
             });
+            services.AddSingleton<IItemRepository, ItemRepository>();
             //Localization
             services.AddLocalization(options =>
             {

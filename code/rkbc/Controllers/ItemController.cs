@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using rkbcMobile.Models;
-using rkbc;
+using rkbc.core.models;
 using rkbc.core.repository;
 
-namespace rkbcMobile.Controllers
+namespace rkbc.web.Controllers
 {
     [Route("api/item")]
     [ApiController]
@@ -24,9 +24,9 @@ namespace rkbcMobile.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<Item>> List()
         {
-            
+
             return ItemRepository.GetAll().ToList();
-            
+
         }
 
         [HttpGet("{id}")]
