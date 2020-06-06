@@ -6,78 +6,42 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using rkbc.core.models;
 using rkbc.core.repository;
+using Microsoft.EntityFrameworkCore;
+using rkbc.web.controllers;
+using rkbc.core.service;
 
 namespace rkbc.web.Controllers
 {
-    [Route("api/item")]
-    [ApiController]
-    public class ItemController : ControllerBase
+    
+    public class ItemController : AppBaseController
     {
         private readonly IItemRepository ItemRepository;
+        
 
-        public ItemController(IItemRepository itemRepository)
+        public ItemController(IItemRepository itemRepository, UserService _userService, IUnitOfWork _unitOfWork) : base(_unitOfWork, _userService)
         {
             ItemRepository = itemRepository;
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Item>> List()
+        public async Task<JsonResult> getList()
         {
-
-            return ItemRepository.GetAll().ToList();
-
-        }
-
-        [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Item> GetItem(string id)
-        {
-            Item item = ItemRepository.Get(id);
-
-            if (item == null)
-                return NotFound();
-
-            return item;
-        }
-
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Item> Create([FromBody] Item item)
-        {
-            ItemRepository.Add(item);
-            return CreatedAtAction(nameof(GetItem), new { item.Id }, item);
-        }
-
-        [HttpPut]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult Edit([FromBody] Item item)
-        {
-            try
+            var posts = await unitOfWork.posts.get().Select(q => new
             {
-                ItemRepository.Update(item);
-            }
-            catch (Exception)
+                Id = q.id,
+                Text = q.title,
+                Description = q.content
+            }).ToListAsync();
+            var items = ItemRepository.GetAll();
+            var lst = items.Select(q => new
             {
-                return BadRequest("Error while editing item");
-            }
-            return NoContent();
+                Id = q.Id,
+                Text = q.Text,
+                Description = q.Description
+            }).ToList();
+            return Json(posts);
         }
 
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult Delete(string id)
-        {
-            Item item = ItemRepository.Remove(id);
-
-            if (item == null)
-                return NotFound();
-
-            return Ok();
-        }
+        
     }
 }

@@ -27,7 +27,8 @@ namespace rkbcMobile.Services
         {
             if (forceRefresh && IsConnected)
             {
-                var json = await client.GetStringAsync($"api/item");
+                var json = await client.GetStringAsync($"Item/getList");
+                //var list = JsonConvert.DeserializeObject<IEnumerable<Item>>(json);
                 items = await Task.Run(() => JsonConvert.DeserializeObject<IEnumerable<Item>>(json));
             }
 

@@ -4,8 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using rkbcMobile.Models;
-using rkbc;
-using rkbc.core.repository;
+
 
 namespace rkbcMobile.Controllers
 {
