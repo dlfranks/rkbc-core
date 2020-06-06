@@ -9,6 +9,7 @@
   <MasterDetailPage.Master>
     <pages:TestPageMaster x:Name="MasterPage" />
   </MasterDetailPage.Master>
+    
   <MasterDetailPage.Detail>
     <NavigationPage>
       <x:Arguments>

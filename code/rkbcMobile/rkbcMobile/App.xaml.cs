@@ -25,7 +25,7 @@ namespace rkbcMobile
                 DependencyService.Register<MockDataStore>();
             else
                 DependencyService.Register<AzureDataStore>();
-            MainPage = new TestPage();
+            MainPage = new MainPage();
         }
 
         protected override void OnStart()
