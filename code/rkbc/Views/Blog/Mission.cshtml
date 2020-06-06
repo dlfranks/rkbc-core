@@ -1,6 +1,8 @@
 ﻿@model rkbc.web.viewmodels.PagedResult<rkbc.core.models.Post>
 @using rkbc.web.viewcomponents;
 @using rkbc.core.models;
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 <style>
     @@media (min-width: 767px) {
         iframe {
@@ -24,7 +26,7 @@
     <div class="container">
 
         <div class="eight columns">
-            <h5 class="left">선교지 & 선교사 배정</h5>
+            <h5 class="left">@Localizer["Mission Coutries"]</h5>
         </div>
 
         <div class="eight columns">
@@ -46,18 +48,18 @@
         <!-- Tabs -->
         <div class="tabbable">
             <ul class="nav nav-tabs" style="margin-left:15px;">
-                <li class="active"><a id="@(CountryEnum.Dominican_Republic)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)">도미니카</a></li>
-                <li><a id="@(CountryEnum.VietNam)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.VietNam)">베트남</a></li>
-                <li><a id="@(CountryEnum.China)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.China)">홍콩, 중국</a></li>
-                <li><a id="@(CountryEnum.North_Korea)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.North_Korea)">북한</a></li>
-                <li><a id="@(CountryEnum.Mexico)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Mexico)">멕시코</a></li>
-                <li><a id="@(CountryEnum.Burkina_Faso)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Burkina_Faso)">브키나파소</a></li>
-                <li><a id="@(CountryEnum.Philippines)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Philippines)">필리핀</a></li>
-                <li><a id="@(CountryEnum.Cambodia)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Cambodia)">캄보디아</a></li>
+                <li class="active"><a id="@(CountryEnum.Dominican_Republic)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Dominican_Republic)">@Localizer["Dominican Republic"]</a></li>
+                <li><a id="@(CountryEnum.VietNam)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.VietNam)">@Localizer["Vietnam"]</a></li>
+                <li><a id="@(CountryEnum.China)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.China)">@Localizer["China"]</a></li>
+                <li><a id="@(CountryEnum.North_Korea)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.North_Korea)">@Localizer["North Korea"]</a></li>
+                <li><a id="@(CountryEnum.Mexico)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Mexico)">@Localizer["Mexico"]</a></li>
+                <li><a id="@(CountryEnum.Burkina_Faso)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Burkina_Faso)">@Localizer["Burkina Faso"]</a></li>
+                <li><a id="@(CountryEnum.Philippines)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Philippines)">@Localizer["Philippines"]</a></li>
+                <li><a id="@(CountryEnum.Cambodia)" asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@(CountryEnum.Cambodia)">@Localizer["Cambodia"]</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active">
-                    <h3>@ViewBag.CountryName</h3>
+                    <h3>@Localizer[ViewBag.CountryName]</h3>
                     <!-- Content -->
                     <div id="content">
                         <div class="">

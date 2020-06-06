@@ -2,52 +2,57 @@
 @model RegisterModel
 @using rkbc.core.models;
 @using rkbc.core.service;
-@inject  UserService userService;
+@using Microsoft.AspNetCore.Localization
+@inject UserService userService;
+@inject IStringLocalizer<RegisterModel> localizer
+
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = localizer["Register"];
+    var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+    var requestCulture = requestCultureFeature.RequestCulture;
 }
-    <div class="container">
-        <div class="content" style="margin:10px;">
-            <h1>@ViewData["Title"]</h1>
+<div class="container">
+    <div class="content" style="margin:10px;">
+        <h1>@ViewData["Title"]</h1>
 
-            <div class="row">
-                <div class="col-md-4">
-                    <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                        <h4>Create a new account.</h4>
-                        <hr />
-                        <div asp-validation-summary="All" class="text-danger"></div>
-                        <div class="form-group">
-                            <label asp-for="Input.Email"></label>
-                            <input asp-for="Input.Email" class="form-control" />
-                            <span asp-validation-for="Input.Email" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Input.Password"></label>
-                            <input asp-for="Input.Password" class="form-control" />
-                            <span asp-validation-for="Input.Password" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Input.ConfirmPassword"></label>
-                            <input asp-for="Input.ConfirmPassword" class="form-control" />
-                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Input.countryCode"></label>
-                            <select asp-items="Html.GetEnumSelectList<CountryEnum>()" asp-for="Input.countryCode" class="form-control"></select>
-                            <span asp-validation-for="Input.countryCode" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Input.accountType"></label>
-                            <select asp-items="Html.GetEnumSelectList<AccountType>()" asp-for="Input.accountType" class="form-control"></select>
-                            <span asp-validation-for="Input.accountType" class="text-danger"></span>
-                        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <h4>@localizer["Create a new account."]</h4>
+                    <hr />
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Input.Email"></label>
+                        <input asp-for="Input.Email" class="form-control" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Password"></label>
+                        <input asp-for="Input.Password" class="form-control" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.ConfirmPassword"></label>
+                        <input asp-for="Input.ConfirmPassword" class="form-control" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.countryCode"></label>
+                        <select asp-items="@Model.countryOptions" asp-for="Input.countryCode" class="form-control"></select>
+                        <span asp-validation-for="Input.countryCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.accountType"></label>
+                        <select asp-items="@Model.accountTypeOptions" asp-for="Input.accountType" class="form-control"></select>
+                        <span asp-validation-for="Input.accountType" class="text-danger"></span>
+                    </div>
 
-                        <button type="submit" class="btn btn-primary btnUpdate">Register</button>
-                    </form>
-                </div>
-            </div>
+                    <button type="submit" class="btn btn-primary btnUpdate">@localizer["Register"]</button>
+                </form>
             </div>
         </div>
-            @section Scripts {
-                <partial name="_ValidationScriptsPartial" />
-            }
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@using Microsoft.AspNetCore.Builder
+
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = LocOptions.Value.SupportedCultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName.ToString()})
+        .ToList();
+    var currentCulture = requestCulture.RequestCulture.Culture;
+   
+}
+<style>
+    #languages{margin-right:300px;height:30px;}
+    #languages li{
+        float:left;
+        margin-right:10px;
+        margin-top:5px;
+    }
+    #languages li a{
+        color:#3b3b3b;
+    }
+    
+</style>
+    <div id="languages">
+        <ul style="float:right;">
+            @foreach (var item in cultureItems)
+            {
+                if (item.Value == currentCulture.Name)
+                {
+                    <li><a style="color:#83adff;" asp-controller="Home" asp-action="SetLanguage" asp-route-culture="@item.Value" asp-route-returnUrl="@Context.Request.Path">@Localizer[item.Text]</a></li>
+                }
+                else
+                {
+                    <li><a style="cursor:pointer;" asp-controller="Home" asp-action="SetLanguage" asp-route-culture="@item.Value" asp-route-returnUrl="@Context.Request.Path">@Localizer[item.Text]</a></li>
+                }
+
+            }
+
+        </ul>
+
+
+    </div>

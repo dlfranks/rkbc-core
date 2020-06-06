@@ -1,27 +1,29 @@
 @using rkbc.core.models
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject IHttpContextAccessor httpContext
+@inject IViewLocalizer Localizer
 
 @if (User.Identity.IsAuthenticated)
 
-    {
-        <li>
-            <a class="nav-link text-dark" asp-controller="Administration" asp-action="Edit" asp-route-id="@ViewBag.UserSettings.userId"> @User.Identity.Name!</a>
-        </li>
-        <li>
+{
+    <li>
+        <a class="nav-link text-dark" asp-controller="Administration" asp-action="Edit" asp-route-id="@ViewBag.UserSettings.userId"> @User.Identity.Name!</a>
+    </li>
+    <li>
 
-            <a  asp-controller="Administration" asp-action="Logout">Logout</a>
-        </li>
-    }
-    else
-    {
-        <li>
-            <a asp-area="Identity" asp-page="/Account/Register">Register</a>
-        </li>
-        <li>
-            <a asp-controller="Administration" asp-action="Login">Login</a>
-        </li>
-    }
+        <a asp-controller="Administration" asp-action="Logout">@Localizer["Logout"]</a>
+    </li>
+}
+else
+{
+    <li>
+        <a asp-area="Identity" asp-page="/Account/Register">@Localizer["Register"]</a>
+    </li>
+    <li>
+        <a asp-controller="Administration" asp-action="Login">@Localizer["Login"]</a>
+    </li>
+}

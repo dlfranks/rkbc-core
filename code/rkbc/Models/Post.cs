@@ -1,4 +1,5 @@
-﻿using rkbc.core.repository;
+﻿using Microsoft.Extensions.Localization;
+using rkbc.core.repository;
 using rkbc.web.constant;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,11 @@ namespace rkbc.core.models
     }
     public class Post : IEntity
     {
+        //private readonly IStringLocalizer<Post> localizer;
+        //public Post(IStringLocalizer<Post> _localizer)
+        //{
+        //    localizer = _localizer;
+        //}
         [Required]
         public int id { get; set; }
         [Required]
@@ -54,28 +60,26 @@ namespace rkbc.core.models
         public string imageFileName { get; set; }
         public string videoURL { get; set; }
         
-        [Display(Name = "내용")]
+        [Display(Name = "Content")]
         public string content { get; set; } = string.Empty;
 
-        [Display(Name = "포스트 요약")]
+        [Display(Name = "Excerpt")]
         public string excerpt { get; set; } = string.Empty;
 
         [Required]
-        [Display(Name="포스트 타입")]
+        [Display(Name="Post Type")]
         public int postType { get; set; } = (int)BlogPostType.Sigle;
 
-        [Display(Name = "퍼블리쉬?")]
+        [Display(Name = "Is Published?")]
         public bool isPublished { get; set; } = true;
         public DateTime createDt { get; set; }
         public DateTime lastModified { get; set; } = DateTime.UtcNow;
 
         public DateTime pubDate { get; set; } = DateTime.UtcNow;
-
-        [Display(Name = "포스트 고유 링크")]
         public string slug { get; set; } = string.Empty;
         public int views { get; set; } = 0;
         [Required]
-        [Display(Name = "제목")]
+        [Display(Name = "Subject")]
         public string title { get; set; } = string.Empty;
 
         public IList<Comment> comments { get; } = new List<Comment>();

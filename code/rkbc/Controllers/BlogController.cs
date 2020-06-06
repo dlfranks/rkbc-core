@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using rkbc.config.models;
 using rkbc.core.helper;
@@ -91,6 +94,7 @@ namespace rkbc.web.viewmodels
         public IFormFile image { get; set; }
         public string embededVideoUrl { get; set; }
         public string imageUrl { get; set; }
+        //Todo Named Blog
     }
     
 }
@@ -102,16 +106,21 @@ namespace rkbc.web.controllers
         private BlogService blogService;
         private readonly IOptionsSnapshot<BlogSettings> settings;
         private IUrlHelper urlHelper;
+        private readonly IStringLocalizer<BlogController> localizer;
+        
         public BlogController(FileHelper _fileHelper, IOptionsSnapshot<BlogSettings> _settings,
             IUnitOfWork _unitOfWork, 
             UserService _userService,
             BlogService _blogService,
-            IUrlHelper _urlHelper) : base(_unitOfWork, _userService)
+            IUrlHelper _urlHelper,
+            IStringLocalizer<BlogController> _localizer) : base(_unitOfWork, _userService)
         {
             fileHelper = _fileHelper;
             blogService = _blogService;
             settings = _settings;
             urlHelper = _urlHelper;
+            localizer = _localizer;
+            
         }
         protected void acceptImage(Post modelObj, IFormFile file, out List<string> errmsg)
         {
@@ -120,7 +129,7 @@ namespace rkbc.web.controllers
             // Verify we have an image
             if (file == null)
             {
-                errmsg.Add("No file was chosen for an attached image, please select a file!");
+                errmsg.Add(localizer["No file was chosen for an attached image, please select a file!"]);
                 return;
             }
             if (file.Length == 0)
@@ -209,7 +218,7 @@ namespace rkbc.web.controllers
             query = query.Include("blog").Include("blog.author").Include("comments").OrderByDescending(q => q.lastModified);
             int pageSize = settings.Value.PostsPerPage;
             var result = await blogService.GetPagedResultForQuery(query, page, pageSize);
-            ViewBag.title = "Blog";
+            ViewBag.title = localizer["Blog"];
             return View("Index", result);
         }
         [Route("/Blog/Index/{userId}")]
@@ -445,6 +454,7 @@ namespace rkbc.web.controllers
 
             return this.Redirect($"{post.GetEncodedLink()}#comments");
         }
+        
         
     }
 }

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+  <RootNamespace>rkbc.web</RootNamespace>
     <!--<RuntimeIdentifier>win8-x64</RuntimeIdentifier>
     <ServerGarbageCollection>false</ServerGarbageCollection>-->
   </PropertyGroup>
@@ -28,6 +29,8 @@
     <Compile Remove="Migrations\20200426201937_AddAccountType2.Designer.cs" />
     <Compile Remove="Migrations\20200510194946_authorNotNull.cs" />
     <Compile Remove="Migrations\20200510194946_authorNotNull.Designer.cs" />
+    <Compile Remove="Migrations\20200531193749_addBlogName.cs" />
+    <Compile Remove="Migrations\20200531193749_addBlogName.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,9 +62,23 @@
 
   
   <ItemGroup>
+    <Folder Include="Areas\Identity\Pages\Resources\" />
     <Folder Include="logs\" />
     <Folder Include="wwwroot\assets\blog\" />
     <Folder Include="wwwroot\gallary\" />
     <Folder Include="wwwroot\logs\" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\web\viewmodels\InputModel.es.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\web\viewmodels\InputModel.ko.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\web\viewmodels\InputModel.zh.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

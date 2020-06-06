@@ -1,4 +1,6 @@
-﻿@model rkbc.web.viewmodels.BlogSideViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model rkbc.web.viewmodels.BlogSideViewModel
 @using rkbc.core.models;
 @using rkbc.web.helpers;
 <style>
@@ -12,7 +14,7 @@
     <input class="search" name="" value="Search">
 </div>
 
-<h4>해외선교 소식</h4>
+<h4>@Localizer["Mission News"]</h4>
 @{
     var countries = (CountryEnum[])Enum.GetValues(typeof(CountryEnum));
 }
@@ -21,7 +23,7 @@
 {
     if (countries[i] != CountryEnum.USA && countries[i] != CountryEnum.South_Korea)
     {
-        <a asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@countries[i]"><div class="tag">@(EnumHelper.GetDisplayName<CountryEnum>(countries[i]))</div></a>
+        <a asp-controller="Blog" asp-action="MissionIndex" asp-route-country="@countries[i]"><div class="tag">@(Localizer[EnumHelper.GetDisplayName<CountryEnum>(countries[i])])</div></a>
     }
 
 
@@ -30,7 +32,7 @@
 
 
 
-<h4>최신 블라그</h4>
+<h4>@Localizer["Latest Posts"]</h4>
 <ul class="list-c">
     @await foreach (var item in Model.latestPostList)
     {
@@ -40,7 +42,7 @@
 
 </ul>
 
-<h4>최신 코멘트</h4>
+<h4>@Localizer["Latest Commets"]</h4>
 @await foreach (var item in Model.latestCommentList)
 {
     <i class="icon-comment-alt"></i> @item.comment <a asp-controller="Blog" asp-action="Post" asp-route-postId="@item.postId" rel="external"> @item.postTitle</a>
