@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,6 +59,11 @@ namespace Microsoft.AspNetCore.Mvc
             object routeValues = null)
         {
             return url.RouteUrl(routeName, routeValues, url.ActionContext.HttpContext.Request.Scheme);
+        }
+        public static string DomainName(this IUrlHelper url)
+        {
+            return url.ActionContext.HttpContext.Request.Scheme.ToString() + "://" + url.ActionContext.HttpContext.Request.Host.ToString();
+           
         }
     }
 }
