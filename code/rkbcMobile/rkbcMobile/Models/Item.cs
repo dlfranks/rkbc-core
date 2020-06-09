@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace rkbcMobile.Models
 {
@@ -10,7 +11,7 @@ namespace rkbcMobile.Models
         Video
 
     }
-    public class Commment
+    public class CommmentItem
     {
         public int commentId { get; set; }
         public int postId { get; set; }
@@ -19,6 +20,24 @@ namespace rkbcMobile.Models
         public string content { get; set; }
     }
     public class Item
+    {
+        public string Id { get; set; }
+        public int postType { get; set; }
+        public string imageUrl { get; set; }
+        public string videoURL { get; set; }
+        public string Text { get; set; }
+        public string Description { get; set; }
+        public string getVideoId()
+        {
+            var videoId = "";
+            if ((postType == (int)BlogPostType.Video) && !String.IsNullOrWhiteSpace(this.videoURL))
+            {
+                videoId = Regex.Match(this.videoURL, "(?:.+?)?(?:\\/v\\/|watch\\/|\\?v=|\\&v=|youtu\\.be\\/|\\/v=|^youtu\\.be\\/)([a-zA-Z0-9_-]{11})+").Groups[1].Value;
+            }
+            return videoId;
+        }
+    }
+    public class PostItem
     {
         public int postId { get; set; }
         public int blogId { get; set; }
@@ -34,7 +53,18 @@ namespace rkbcMobile.Models
         public string slug { get; set; }
         public int views { get; set; }
         public string title { get; set; }
-        public IList<Commment> comments { get; set; }
+        public IList<CommmentItem> comments { get; set; }
+
+        public string getVideoId()
+        {
+            var videoId = "";
+            if ((postType == (int)BlogPostType.Video) && !String.IsNullOrWhiteSpace(this.videoURL))
+            {
+                videoId = Regex.Match(this.videoURL, "(?:.+?)?(?:\\/v\\/|watch\\/|\\?v=|\\&v=|youtu\\.be\\/|\\/v=|^youtu\\.be\\/)([a-zA-Z0-9_-]{11})+").Groups[1].Value;
+            }
+            return videoId;
+        }
+
         public bool isGalleryType()
         {
             return postType == (int)BlogPostType.Gallery ? true : false;

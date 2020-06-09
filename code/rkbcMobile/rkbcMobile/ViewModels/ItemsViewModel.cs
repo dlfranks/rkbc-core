@@ -39,7 +39,20 @@ namespace rkbcMobile.ViewModels
                 var items = await DataStore.GetItemsAsync(true);
                 foreach (var item in items)
                 {
+                    if(item.postType == (int)BlogPostType.Video)
+                    {
+                       item.imageUrl = "https://img.youtube.com/vi/" + item.getVideoId() + "/default.jpg";
+                    }else if(item.postType == (int)BlogPostType.Sigle)
+                    {
+                        item.imageUrl = App.AzureBackendUrl + "/assets/blog/clickHereImage.jpg";
+                    }
+                    else
+                    {
+                        item.imageUrl = "http://rkbc.us" + item.imageUrl;
+                    }
+                        
                     Items.Add(item);
+
                 }
             }
             catch (Exception ex)

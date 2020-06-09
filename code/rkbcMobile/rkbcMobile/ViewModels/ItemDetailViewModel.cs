@@ -10,7 +10,7 @@ namespace rkbcMobile.ViewModels
         public ItemDetailViewModel(Item item = null)
         {
 
-            Title = item?.title;
+            Title = item?.Text;
             Item = item;
         }
     }

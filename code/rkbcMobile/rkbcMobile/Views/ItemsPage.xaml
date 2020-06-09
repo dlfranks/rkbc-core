@@ -22,14 +22,11 @@
                 <DataTemplate>
 
                     <StackLayout Padding="10">
-                        <Image IsVisible="{Binding isGalleryType}" Grid.RowSpan="2" 
+                        <Image Grid.RowSpan="2" 
                                Source="{Binding imageUrl}" 
                                Aspect="AspectFill"
                                 />
-                        <Image IsVisible="{Binding isGalleryType}" Grid.RowSpan="2" 
-                               Source="{Binding imageUrl}" 
-                               Aspect="AspectFill"
-                                />
+                        
                         <Label Text="{Binding Text}" 
                                 d:Text="{Binding .}"
                                 LineBreakMode="NoWrap" 

@@ -92,7 +92,7 @@
         }
 
         setupMedia['@((int)BlogPostType.Video)'] = function (videoHtml, div) {
-            var iframeEle = $('<iframe src="" frameborder="0" style="width:100%; height:auto;" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
+            var iframeEle = $('<iframe src="" frameborder="0" style="width:100%; height:400px;" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
             var html = $(videoHtml);
             div.append(html);
             var iframeWrapper = html.closest("#iframeWrapper");
@@ -240,7 +240,7 @@
     </script>
     <script type="text/html" id="htmlPostType-@((int)BlogPostType.Video)">
         <div id="iframeWrapper">
-            <iframe src="" frameborder="0" style="width:100%; height:auto;" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe src="" frameborder="0" style="width:100%; height:400px;" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
         <div class="form-group" id="inputVideo">

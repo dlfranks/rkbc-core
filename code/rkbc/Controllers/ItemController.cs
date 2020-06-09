@@ -78,7 +78,8 @@ namespace rkbc.web.Controllers
                 slug = q.slug,
                 views = q.views,
                 title = q.title,
-                comments = q.comments.Select(c => new CommmentMobileViewModel() {
+                comments = q.comments.Select(c => new CommmentMobileViewModel()
+                {
                     commentId = c.id,
                     postId = c.postId,
                     authorId = c.authorId,
@@ -87,8 +88,17 @@ namespace rkbc.web.Controllers
                 }).ToList()
 
             }).ToListAsync();
-            var jsonStr = JsonSerializer.Serialize(posts);
-           return Json(jsonStr);
+            //var posts = await unitOfWork.posts.get().Select(q => new
+            //{
+            //    Id = q.id,
+            //    Text = q.title,
+            //    imageUrl = q.getImageLink(),
+            //    videoURL = q.videoURL,
+            //    postType = q.postType,
+            //    Description = q.content
+            //}).ToListAsync();
+            //var jsonStr = JsonSerializer.Serialize(posts);
+           return Json(posts);
         }
 
         
