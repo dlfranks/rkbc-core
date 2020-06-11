@@ -1,4 +1,6 @@
-﻿using System;
+﻿using rkbcMobile.Repository;
+using rkbcMobile.Services;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -11,6 +13,7 @@ namespace rkbcMobile.Models
         Video
 
     }
+   
     public class CommmentItem
     {
         public int commentId { get; set; }
@@ -21,7 +24,7 @@ namespace rkbcMobile.Models
     }
     public class Item
     {
-        public string Id { get; set; }
+        public int id { get; set; }
         public int postType { get; set; }
         public string imageUrl { get; set; }
         public string videoURL { get; set; }
@@ -39,10 +42,11 @@ namespace rkbcMobile.Models
     }
     public class PostItem
     {
+        public int id { get; set; }
         public int postId { get; set; }
         public int blogId { get; set; }
-        public string imageFileName { get; set; }
-        public string videoURL { get; set; }
+        public string imageUrl { get; set; }
+        public string videoUrl { get; set; }
         public string content { get; set; }
         public string excerpt { get; set; }
         public int postType { get; set; }
@@ -55,12 +59,14 @@ namespace rkbcMobile.Models
         public string title { get; set; }
         public IList<CommmentItem> comments { get; set; }
 
+        
+        
         public string getVideoId()
         {
             var videoId = "";
-            if ((postType == (int)BlogPostType.Video) && !String.IsNullOrWhiteSpace(this.videoURL))
+            if ((postType == (int)BlogPostType.Video) && !String.IsNullOrWhiteSpace(this.videoUrl))
             {
-                videoId = Regex.Match(this.videoURL, "(?:.+?)?(?:\\/v\\/|watch\\/|\\?v=|\\&v=|youtu\\.be\\/|\\/v=|^youtu\\.be\\/)([a-zA-Z0-9_-]{11})+").Groups[1].Value;
+                videoId = Regex.Match(this.videoUrl, "(?:.+?)?(?:\\/v\\/|watch\\/|\\?v=|\\&v=|youtu\\.be\\/|\\/v=|^youtu\\.be\\/)([a-zA-Z0-9_-]{11})+").Groups[1].Value;
             }
             return videoId;
         }

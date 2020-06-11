@@ -10,6 +10,7 @@ using Xamarin.Forms.Xaml;
 using rkbcMobile.Models;
 using rkbcMobile.Views;
 using rkbcMobile.ViewModels;
+using rkbcMobile.Repository;
 
 namespace rkbcMobile.Views
 {
@@ -19,19 +20,23 @@ namespace rkbcMobile.Views
     public partial class ItemsPage : ContentPage
     {
         ItemsViewModel viewModel;
-
-        public ItemsPage()
+        ViewModelLocator locator;
+        public ItemsPage(IUnitOfWork _unitOfWork, ViewModelLocator _locator)
         {
             InitializeComponent();
-
-            BindingContext = viewModel = new ItemsViewModel();
+            locator = _locator;
+            BindingContext = viewModel = new ItemsViewModel(_unitOfWork);
         }
 
         async void OnItemSelected(object sender, EventArgs args)
         {
             var layout = (BindableObject)sender;
             var item = (Item)layout.BindingContext;
-            await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item)));
+            var itemDetailVm = locator.ItemDetail;
+            itemDetailVm.Item = item;
+            var itemDetailpage = new ItemDetailPage();
+            itemDetailpage.BindingContext = itemDetailpage;
+            await Navigation.PushAsync(itemDetailpage);
         }
 
         async void AddItem_Clicked(object sender, EventArgs e)

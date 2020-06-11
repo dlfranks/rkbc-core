@@ -4,6 +4,8 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:vm="clr-namespace:rkbcMobile.ViewModels"
+             BindingContext="{Binding Items, Source={StaticResource Locator}}"
              x:Class="rkbcMobile.Views.ItemsPage"
              Title="{Binding Title}"
              x:Name="BrowseItemsPage">

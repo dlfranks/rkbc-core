@@ -1,35 +1,32 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using rkbcMobile.Models;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
+using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
-
-using rkbcMobile.Models;
-using rkbcMobile.Views;
-using rkbcMobile.Services;
 using rkbcMobile.Repository;
 
 namespace rkbcMobile.ViewModels
 {
-    public class ItemsViewModel : BaseViewModel
+    public class PostItemsViewModel : BaseViewModel
     {
-        
-        public ObservableCollection<Item> Items { get; set; }
+        public ObservableCollection<PostItem> Items { get; set; }
         public Command LoadItemsCommand { get; set; }
 
-        public ItemsViewModel(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public PostItemsViewModel(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             Title = "Posts";
-            Items = new ObservableCollection<Item>();
+            Items = new ObservableCollection<PostItem>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
-            MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
-            {
-                var newItem = item as Item;
-                Items.Add(newItem);
-                await unitOfWork.ItemData.AddItemAsync(newItem);
-            });
+            //MessagingCenter.Subscribe<NewItemPage, PostItem>(this, "AddItem", async (obj, item) =>
+            //{
+            //    var newItem = item as Item;
+            //    Items.Add(newItem);
+            //    await DataStore.AddItemAsync(newItem);
+            //});
         }
 
         async Task ExecuteLoadItemsCommand()
@@ -39,13 +36,14 @@ namespace rkbcMobile.ViewModels
             try
             {
                 Items.Clear();
-                var items = await unitOfWork.ItemData.GetItemsAsync(true);
+                var items = await unitOfWork.PostData.GetItemsAsync(true);
                 foreach (var item in items)
                 {
-                    if(item.postType == (int)BlogPostType.Video)
+                    if (item.postType == (int)BlogPostType.Video)
                     {
-                       item.imageUrl = "https://img.youtube.com/vi/" + item.getVideoId() + "/default.jpg";
-                    }else if(item.postType == (int)BlogPostType.Sigle)
+                        item.imageUrl = "https://img.youtube.com/vi/" + item.getVideoId() + "/default.jpg";
+                    }
+                    else if (item.postType == (int)BlogPostType.Sigle)
                     {
                         item.imageUrl = App.AzureBackendUrl + "/assets/blog/clickHereImage.jpg";
                     }
@@ -53,7 +51,7 @@ namespace rkbcMobile.ViewModels
                     {
                         item.imageUrl = "http://rkbc.us" + item.imageUrl;
                     }
-                        
+
                     Items.Add(item);
 
                 }

@@ -4,6 +4,8 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using rkbcMobile.Services;
 using rkbcMobile.Views;
+using rkbcMobile.Models;
+using rkbcMobile.Repository;
 
 namespace rkbcMobile
 {
@@ -21,10 +23,12 @@ namespace rkbcMobile
         {
             InitializeComponent();
 
-            if (UseMockDataStore)
-                DependencyService.Register<MockDataStore>();
-            else
-                DependencyService.Register<AzureDataStore>();
+            //if (UseMockDataStore)
+            //    DependencyService.Register<MockDataStore>();
+            //else
+            //    DependencyService.Register<AzureDataStore>();
+            DependencyService.Register<IUnitOfWork, UnitOfWork>();
+            
             MainPage = new MainPage();
         }
 

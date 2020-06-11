@@ -5,14 +5,16 @@ using Xamarin.Forms;
 
 namespace rkbcMobile.ViewModels
 {
-    public class AboutViewModel : BaseViewModel
+    public class AboutViewModel
     {
+
         public AboutViewModel()
         {
             Title = "About";
             OpenWebCommand = new Command(async () => await Browser.OpenAsync("https://xamarin.com"));
         }
 
+        public string Title { get; set; }
         public ICommand OpenWebCommand { get; }
     }
 }

@@ -7,12 +7,18 @@ using Xamarin.Forms;
 
 using rkbcMobile.Models;
 using rkbcMobile.Services;
+using rkbcMobile.Repository;
 
 namespace rkbcMobile.ViewModels
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel: INotifyPropertyChanged
     {
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
+        protected IUnitOfWork unitOfWork;
+        public BaseViewModel(IUnitOfWork _unitOfWork)
+        {
+            unitOfWork = _unitOfWork;
+        }
+        
 
         bool isBusy = false;
         public bool IsBusy
@@ -25,7 +31,9 @@ namespace rkbcMobile.ViewModels
         public string Title
         {
             get { return title; }
-            set { SetProperty(ref title, value); }
+            set { 
+                SetProperty(ref title, value); 
+            }
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,
