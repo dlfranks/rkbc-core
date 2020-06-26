@@ -11,6 +11,7 @@ using rkbcMobile.Models;
 using rkbcMobile.Views;
 using rkbcMobile.ViewModels;
 using rkbcMobile.Repository;
+using rkbcMobile.ViewModels.Base;
 
 namespace rkbcMobile.Views
 {
