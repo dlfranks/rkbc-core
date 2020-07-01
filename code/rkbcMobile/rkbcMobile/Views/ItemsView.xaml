@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="rkbcMobile.Views.ItemsView"
+             xmlns:template="clr-namespace:rkbcMobile.Views.Templates;assembly=rkbcMobile"
+             xmlns:behaviors="clr-namespace:rkbcMobile.Behaviors;assembly=rkbcMobile"
+             xmlns:viewModelBase="clr-namespace:rkbcMobile.ViewModels.Base;assembly=rkbcMobile"
+             viewModelBase:ViewModelLocator.AutoWireViewModel="True"
+             Title="Items">
+    <ContentPage.Resources>
+        
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <ListView
+                x:Name="Items"
+                HasUnevenRows="True"
+                SeparatorVisibility="None"
+                CachingStrategy="RecycleElement"
+                ItemsSource="{Binding Items}">
+                <ListView.Behaviors>
+                    <behaviors:EventToCommandBehavior                    
+                        EventName="ItemTapped"
+                        Command="{Binding GetCampaignDetailsCommand}"
+                        EventArgsConverter="{StaticResource ItemTappedEventArgsConverter}" />
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="250" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Image Grid.Row="0" Source="{Binding imageUrl}"></Image>
+                                <Label Grid.Row="1" Text="{Binding Text}"></Label>
+                            </Grid>
+                           
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Grid>
+</ContentPage>
