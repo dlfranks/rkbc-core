@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:rkbcMobile.ViewModels"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
@@ -15,7 +14,16 @@
                 <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationPrimary}" />
                 <Setter Property="BarTextColor" Value="White" />
             </Style>
-            <vm:ViewModelLocator x:Key="Locator"/>
+            <!-- CONVERTERS -->
+            <converters:CountToBoolConverter x:Key="CountToBoolConverter" />
+            <converters:DatetimeConverter x:Key="DatetimeConverter" />
+            <converters:ImageConverter x:Key="ImageConverter" />
+            <converters:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
+            <converters:InverseCountToBoolConverter x:Key="InverseCountToBoolConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:ItemsToHeightConverter x:Key="ItemsToHeightConverter" />
+            <converters:ToUpperConverter x:Key="ToUpperConverter" />
+            
         </ResourceDictionary>
     </Application.Resources>
     

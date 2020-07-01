@@ -4,8 +4,11 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:behaviors="clr-namespace:rkbcMobile.Behaviors;assembly=rkbcMobile"
              xmlns:vm="clr-namespace:rkbcMobile.ViewModels"
-             BindingContext="{Binding Items, Source={StaticResource Locator}}"
+             xmlns:viewModelBase="clr-namespace:rkbcMobile.ViewModels.Base;assembly=rkbcMobile"
+             xmlns:templates="clr-namespace:rkbcMobile.Views.Templates;assembly=rkbcMobile"
+             viewModelBase:ViewModelLocator.AutoWireViewModel="True"
              x:Class="rkbcMobile.Views.ItemsPage"
              Title="{Binding Title}"
              x:Name="BrowseItemsPage">
@@ -13,38 +16,42 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Clicked="AddItem_Clicked" />
     </ContentPage.ToolbarItems>
+    <Grid
+        Grid.Row="1">
+        <Grid
+            IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}">
+            <Label
+                Text="NO ITEM FOUND"
+                IsVisible="{Binding Items.Count, Converter={StaticResource InverseCountToBoolConverter}}"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"/>
 
-    <RefreshView IsRefreshing="{Binding IsBusy, Mode=TwoWay}" Command="{Binding LoadItemsCommand}">
-        <CollectionView 
-            Grid.ColumnSpan="2"
-            x:Name="ItemsCollectionView"
-                ItemsSource="{Binding Items}">
-            
-            <CollectionView.ItemTemplate>
+
+        </Grid>
+        <ListView
+            x:Name="Items"
+            IsVisible="{Binding Items.Count, Converter={StaticResource InverseCountToBoolConverter}}"
+            ItemsSource="{Binding Items}"
+            HasUnevenRows="True"
+            SeparatorVisibility="None"
+            CachingStrategy="RecycleElement"
+            Style="{StaticResource CampaignsListStyle}">
+            <ListView.Behaviors>
+                <behaviors:EventToCommandBehavior
+                    EventName="ItemTapped"
+                    Command="{Binding GetItemDetailCommand}"
+                    EventArgsConverter="{StaticResource ItemTappedEventArgsConverter}"/>
+            </ListView.Behaviors>
+            <ListView.ItemTemplate>
                 <DataTemplate>
-
-                    <StackLayout Padding="10">
-                        <Image Grid.RowSpan="2" 
-                               Source="{Binding imageUrl}" 
-                               Aspect="AspectFill"
-                                />
-                        
-                        <Label Text="{Binding Text}" 
-                                d:Text="{Binding .}"
-                                LineBreakMode="NoWrap" 
-                                Style="{DynamicResource ListItemTextStyle}" 
-                                FontSize="16" />
-                        <Label Text="{Binding Description}" 
-                                d:Text="Item descripton"
-                                LineBreakMode="NoWrap"
-                                Style="{DynamicResource ListItemDetailTextStyle}"
-                                FontSize="13" />
-                        <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="OnItemSelected"></TapGestureRecognizer>
-                        </StackLayout.GestureRecognizers>
-                    </StackLayout>
+                    <ViewCell>
+                        <templates:ItemTemplate />
+                    </ViewCell>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </RefreshView>
+            </ListView.ItemTemplate>
+            
+        </ListView>
+           
+    </Grid>
+    
 </ContentPage>

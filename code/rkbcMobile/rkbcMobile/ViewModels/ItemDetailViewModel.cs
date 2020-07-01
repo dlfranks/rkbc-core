@@ -2,13 +2,14 @@
 
 using rkbcMobile.Models;
 using rkbcMobile.Repository;
+using rkbcMobile.ViewModels.Base;
 
 namespace rkbcMobile.ViewModels
 {
-    public class ItemDetailViewModel : BaseViewModel
+    public class ItemDetailViewModel : ViewModelBase
     {
         public Item Item { get; set; }
-        public ItemDetailViewModel(IUnitOfWork _unitOfWork) : base(_unitOfWork)
+        public ItemDetailViewModel()
         {
 
            

@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="4.3.0" />
+    <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.10.972" />
+  </ItemGroup>
+
 </Project>

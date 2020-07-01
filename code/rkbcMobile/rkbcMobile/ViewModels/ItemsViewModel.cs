@@ -9,63 +9,55 @@ using rkbcMobile.Models;
 using rkbcMobile.Views;
 using rkbcMobile.Services;
 using rkbcMobile.Repository;
+using rkbcMobile.ViewModels.Base;
+using rkbcMobile.Services.Settings;
+using rkbcMobile.Services.Blog;
+using System.Windows.Input;
 
 namespace rkbcMobile.ViewModels
 {
-    public class ItemsViewModel : BaseViewModel
+    public class ItemsViewModel : ViewModelBase
     {
-        
-        public ObservableCollection<Item> Items { get; set; }
+        private readonly ISettingsService _settingsService;
+        private readonly IBlogService _blogService;
+        private ObservableCollection<Item> _items;
+        public ObservableCollection<Item> Items {
+            get => _items;
+            set
+            {
+                _items = value;
+                RaisePropertyChanged(() => Items);
+            }
+        }
         public Command LoadItemsCommand { get; set; }
-
-        public ItemsViewModel(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public string Title { get; set; }
+        public ItemsViewModel(ISettingsService settingsService, IBlogService blogService) 
         {
+            _settingsService = settingsService;
+            _blogService = blogService;
             Title = "Posts";
             Items = new ObservableCollection<Item>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
-
-            MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
-            {
-                var newItem = item as Item;
-                Items.Add(newItem);
-                await unitOfWork.ItemData.AddItemAsync(newItem);
-            });
+            //MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
+            //{
+            //    var newItem = item as Item;
+            //    Items.Add(newItem);
+            //    await unitOfWork.ItemData.AddItemAsync(newItem);
+            //});
         }
 
-        async Task ExecuteLoadItemsCommand()
+        public ICommand GetItemDetailCommand => new Command<Item>(async (item) => await GetItemDetailAsync(item));
+        public override async Task InitializeAsync(object navigationData)
         {
             IsBusy = true;
-
-            try
-            {
-                Items.Clear();
-                var items = await unitOfWork.ItemData.GetItemsAsync(true);
-                foreach (var item in items)
-                {
-                    if(item.postType == (int)BlogPostType.Video)
-                    {
-                       item.imageUrl = "https://img.youtube.com/vi/" + item.getVideoId() + "/default.jpg";
-                    }else if(item.postType == (int)BlogPostType.Sigle)
-                    {
-                        item.imageUrl = App.AzureBackendUrl + "/assets/blog/clickHereImage.jpg";
-                    }
-                    else
-                    {
-                        item.imageUrl = "http://rkbc.us" + item.imageUrl;
-                    }
-                        
-                    Items.Add(item);
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            // Get campaigns by user
+            Items = await _blogService.GetItemsAsync();
+            IsBusy = false;
         }
+
+        private async Task GetItemDetailAsync(Item item)
+        {
+            await NavigationService.NavigateToAsync<ItemDetailViewModel>(item.id);
+        }
+        
     }
 }

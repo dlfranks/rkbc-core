@@ -1,4 +1,4 @@
-﻿using rkbcMobile.Services.Navigation;
+﻿using rkbcMobile.Models.Navigation;
 using rkbcMobile.ViewModels.Base;
 using System.Threading.Tasks;
 using System.Windows.Input;
